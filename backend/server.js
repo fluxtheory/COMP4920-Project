@@ -10,7 +10,7 @@ const app = express();
 app.use(cors());
 const router = express.Router();
 
-// this is our MongoDB database
+/* this is our MongoDB database
 const dbRoute =
   'mongodb://<your-db-username-here>:<your-db-password-here>@ds249583.mlab.com:49583/fullstack_app';
 
@@ -23,13 +23,14 @@ db.once('open', () => console.log('connected to the database'));
 
 // checks if connection with the database is successful
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
+*/
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
 
+/*
 // this is our get method
 // this method fetches all available data in our database
 router.get('/getData', (req, res) => {
@@ -79,7 +80,7 @@ router.post('/putData', (req, res) => {
     return res.json({ success: true });
   });
 });
-
+*/
 // append /api for our http requests
 app.use('/api', router);
 
