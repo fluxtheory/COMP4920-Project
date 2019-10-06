@@ -1,0 +1,23 @@
+{
+  "name": "Kudo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"cd backend && node server.js\" \"cd client && npm start\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fluxtheory/COMP4920-Project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fluxtheory/COMP4920-Project/issues"
+  },
+  "homepage": "https://github.com/fluxtheory/COMP4920-Project#readme"
+}
