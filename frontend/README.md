@@ -1,68 +1,78 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# How to get lit with the frontend
+## TLDR get me started
+* `npm install`
+* `npm start`
+* *write code* (see changes in browser)
+* Kick Wobcke's ass
+* Profit
+## Some javascript things
+### NPM
+* This will take care of managing your packing
+* To install a package, the magic words are `npm install [library-name]`
+* But other people also need to know about the awesome library you are using
+* So chuck `npm install --save [library-name]`
+* This will add that library as a dependency to the project, in a file called `package.json`
+* `npm install` will install everything specified in the `package.json` file
+* A good way to find a library is to google `npm [functionality you desire]`
 
-## Available Scripts
+## VSCode
+* The development environment is of course personal, but this is what works for me.
+* Pretty much everything you need to know about vscode is to use <kbd>ctrl</kbd> + <kbd>p</kbd>   
+    * Start typing to fuzzy search your files
+    * Type <kbd>#</kbd> to search any symbol in your codebase
+        * functions
+        * variables
+        * components
+        * ...
+    * Type <kbd>></kbd> to enter a system command
+        * It's a decent search so enter whatever you desire to change with regards to the editor
+        * A good time to try `recommended extensions` and install those
+* <kbd>ctrl</kbd> + <kbd>`</kbd> to see errors, and a cool in-editor terminal 
 
-In the project directory, you can run:
+## Development
+### PSA
+* Everything is not meant make sense off the bat
+* Don't worry about being perfect (it takes balls). *Just keep swimming*.
+* Please ask if you're on a problem/concept for more than 10 mins
+    * Most things react aren't about competence or aptitude, lot's of gotchas you learn only by experience.
+    * I also enjoy helping people :)
+### React
+* Let's try to use functional react (no class components)
+    * It's the way of the future
+    * Probably not intuitive at first, but trust me it's nice :)
+    * This means you won't have the [component life cycle methods](https://programmingwithmosh.com/javascript/react-lifecycle-methods/) you may or may not be used to
+    * Instead we have [react hooks](https://reactjs.org/docs/hooks-intro.html)
+        * The only two you need to worry about starting off are:
+            * [useState()](https://reactjs.org/docs/hooks-state.html)
+            * [useEffect()](https://reactjs.org/docs/hooks-effect.html)
+### Making things look pretty
+* Using a component library like Material UI is probably worth. It's quick (once you make friends with it) and convenient, despite it looking ikea-esque generic.
+* This is the flow that works for me:
+    * Going to the [components page](https://material-ui.com/components/buttons/)
+    * Choose the component you want (e.g. buttons, menus, app bars...)
+    * Look at the example code they provide on the page and slap it into the code base
+    * You can fine tune things by looking at the individual component API at the bottom of that page.
+* We'll also need to use CSS for certain things
+    * There's heaps of ways to do this, let's just [pick one](https://material-ui.com/styles/basics/#hook-api) (stick with material ui because the less libraries the better)
+### Examples
+#### Writing a component
+```jsx
+import React from 'react' // import this anytime you return jsx (things with angle brackets)
+import { SomeJSX } from '../components/SomeJSX'; // import any components you use
 
-### `npm start`
+const  Component = () => {
+    // ... 
+    // normal imperative javascript
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    return (
+        <div>
+            <SomeJSX />
+        </div>
+    );
+}
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+export { Component }; // make sure to export, so other components can use this.
+```
+* NOTE: if you're using vscode and installed the recommended extensions
+    * It will autocomplete the imports for you, just start typing the component, function, anything you've exported
+    * It will format your code for you when save the file :)

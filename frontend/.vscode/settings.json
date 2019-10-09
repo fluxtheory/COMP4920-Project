@@ -1,3 +1,6 @@
 {
     "editor.formatOnSave": true,
+    "eslint.enable": true,
+    "autoimport.filesToScan": "**/*.{js,jsx}",
+    "autoimport.showNotifications": true,
 }
