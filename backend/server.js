@@ -4,14 +4,21 @@ const session = require('express-session');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const fs = require('fs');
 
-const auth = require('./userAuth');
+const auth = require('./userAuthLogin');
 
 
 const API_PORT = 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
+
+// (optional) only made for logging and
+// bodyParser, parses the request body to be a readable json format
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(logger('dev'));
 
 
 let db = new sqlite3.Database('test.db', (err) => {
@@ -21,17 +28,14 @@ let db = new sqlite3.Database('test.db', (err) => {
   console.log('Connected to sqlite3 database');
 });
 
-
-
-// (optional) only made for logging and
-// bodyParser, parses the request body to be a readable json format
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(logger('dev'));
-
 // append /api for our http requests
 app.use('/api', router);
-init();
+
+fs.access('./test.db', fs.F_OK, (err) => {
+  if (err) {
+    init();
+  }
+})
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
 
@@ -65,7 +69,7 @@ function init() {
   let ranks = ["Course Moderator", "Course Helper", "Member"];
   let placeholders = ranks.map((ranks) => '(?)').join(',');
   let insert_query = `INSERT INTO userrank (name) VALUES ` + placeholders;
-  //console.log(insert_query);
+  console.log(insert_query);
 
   db.exec(schema_query, function(err){
     if(err){
