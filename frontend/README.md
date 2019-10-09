@@ -54,6 +54,11 @@
     * You can fine tune things by looking at the individual component API at the bottom of that page.
 * We'll also need to use CSS for certain things
     * There's heaps of ways to do this, let's just [pick one](https://material-ui.com/styles/basics/#hook-api) (stick with material ui because the less libraries the better)
+### Routing
+* We'll be using [react-router](https://reacttraining.com/react-router/web/guides/quick-start) for routing. It's the industry standard.
+* There's not much to this, the only 2 things you'll want to know about are:
+    * [Route](https://reacttraining.com/react-router/web/api/Route) - Attaches a component to a route `/home`, `/chat`, etc.
+    * [Link](https://reacttraining.com/react-router/web/api/Link) - Basically a hyperlink to somewhere on our own site.
 ### Examples
 #### Writing a component
 ```jsx
