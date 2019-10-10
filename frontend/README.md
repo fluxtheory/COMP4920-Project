@@ -1,5 +1,6 @@
 # How to get lit with the frontend
 ## TLDR get me started
+* cd `frontend/`
 * `npm install`
 * `npm start`
 * *write code* (see changes in browser)
