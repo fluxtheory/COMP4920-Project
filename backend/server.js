@@ -7,7 +7,7 @@ const logger = require('morgan');
 const fs = require('fs');
 
 const auth = require('./userAuthLogin');
-
+const user = require('./users');
 
 const API_PORT = 3001;
 const app = express();
@@ -30,22 +30,22 @@ let db = new sqlite3.Database('test.db', (err) => {
 
 // append /api for our http requests
 app.use('/api', router);
+init();
 
-fs.access('./test.db', fs.F_OK, (err) => {
-  if (err) {
-    init();
-  }
-})
-// launch our backend into a port
-app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
-
-/*
 db.close((err) => {
   if(err) {
     return console.error(err.message);
   }
   console.log('Closed db connection');
-});*/
+});
+
+let name = "xavier";
+console.log(name + " exists is " + user.userExists(name));
+
+// launch our backend into a port
+app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+
+
 
 
 function init() {
@@ -58,7 +58,7 @@ function init() {
       username TEXT PRIMARY KEY, 
       password TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE, 
-      zid TEXT, 
+      zid TEXT UNIQUE, 
       rank TEXT,
       date_joined TEXT,
       last_login TEXT,
@@ -85,7 +85,3 @@ function init() {
   })
 }
 
-function createTestUser(){
-  let username = "fluxtheory";
-  let password = "testpassword1";
-}
