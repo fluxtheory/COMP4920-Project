@@ -41,6 +41,10 @@ db.close((err) => {
 
 let name = "xavier";
 console.log(name + " exists is " + user.userExists(name));
+/*
+user.userExists(name).then( (value) => { 
+  console.log(value)
+});*/
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

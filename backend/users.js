@@ -32,7 +32,20 @@ module.exports = {
 
     userExists :
     function userExists(username, callback){
-        return new Promise((resolve,reject) => {
+        let query = `SELECT * FROM users where username = ?`;
+        var exists = null;
+
+        db.get(query, [username], (err, row) => {  
+            if(err){
+                console.log(err.message);
+            } else {
+                console.log("test1");
+                exists = true;
+            }
+        });
+        console.log("test2");   // async, exists gets returned before the query is complete.
+        return exists;
+        /*return new Promise((resolve,reject) => {
             let query = `SELECT * FROM users where username = ?`;
             var exists = null;
 
@@ -40,8 +53,7 @@ module.exports = {
                 if(err){
                     console.log(err.message);
                 } else {
-                    //exists = row.username;
-                    callback(row.username);
+                    exists = true;
                 }
             });
         
@@ -49,9 +61,10 @@ module.exports = {
             if(err){
                 reject(err);
             } else {
-                resolve
+                console.log(exists);
+                resolve(exists);
             }
-        });
+        });*/
 
 
     }
