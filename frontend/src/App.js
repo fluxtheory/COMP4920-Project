@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { Chat } from './pages/Chat';
+import { CreateAccount } from './pages/CreateAccount';
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -33,6 +34,9 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
+          <Route path="/createAccount">
+            <CreateAccount />
+          </Route>
           <Route path="/chat">
             <Chat />
           </Route>
