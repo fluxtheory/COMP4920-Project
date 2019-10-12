@@ -10,63 +10,36 @@ let db = new sqlite3.Database('test.db', (err) => {
 module.exports = {
     
     addUser :
-    function addUser(username, email, password){
+    async function addUser(username, email, password){
         //check if user exists
-        if(!userExists(username)){
-            console.log(username + "is not in the database");
 
-            /*
-            db.exec(schema_query, function(err){
-                if(err){
-                    console.log(err.message);
-                }
-            });*/
+        //let ans = await db.get("SELECT * FROM users where username = 'xavier'");
+        //console.log(ans.email);
+        let ans = await userExists(username);
+        if(typeof(ans) == "undefined"){
+            console.log(username + " not found");
+        } else {
+            console.log(username + " found!");
         }
-    
         
-    
-        
-    
         // add user if it doesnt
     },
 
-    userExists :
-    function userExists(username, callback){
-        let query = `SELECT * FROM users where username = ?`;
-        var exists = null;
-
-        db.get(query, [username], (err, row) => {  
-            if(err){
-                console.log(err.message);
-            } else {
-                console.log("test1");
-                exists = true;
-            }
-        });
-        console.log("test2");   // async, exists gets returned before the query is complete.
-        return exists;
-        /*return new Promise((resolve,reject) => {
-            let query = `SELECT * FROM users where username = ?`;
-            var exists = null;
-
-            db.get(query, [username], (err, row) => {  
+    userExists :    
+    function userExists(username){
+        return new Promise((resolve, reject) => {
+            db.get(`SELECT * FROM users where username = ?`, username, (err, row) => {  
                 if(err){
                     console.log(err.message);
+                    reject(err);
                 } else {
-                    exists = true;
+                    resolve(row);
                 }
+                
             });
-        
-        }, (err, n) => {
-            if(err){
-                reject(err);
-            } else {
-                console.log(exists);
-                resolve(exists);
-            }
-        });*/
-
-
+        });
     }
-        
 }
+
+
+

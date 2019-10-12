@@ -7,7 +7,7 @@ const logger = require('morgan');
 const fs = require('fs');
 
 const auth = require('./userAuthLogin');
-const user = require('./users');
+
 
 const API_PORT = 3001;
 const app = express();
@@ -32,24 +32,8 @@ let db = new sqlite3.Database('test.db', (err) => {
 app.use('/api', router);
 init();
 
-db.close((err) => {
-  if(err) {
-    return console.error(err.message);
-  }
-  console.log('Closed db connection');
-});
-
-let name = "xavier";
-console.log(name + " exists is " + user.userExists(name));
-/*
-user.userExists(name).then( (value) => { 
-  console.log(value)
-});*/
-
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
-
-
 
 
 function init() {
