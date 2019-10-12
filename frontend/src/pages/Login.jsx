@@ -1,9 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AccountCreationHandler } from '../components/AccountCreationHandler';
+import { LoginBox } from '../components/LoginBox';
 
 const useStyles = makeStyles(theme => ({
-  ACHContainer: {
+  LoginContainer: {
     maxWidth: '1000px',
     margin: '0 auto',
   },
@@ -12,13 +12,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function CreateAccount() {
+function Login() {
   const classes = useStyles();
   return (
-    <div className={classes.ACHContainer}>
-      <AccountCreationHandler />
+    <div className={classes.LoginContainer}>
+      <LoginBox />
     </div>
   );
 }
 
-export { CreateAccount };
+export { Login };

@@ -22,60 +22,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AccountCreationHandler() {
+function LoginBox() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     email: '',
     password: '',
-    passwordRepeat: '',
   });
-
-  const [emailHelpString, setEmailHelpString] = React.useState('');
-  const [passwordHelpString, setPasswordHelpString] = React.useState('');
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
-  };
-
-  const handleSubmit = e => {
-    let emailCheckPassed = checkEmailField();
-    let passwordCheckPassed = checkPasswordField();
-
-    if (emailCheckPassed !== true || passwordCheckPassed !== true) {
-      e.preventDefault();
-    }
-  };
-
-  const checkPasswordField = () => {
-    let ret = true;
-    setPasswordHelpString('');
-
-    if (values.password !== values.passwordRepeat) {
-      setPasswordHelpString('Passwords do not match!');
-      ret = false;
-    }
-
-    if (values.password.length < 6) {
-      setPasswordHelpString('Password must be at least six chars long.');
-      ret = false;
-    }
-
-    return ret;
-  };
-
-  const checkEmailField = () => {
-    let ret = true;
-    setEmailHelpString('');
-
-    if (
-      !values.email.includes('@unsw.edu.au') &&
-      !values.email.includes('@ad.unsw.edu.au')
-    ) {
-      setEmailHelpString('Please use your UNSW email.');
-      ret = false;
-    }
-
-    return ret;
   };
 
   return (
@@ -84,7 +39,7 @@ function AccountCreationHandler() {
         <Typography variant="h5" component="h3">
           Enter your details:
         </Typography>
-        <form onSubmit={e => handleSubmit(e)}>
+        <form>
           <div className={classes.textFieldContainer}>
             <TextField
               id="email"
@@ -98,7 +53,6 @@ function AccountCreationHandler() {
               autoComplete="off"
               required
             />
-            <Typography variant="subtitle1">{emailHelpString}</Typography>
           </div>
           <div className={classes.textFieldContainer}>
             <TextField
@@ -112,31 +66,18 @@ function AccountCreationHandler() {
               placeholder=""
               required
             />
-            <Typography variant="subtitle1">{passwordHelpString}</Typography>
-          </div>
-          <div className={classes.textFieldContainer}>
-            <TextField
-              id="passwordRepeat"
-              label="Password (Confirm)"
-              className={classes.textField}
-              value={values.passwordRepeat}
-              onChange={handleChange('passwordRepeat')}
-              margin="normal"
-              type="password"
-              placeholder=""
-              required
-            />
           </div>
           <div align="right">
             <Button type="submit">Submit</Button>
           </div>
         </form>
         <Typography>
-          Already have an account? <a href="/login">Sign In</a>.
+          Don't have have an account?{' '}
+          <a href="createAccount">Create an account here</a>.
         </Typography>
       </Paper>
     </div>
   );
 }
 
-export { AccountCreationHandler };
+export { LoginBox };
