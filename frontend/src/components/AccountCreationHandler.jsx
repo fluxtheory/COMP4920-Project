@@ -28,11 +28,57 @@ function AccountCreationHandler() {
     email: '',
     password: '',
     passwordRepeat: '',
-    passwordsMatch: false,
   });
+
+  const [emailHelpString, setEmailHelpString] = React.useState('');
+  const [passwordHelpString, setPasswordHelpString] = React.useState('');
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handleSubmit = e => {
+    let emailCheckPassed = checkEmailField();
+    let passwordCheckPassed = checkPasswordField();
+
+    if (emailCheckPassed !== true || passwordCheckPassed !== true) {
+      console.log('invalid submission');
+      e.preventDefault();
+    } else {
+      console.log('valid submission');
+    }
+  };
+
+  const checkPasswordField = () => {
+    let ret = true;
+    setPasswordHelpString('');
+
+    if (values.password !== values.passwordRepeat) {
+      setPasswordHelpString('Passwords do not match!');
+      ret = false;
+    }
+
+    if (values.password.length < 6) {
+      setPasswordHelpString('Password must be at least six chars long.');
+      ret = false;
+    }
+
+    return ret;
+  };
+
+  const checkEmailField = () => {
+    let ret = true;
+    setEmailHelpString('');
+
+    if (
+      !values.email.includes('@unsw.edu.au') &&
+      !values.email.includes('@ad.unsw.edu.au')
+    ) {
+      setEmailHelpString('Please use your UNSW email.');
+      ret = false;
+    }
+
+    return ret;
   };
 
   return (
@@ -41,46 +87,53 @@ function AccountCreationHandler() {
         <Typography variant="h5" component="h3">
           Enter your details:
         </Typography>
-        <div className={classes.textFieldContainer}>
-          <TextField
-            id="email"
-            label="Email"
-            className={classes.textField}
-            value={values.email}
-            onChange={handleChange('email')}
-            margin="normal"
-            type="email"
-            placeholder="jonsnow420blazeit@unsw.edu.au"
-            autoComplete="off"
-          />
-        </div>
-        <div className={classes.textFieldContainer}>
-          <TextField
-            id="password"
-            label="Password"
-            className={classes.textField}
-            value={values.password}
-            onChange={handleChange('password')}
-            margin="normal"
-            type="password"
-            placeholder=""
-          />
-        </div>
-        <div className={classes.textFieldContainer}>
-          <TextField
-            id="passwordRepeat"
-            label="Password (Confirm)"
-            className={classes.textField}
-            value={values.passwordRepeat}
-            onChange={handleChange('passwordRepeat')}
-            margin="normal"
-            type="password"
-            placeholder=""
-          />
-        </div>
-        <div align="right">
-          <Button value="Submit">Submit</Button>
-        </div>
+        <form onSubmit={e => handleSubmit(e)}>
+          <h1>{emailHelpString}</h1>
+          <h1>{passwordHelpString}</h1>
+          <div className={classes.textFieldContainer}>
+            <TextField
+              id="email"
+              label="Email"
+              className={classes.textField}
+              value={values.email}
+              onChange={handleChange('email')}
+              margin="normal"
+              type="email"
+              placeholder="jonsnow420blazeit@unsw.edu.au"
+              autoComplete="off"
+              required
+            />
+          </div>
+          <div className={classes.textFieldContainer}>
+            <TextField
+              id="password"
+              label="Password"
+              className={classes.textField}
+              value={values.password}
+              onChange={handleChange('password')}
+              margin="normal"
+              type="password"
+              placeholder=""
+              required
+            />
+          </div>
+          <div className={classes.textFieldContainer}>
+            <TextField
+              id="passwordRepeat"
+              label="Password (Confirm)"
+              className={classes.textField}
+              value={values.passwordRepeat}
+              onChange={handleChange('passwordRepeat')}
+              margin="normal"
+              type="password"
+              placeholder=""
+              required
+            />
+          </div>
+          <div align="right">
+            <Button type="submit">Submit</Button>
+          </div>
+        </form>
       </Paper>
     </div>
   );
