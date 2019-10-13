@@ -4,9 +4,7 @@ const session = require('express-session');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const fs = require('fs');
-
-const auth = require('./userAuthLogin');
+const passport = require("passport");
 
 
 const API_PORT = 3001;
