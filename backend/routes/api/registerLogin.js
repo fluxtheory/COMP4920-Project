@@ -67,36 +67,34 @@ router.post("/login", (req, res) => {
     }
 
     //check if account exists
-    user.userExists(req.body.username).then( (acc) => {
+    user.userExists(req.body.name).then( (acc) => {
         if (!acc){
             return res.status(404).json({ error : "Username not found" });
-        }
-    });
+        } 
 
-    
+        //check password
+        bcrypt.compare(req.body.password, acc.password).then(isMatch => {
+            if (isMatch) {
+                // JWT payload
+                const payload = {
+                    email : acc.email,
+                    username : acc.username
+                };
 
-    //check password
-    bcrypt.compare(req.body.password, acc.password).then(isMatch => {
-        if (isMatch) {
-            // JWT payload
-            const payload = {
-                email : acc.email,
-                username : acc.username
-            };
-
-            //sign token
-            jwt.sign(payload, keys.secret, {
-                expiresIn : 31556926
-            }, 
-            (err, token) => {
-                res.json({
-                    success: true,
-                    token: "Bearer " + token
+                //sign token
+                jwt.sign(payload, keys.secret, {
+                    expiresIn : 31556926
+                }, 
+                (err, token) => {
+                    res.json({
+                        success: true,
+                        token: "Bearer " + token
+                    });
                 });
-            });
-        } else {
-            return res.status(400).json({ error : "Password incorrect"});
-        }
+            } else {
+                return res.status(400).json({ error : "Password incorrect"});
+            }
+        });
     });
 });
 

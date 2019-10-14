@@ -55,7 +55,6 @@ function init() {
       rank TEXT,
       date_joined TEXT,
       last_login TEXT,
-      user_session INTEGER,
         FOREIGN KEY (rank) REFERENCES userrank(id)
   );` 
 
