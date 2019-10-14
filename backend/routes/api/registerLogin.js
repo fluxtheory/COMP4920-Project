@@ -41,14 +41,14 @@ router.post("/register", (req, res) => {
 
                     newUser.password = hash;
 
-                    user.addUser(newUser).then((err) => {
+                    user.addUser(newUser).catch( err => {
                         if(err){
                             return res.status(500).json(err);
                         } 
-
-                        return res.status(200).json({ success: true});
+                    }).then(() => {
+                        return res.status(200).json({ success: true});       
                     });
-                });
+                })
             });
         };
     });
@@ -67,7 +67,11 @@ router.post("/login", (req, res) => {
     }
 
     //check if account exists
-    user.userExists(req.body.name).then( (acc) => {
+    user.userExists(req.body.name).catch((err) => {
+        if(err){
+            return res.status(500).json(err);
+        } 
+    }).then( (acc) => {
         if (!acc){
             return res.status(404).json({ error : "Username not found" });
         } 

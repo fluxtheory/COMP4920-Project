@@ -11,21 +11,24 @@ let db = new sqlite3.Database('test.db', (err) => {
 module.exports = {
     
     addUser :
-    async function addUser(user){
-        let username = user.username;
-        let email = user.email;
-        let password = user.password;
-        let date_joined = Date.now().toString();
-        let errors = {};
+    function addUser(user){
+        return new Promise((resolve, reject) => {
+            let username = user.username;
+            let email = user.email;
+            let password = user.password;
+            let date_joined = Date.now().toString();
+            let errors = {};
 
-        let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
-        db.run(query, [username, password, email, null, 3, date_joined], function(err){
-            if(err){
-                console.log(err.message);  
-                return err.message
-            } 
+            let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
+            db.run(query, [username, password, email, null, 3, date_joined], function(err){
+                if(err){
+                    //console.log(err.message);  
+                    reject(err.message);
+                } else {
+                    resolve(true);
+                }
+            });
         });
-
     },
 
     userExists :    
