@@ -25,9 +25,10 @@ const useStyles = makeStyles(theme => ({
 function AccountCreationHandler() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
+    name: '',
     email: '',
     password: '',
-    passwordRepeat: '',
+    password2: '',
   });
 
   const [emailHelpString, setEmailHelpString] = React.useState('');
@@ -50,7 +51,7 @@ function AccountCreationHandler() {
     let ret = true;
     setPasswordHelpString('');
 
-    if (values.password !== values.passwordRepeat) {
+    if (values.password !== values.password2) {
       setPasswordHelpString('Passwords do not match!');
       ret = false;
     }
@@ -87,6 +88,20 @@ function AccountCreationHandler() {
         <form onSubmit={e => handleSubmit(e)}>
           <div className={classes.textFieldContainer}>
             <TextField
+              id="name"
+              label="Name"
+              className={classes.textField}
+              value={values.name}
+              onChange={handleChange('name')}
+              margin="normal"
+              type="text"
+              placeholder="aashwin"
+              autoComplete="off"
+              required
+            />
+          </div>
+          <div className={classes.textFieldContainer}>
+            <TextField
               id="email"
               label="Email"
               className={classes.textField}
@@ -116,11 +131,11 @@ function AccountCreationHandler() {
           </div>
           <div className={classes.textFieldContainer}>
             <TextField
-              id="passwordRepeat"
+              id="password2"
               label="Password (Confirm)"
               className={classes.textField}
-              value={values.passwordRepeat}
-              onChange={handleChange('passwordRepeat')}
+              value={values.password2}
+              onChange={handleChange('password2')}
               margin="normal"
               type="password"
               placeholder=""

@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 function LoginBox() {
   const classes = useStyles();
   const [values, setValues] = React.useState({
-    email: '',
+    nameOrEmail: '',
     password: '',
   });
 
@@ -42,13 +42,13 @@ function LoginBox() {
         <form>
           <div className={classes.textFieldContainer}>
             <TextField
-              id="email"
-              label="Email"
+              id="nameOrEmail"
+              label="Username/Email"
               className={classes.textField}
-              value={values.email}
-              onChange={handleChange('email')}
+              value={values.nameOrEmail}
+              onChange={handleChange('nameOrEmail')}
               margin="normal"
-              type="email"
+              type="text"
               placeholder="jonsnow420blazeit@unsw.edu.au"
               autoComplete="off"
               required
@@ -72,7 +72,7 @@ function LoginBox() {
           </div>
         </form>
         <Typography>
-          Don't have have an account?{' '}
+          Don't have an account?{' '}
           <a href="createAccount">Create an account here</a>.
         </Typography>
       </Paper>
