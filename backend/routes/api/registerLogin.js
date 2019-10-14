@@ -16,35 +16,43 @@ router.post("/register", (req, res) => {
     const {errors, isValid } = validateRegisterInput(req.body);
 
     if(!isValid){
-        console.log(res.status(400).json(errors));
         return res.status(400).json(errors);
     }
 
-    //check if username or email exists in the database
-    if(user.userExists(req.body.username)){
-        console.log(req.body.username + "already exists in the db!");
-        return;
-    }
+    user.userExists(req.body.name).then( function(acc) {
+        //check if username or email exists in the database
+        if(acc){
+            errors.error = req.body.name + " already exists in the db!";
+            return res.status(400).json(errors);
+        } else {
+            let newUser = {
+                username: req.body.name,
+                email : req.body.email,
+                password : undefined
+            };
+        
+            //hash password
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(req.body.password, salt, (err, hash) => {
+                    if(err){
+                        console.log(err);
+                        return res.status(500).json(err);
+                    }
 
-    //hash password
-    let hashpword = bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(req.body.password, salt, (err, hash) => {
-            if(err){
-                console.log(err);
-            }
-            return hash;
-        });
+                    newUser.password = hash;
+
+                    user.addUser(newUser).then((err) => {
+                        if(err){
+                            return res.status(500).json(err);
+                        } 
+
+                        return res.status(200).json({ success: true});
+                    });
+                });
+            });
+        };
     });
-
-    let newUser = {
-        username: req.body.username,
-        email : req.body.email,
-        password : hashpword
-    };
-
-    console.log(newUser);
-    //user.addUser(req.body.name, req.body.email, req.body.password)
-});
+});    // returns in a promise chain is a TOP LEVEL RETURN.
 
 
 // @route POST api/users/login
@@ -59,11 +67,13 @@ router.post("/login", (req, res) => {
     }
 
     //check if account exists
-    let acc = user.userExists(req.body.username);
+    user.userExists(req.body.username).then( (acc) => {
+        if (!acc){
+            return res.status(404).json({ error : "Username not found" });
+        }
+    });
 
-    if (!acc){
-        return res.status(404).json({ error : "Username not found" });
-    }
+    
 
     //check password
     bcrypt.compare(req.body.password, acc.password).then(isMatch => {

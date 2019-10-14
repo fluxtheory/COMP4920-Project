@@ -1,4 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
+const isEmpty = require("is-empty");
 
 let db = new sqlite3.Database('test.db', (err) => {
     if(err){
@@ -10,19 +11,21 @@ let db = new sqlite3.Database('test.db', (err) => {
 module.exports = {
     
     addUser :
-    async function addUser(username, email, password){
-        //check if user exists
+    async function addUser(user){
+        let username = user.username;
+        let email = user.email;
+        let password = user.password;
+        let date_joined = Date.now().toString();
+        let errors = {};
 
-        //let ans = await db.get("SELECT * FROM users where username = 'xavier'");
-        //console.log(ans.email);
-        let ans = await userExists(username);
-        if(typeof(ans) == "undefined"){
-            console.log(username + " not found");
-        } else {
-            console.log(username + " found!");
-        }
-        
-        // add user if it doesnt
+        let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
+        db.run(query, [username, password, email, null, 3, date_joined], function(err){
+            if(err){
+                console.log(err.message);  
+                return err.message
+            } 
+        });
+
     },
 
     userExists :    
@@ -35,7 +38,6 @@ module.exports = {
                 } else {
                     resolve(row);
                 }
-                
             });
         });
     }

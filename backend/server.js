@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const passport = require("passport");
 
+const users = require("./routes/api/registerLogin");
+
 
 const API_PORT = 3001;
 const app = express();
@@ -26,9 +28,14 @@ let db = new sqlite3.Database('test.db', (err) => {
   console.log('Connected to sqlite3 database');
 });
 
-// append /api for our http requests
-app.use('/api', router);
 init();
+app.use(passport.initialize());
+require("./config/passport");
+
+
+
+// append /api for our http requests
+app.use('/api/users', users);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
