@@ -4,10 +4,10 @@ const session = require('express-session');
 var cors = require('cors');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const fs = require('fs');
+const passport = require("passport");
 
-const auth = require('./userAuthLogin');
-const user = require('./users');
+const users = require("./routes/api/registerLogin");
+
 
 const API_PORT = 3001;
 const app = express();
@@ -28,28 +28,17 @@ let db = new sqlite3.Database('test.db', (err) => {
   console.log('Connected to sqlite3 database');
 });
 
-// append /api for our http requests
-app.use('/api', router);
 init();
+app.use(passport.initialize());
+require("./config/passport");
 
-db.close((err) => {
-  if(err) {
-    return console.error(err.message);
-  }
-  console.log('Closed db connection');
-});
 
-let name = "xavier";
-console.log(name + " exists is " + user.userExists(name));
-/*
-user.userExists(name).then( (value) => { 
-  console.log(value)
-});*/
+
+// append /api for our http requests
+app.use('/api/users', users);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
-
-
 
 
 function init() {
@@ -66,7 +55,6 @@ function init() {
       rank TEXT,
       date_joined TEXT,
       last_login TEXT,
-      user_session INTEGER,
         FOREIGN KEY (rank) REFERENCES userrank(id)
   );` 
 
