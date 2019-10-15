@@ -97,16 +97,14 @@ function AccountCreationHandler() {
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
+      if (xhr.readyState === 4) {
         var json = JSON.parse(xhr.responseText);
+        console.log(json);
         if (json.success === 'true') {
           // Redirect to /login
+        } else {
+          setNameHelpString(json.error);
         }
-      } else if (xhr.status === 400) {
-        /* need to deal with other scenarios 
-          (i.e email, passwd too short)
-        */
-        setNameHelpString('This username is taken.');
       }
     };
     var data = JSON.stringify({
@@ -115,6 +113,7 @@ function AccountCreationHandler() {
       password: values.password,
       password2: values.password2,
     });
+    console.log(data);
     xhr.send(data);
   };
 
