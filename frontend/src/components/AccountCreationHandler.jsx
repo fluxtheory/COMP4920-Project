@@ -31,6 +31,7 @@ function AccountCreationHandler() {
     password2: '',
   });
 
+  const [nameHelpString, setNameHelpString] = React.useState('');
   const [emailHelpString, setEmailHelpString] = React.useState('');
   const [passwordHelpString, setPasswordHelpString] = React.useState('');
 
@@ -39,17 +40,25 @@ function AccountCreationHandler() {
   };
 
   const handleSubmit = e => {
+    setNameHelpString('');
+    setEmailHelpString('');
+    setPasswordHelpString('');
+
     let emailCheckPassed = checkEmailField();
     let passwordCheckPassed = checkPasswordField();
 
-    if (emailCheckPassed !== true || passwordCheckPassed !== true) {
-      e.preventDefault();
+    if (emailCheckPassed === true && passwordCheckPassed === true) {
+      sendPostValues();
     }
+
+    e.preventDefault();
   };
 
+  /**
+   * Client-side check if the password fields match.
+   */
   const checkPasswordField = () => {
     let ret = true;
-    setPasswordHelpString('');
 
     if (values.password !== values.password2) {
       setPasswordHelpString('Passwords do not match!');
@@ -64,9 +73,12 @@ function AccountCreationHandler() {
     return ret;
   };
 
+  /**
+   * Client-side check that the email is for a UNSW student.
+   * Added for user convenience.
+   */
   const checkEmailField = () => {
     let ret = true;
-    setEmailHelpString('');
 
     if (
       !values.email.includes('@unsw.edu.au') &&
@@ -79,6 +91,33 @@ function AccountCreationHandler() {
     return ret;
   };
 
+  const sendPostValues = () => {
+    var xhr = new XMLHttpRequest();
+    var url = 'http://localhost:3001/api/users/register';
+    xhr.open('POST', url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var json = JSON.parse(xhr.responseText);
+        if (json.success === 'true') {
+          // Redirect to /login
+        }
+      } else if (xhr.status === 400) {
+        /* need to deal with other scenarios 
+          (i.e email, passwd too short)
+        */
+        setNameHelpString('This username is taken.');
+      }
+    };
+    var data = JSON.stringify({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      password2: values.password2,
+    });
+    xhr.send(data);
+  };
+
   return (
     <div className={classes.creationContainer}>
       <Paper className={classes.root}>
@@ -89,6 +128,7 @@ function AccountCreationHandler() {
           <div className={classes.textFieldContainer}>
             <TextField
               id="name"
+              name="name"
               label="Name"
               className={classes.textField}
               value={values.name}
@@ -99,10 +139,12 @@ function AccountCreationHandler() {
               autoComplete="off"
               required
             />
+            <Typography variant="subtitle1">{nameHelpString}</Typography>
           </div>
           <div className={classes.textFieldContainer}>
             <TextField
               id="email"
+              name="email"
               label="Email"
               className={classes.textField}
               value={values.email}
@@ -118,6 +160,7 @@ function AccountCreationHandler() {
           <div className={classes.textFieldContainer}>
             <TextField
               id="password"
+              name="password"
               label="Password"
               className={classes.textField}
               value={values.password}
@@ -132,6 +175,7 @@ function AccountCreationHandler() {
           <div className={classes.textFieldContainer}>
             <TextField
               id="password2"
+              name="password2"
               label="Password (Confirm)"
               className={classes.textField}
               value={values.password2}
