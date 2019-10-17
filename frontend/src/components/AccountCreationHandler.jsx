@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { TextField, Button } from '@material-ui/core';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   creationContainer: {
@@ -34,6 +35,7 @@ function AccountCreationHandler() {
   const [nameHelpString, setNameHelpString] = React.useState('');
   const [emailHelpString, setEmailHelpString] = React.useState('');
   const [passwordHelpString, setPasswordHelpString] = React.useState('');
+  const [registrationSuccess, setRegistrationSuccess] = React.useState(false);
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
@@ -99,9 +101,8 @@ function AccountCreationHandler() {
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         var json = JSON.parse(xhr.responseText);
-        console.log(json);
-        if (json.success === 'true') {
-          // Redirect to /login
+        if (json.success === true) {
+          setRegistrationSuccess(true);
         } else {
           setNameHelpString(json.error);
         }
@@ -113,9 +114,12 @@ function AccountCreationHandler() {
       password: values.password,
       password2: values.password2,
     });
-    console.log(data);
     xhr.send(data);
   };
+
+  if (registrationSuccess === true) {
+    return <Redirect to="/login" />;
+  }
 
   return (
     <div className={classes.creationContainer}>
