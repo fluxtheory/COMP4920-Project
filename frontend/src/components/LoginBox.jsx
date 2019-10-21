@@ -52,25 +52,17 @@ function LoginBox() {
         var json = JSON.parse(xhr.responseText);
         console.log(json);
         if (json.success === true) {
+          localStorage.setItem('userToken', json.token);
           setLoginSuccess(true);
         } else {
-          setLoginHelpString('Invalid email/password.');
+          setLoginHelpString(json.error);
         }
       }
     };
-    var json = {};
-    if (values.nameOrEmail.includes('@')) {
-      json = {
-        email: values.nameOrEmail,
-        password: values.password,
-      };
-    } else {
-      json = {
-        name: values.nameOrEmail,
-        password: values.password,
-      };
-    }
-    var data = JSON.stringify(json);
+    var data = JSON.stringify({
+      nameOrEmail: values.nameOrEmail,
+      password: values.password,
+    });
     xhr.send(data);
   };
 
