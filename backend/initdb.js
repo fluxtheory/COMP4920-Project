@@ -19,6 +19,7 @@ module.exports = () => {
         password TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE, 
         zid TEXT UNIQUE, 
+        chatkitid TEXT UNIQUE,
         rank TEXT,
         date_joined TEXT,
         last_login TEXT,
@@ -29,7 +30,23 @@ module.exports = () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE,
         code VARCHAR(10) NOT NULL UNIQUE
-    );` 
+    );
+
+    CREATE TABLE IF NOT EXISTS courseInstance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code VARCHAR(10) NOT NULL,
+        term VARCHAR(4),
+          FOREIGN KEY (code) REFERENCES courses(code)
+    );
+    
+    CREATE TABLE IF NOT EXISTS userCourses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL,
+      courseInstance INTEGER NOT NULL,
+        FOREIGN KEY (username) REFERENCES users(username),
+        FOREIGN KEY (courseInstance) REFERENCES courseInstance(id)
+    );
+    ` 
   
     let ranks = ["Course Moderator", "Course Helper", "Member"];
     let placeholders = ranks.map((ranks) => '(?)').join(',');
