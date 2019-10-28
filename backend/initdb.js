@@ -5,7 +5,7 @@ let db = new sqlite3.Database("test.db", err => {
   if (err) {
     return console.error(err.message);
   }
-  console.log("Connected to sqlite3 initdb database");
+  //console.log("Connected to sqlite3 initdb database");
 });
 
 module.exports = () => {
@@ -29,14 +29,16 @@ module.exports = () => {
     CREATE TABLE IF NOT EXISTS courses ( 
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE,
-        code VARCHAR(10) NOT NULL UNIQUE
+        code VARCHAR(10) NOT NULL UNIQUE,
+        unique (name, code)
     );
 
     CREATE TABLE IF NOT EXISTS courseInstance (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         code VARCHAR(10) NOT NULL,
-        term VARCHAR(4),
-          FOREIGN KEY (code) REFERENCES courses(code)
+        term VARCHAR(4) NOT NULL,
+          FOREIGN KEY (code) REFERENCES courses(code),
+          unique (code, term)
     );
     
     CREATE TABLE IF NOT EXISTS userCourses (
@@ -44,9 +46,9 @@ module.exports = () => {
       username TEXT NOT NULL,
       courseInstance INTEGER NOT NULL,
         FOREIGN KEY (username) REFERENCES users(username),
-        FOREIGN KEY (courseInstance) REFERENCES courseInstance(id)
-    );
-    ` 
+        FOREIGN KEY (courseInstance) REFERENCES courseInstance(id),
+        unique (username, courseInstance)
+    );` 
   
     let ranks = ["Course Moderator", "Course Helper", "Member"];
     let placeholders = ranks.map((ranks) => '(?)').join(',');
@@ -55,7 +57,7 @@ module.exports = () => {
   
     db.exec(schema_query, function(err){
       if(err){
-        console.log(err.message);
+        console.log(err);
       }
     });
   

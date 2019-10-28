@@ -64,6 +64,10 @@ courseInstance_values.forEach(function(entry){
 
 userCourses_values = [
     ["aaaaa", 1],
+    ["aaaaa", 2],
+    ["aaaaa", 4],
+    ["aaaaa", 16],
+    ["asdas", 1],
     ["asdas", 7],
     ["johnwickfortnite", 13]
 ];
@@ -76,9 +80,21 @@ userCourses_values.forEach(function(entry){
     });
 });
 
-user.courseUsers("COMP1911", "19T1").then( list => {
-    console.log(list);
+/*
+user.courseUsers("COMP1000", "19T1").catch(err => {
+    if(err){
+        console.log(err);
+    }
+}).then( function(rows) {
+    console.log(rows);
+});*/
+
+
+user.userCourses("aaaaa", "19T2").then( rows => {
+    console.log(rows);
 });
+
+
 
 
 db.close();

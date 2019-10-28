@@ -6,14 +6,15 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const passport = require("passport");
 
-const users = require("./routes/api/registerLogin");
+const users = require("./routes/user.route");
 const initdb = require("./initdb");
-const courses = require("./routes/api/course");
+const keys = require("./config/keys");
+//const courses = require("./routes/course");
 
 const API_PORT = 3001;
 const app = express();
 app.use(cors());
-const router = express.Router();
+
 
 // (optional) only made for logging and
 // bodyParser, parses the request body to be a readable json format
@@ -23,11 +24,15 @@ app.use(logger('dev'));
 
 
 initdb();
+
+app.use(session({secret: keys.secret, cookie: { maxAge: 60000}, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
-require("./config/passport");
+app.use(passport.session());
+require("./config/passport")(passport);
+
 
 // append /api for our http requests
-app.use('/api/users', users);
+app.use('/', users);
 //app.use('/api/courses', courses);
 
 // launch our backend into a port
