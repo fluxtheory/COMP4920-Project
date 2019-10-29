@@ -10,11 +10,11 @@ const isEmpty = require("is-empty");
 router.post("/add",  (req, res) => {
    let errors = {};
 
-   if(isEmpty(req.body.code){
+   if(isEmpty(req.body.code)){
 
    } 
    
-   if(isEmpty(req.body.)){
+   if(isEmpty(req.body.name)){
 
    }
     

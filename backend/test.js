@@ -29,30 +29,30 @@ course_values.forEach(function(entry){
 
 
 courseInstance_values = [
-    ["COMP1000", "19T1"],
-    ["COMP1000", "19T2"],
-    ["COMP1000", "19T3"],
-    ["COMP1400", "19T1"],
-    ["COMP1400", "19T2"],
-    ["COMP1400", "19T3"],
-    ["COMP1511", "19T1"],
-    ["COMP1511", "19T2"],
-    ["COMP1511", "19T3"],
-    ["COMP1521", "19T1"],
-    ["COMP1521", "19T2"],
-    ["COMP1521", "19T3"],
-    ["COMP1531", "19T1"],
-    ["COMP1531", "19T2"],
-    ["COMP1531", "19T3"],
-    ["COMP1911", "19T1"],
-    ["COMP1911", "19T2"],
-    ["COMP1911", "19T3"],
-    ["COMP1927", "19T1"],
-    ["COMP1927", "19T2"],
-    ["COMP1927", "19T3"],
-    ["COMP2041", "19T1"],
-    ["COMP2041", "19T2"],
-    ["COMP2041", "19T3"]
+    ["COMP1000", "2019T1"],
+    ["COMP1000", "2019T2"],
+    ["COMP1000", "2019T3"],
+    ["COMP1400", "2019T1"],
+    ["COMP1400", "2019T2"],
+    ["COMP1400", "2019T3"],
+    ["COMP1511", "2019T1"],
+    ["COMP1511", "2019T2"],
+    ["COMP1511", "2019T3"],
+    ["COMP1521", "2019T1"],
+    ["COMP1521", "2019T2"],
+    ["COMP1521", "2019T3"],
+    ["COMP1531", "2019T1"],
+    ["COMP1531", "2019T2"],
+    ["COMP1531", "2019T3"],
+    ["COMP1911", "2019T1"],
+    ["COMP1911", "2019T2"],
+    ["COMP1911", "2019T3"],
+    ["COMP1927", "2019T1"],
+    ["COMP1927", "2019T2"],
+    ["COMP1927", "2019T3"],
+    ["COMP2041", "2019T1"],
+    ["COMP2041", "2019T2"],
+    ["COMP2041", "2019T3"]
 ];
 
 courseInstance_values.forEach(function(entry){
@@ -70,7 +70,10 @@ userCourses_values = [
     ["aaaaa", 16],
     ["asdas", 1],
     ["asdas", 7],
-    ["johnwickfortnite", 13]
+    ["johnwickfortnite", 3],
+    ["johnwickfortnite", 6],
+    ["johnwickfortnite", 9],
+    ["johnwickfortnite", 12]
 ];
 
 userCourses_values.forEach(function(entry){
@@ -82,7 +85,7 @@ userCourses_values.forEach(function(entry){
 });
 
 /*
-user.courseUsers("COMP1000", "19T1").catch(err => {
+user.courseUsers("COMP1000", "2019T1").catch(err => {
     if(err){
         console.log(err);
     }
@@ -90,12 +93,22 @@ user.courseUsers("COMP1000", "19T1").catch(err => {
     console.log(rows);
 });*/
 
-
+/*
 course.getCourses("COMP").then( rows => {
+    console.log(rows);
+});*/
+
+course.userCourses("johnwickfortnite").catch(err => {
+    if(err){
+        console.log(err);
+    }
+}).then( function(rows) {
     console.log(rows);
 });
 
 
 
+
+//console.log(new Date().getFullYear());
 
 db.close();

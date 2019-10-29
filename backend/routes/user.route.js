@@ -117,8 +117,9 @@ router.get('/logout',  (req, res) => {
   res.redirect('/');
 });
 
+// SHOULD THIS BE HERE, AND NOT IN COURSE.JS?
 // @route POST /user/<username>/course
-// @desc Adds a course instance to a user
+// @desc Enrols a user into a course instance
 // @access Private
 router.post('/user/:user/course', (req, res) => {
 

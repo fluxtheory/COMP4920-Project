@@ -62,18 +62,31 @@ module.exports = {
     });
   },
 
-  // adds a user to the CURRENT INSTANCE of a course
+  // enrolls a user to the CURRENT INSTANCE of a course
+  // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester?
   addUsertoCourseInstance: function(user, code){
 
+    return new Promise((resolve, reject) => {
+        db.run(`INSERT OR IGNORE INTO userCourses (username, courseInstance) VALUES
+        (?, (select id from courseInstance where 
+        term = (SELECT term from term WHERE active) AND code = ?);`, [user, code], (err) => {
+            if(err){
+                reject(err.message);
+            } else {
+                resolve(true);
+            }
+        })
+    });
   },
 
     // returns all the users enrolled in a courseInstance
-  courseUsers: function courseUsers(code, term){
+  courseUsers: function(code){
     return new Promise((resolve,reject) => {
-      // I want all the USERS enrolled in a courseInstance
-      db.all(`SELECT username FROM userCourses LEFT JOIN courseInstance 
-      ON userCourses.courseInstance = courseInstance.id 
-      WHERE courseInstance.code = ? AND courseInstance.term = ?`, [code, term] , (err, rows) => {
+      // I want all the USERS enrolled in the current course instance
+      db.all(`SELECT * from userCourses
+      LEFT JOIN courseInstance ON 
+      userCourses.courseInstance = courseInstance.id
+      where code = ? AND term = (SELECT term from term WHERE active);`, code , (err, rows) => {
         if(err){
           reject(err);
         } else {
@@ -84,29 +97,22 @@ module.exports = {
   },
 
   // returns all the courses enrolled by a user, if semester is not specified then ALL enrollments are returned
-  userCourses: function userCourses(user, term){
+  userCourses: function(user){
     return new Promise((resolve,reject) => {
-      if(term){
-        // I want all COURSES enrolled by a USER during a particular TERM
-        db.all(`SELECT code FROM courseInstance LEFT JOIN userCourses
-        ON userCourses.courseInstance = courseInstance.Id where userCourses.username = ? and courseInstance.term = ?`, [user, term], (err, rows) => {
+        // I want all COURSES enrolled by a USER during the current TERM
+        
+        db.all(`SELECT code FROM courseInstance
+                LEFT JOIN userCourses on
+                courseInstance.id = userCourses.courseInstance 
+                WHERE username = ? 
+                AND term = (SELECT term from term WHERE active);`, user, (err, rows) => {
           if(err){
             reject(err);
           } else {
             resolve(rows);
           }
         });
-      } else {
-        // I want the all COURSES enrolled by a USER
-        db.all(`SELECT code from courseInstance LEFT JOIN userCourses
-        ON userCourses.courseInstance = courseInstance.Id where userCourses.username = ?`, user, (err, rows) => {
-          if(err){
-            reject(err);
-          } else {
-            resolve(rows);
-          }
-        });
-      }
     });
   }
 }
+
