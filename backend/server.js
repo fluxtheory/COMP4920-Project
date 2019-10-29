@@ -9,7 +9,7 @@ const passport = require("passport");
 const users = require("./routes/user.route");
 const initdb = require("./initdb");
 const keys = require("./config/keys");
-//const courses = require("./routes/course");
+const courses = require("./routes/course");
 
 const API_PORT = 3001;
 const app = express();
@@ -33,7 +33,7 @@ require("./config/passport")(passport);
 
 // append /api for our http requests
 app.use('/', users);
-//app.use('/api/courses', courses);
+app.use('/course', courses);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

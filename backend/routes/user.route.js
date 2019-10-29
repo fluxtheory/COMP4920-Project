@@ -10,12 +10,12 @@ const passport = require('passport');
 const validateRegisterInput = require("../validators/register");
 const validateLoginInput = require("../validators/login");
 
-// @route POST api/users/register
+// @route POST /register
 // @desc Register user
 // @access Public
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
-
+  
   if (!isValid) {
     return res.status(400).json(errors);
   }
@@ -58,12 +58,12 @@ router.post("/register", (req, res) => {
   });
 }); // returns in a promise chain is a TOP LEVEL RETURN.
 
-// @route POST api/users/login
+// @route POST /login
 // @desc Login user and return JWT authentication token
 // @access Public
 router.post("/login", 
   passport.authenticate('local',
-  { successRedirect: "/", failureRedirect: '/login'}),
+  { successRedirect: "/", failureRedirect: '/login', failureFlash: true}),
   (req, res) => {
     
   const { errors, isValid } = validateLoginInput(req.body);
@@ -95,11 +95,7 @@ router.post("/login",
           };
 
           //sign token
-          jwt.sign(payload, keys.secret,
-            {
-              expiresIn: 31556926
-            },
-            (err, token) => {
+          jwt.sign(payload, keys.secret,{expiresIn: 31556926}, (err, token) => {
               res.json({
                 success: true,
                 token: "Bearer " + token
@@ -113,10 +109,28 @@ router.post("/login",
     });
 });
 
-
+// @route GET /logout
+// @desc Logs out of an existing session
+// @access Public
 router.get('/logout',  (req, res) => {
   req.logout();
   res.redirect('/');
 });
+
+// @route POST /user/<username>/course
+// @desc Adds a course instance to a user
+// @access Private
+router.post('/user/:user/course', (req, res) => {
+
+});
+
+// @route GET /user/<username>/delete
+// @desc Deletes the user from the service
+// @access Private
+router.get('/user/:user/delete', (req, res) => {
+
+});
+
+
 
 module.exports = router;

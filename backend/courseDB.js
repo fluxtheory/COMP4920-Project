@@ -8,6 +8,65 @@ let db = new sqlite3.Database("test.db", err => {
 });
 
 module.exports = {
+
+    // adds a course to the courselist
+  addCourse: function(code, name){
+    let course = [code, name];  
+    return new Promise((resolve, reject) => {
+        db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, course, (err) => {
+            if(err){
+                reject(err.message);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+  },
+
+  // returns list of courses according to prefix. If none is supplied, returns the entire list.
+  getCourses: function(prefix){
+      
+      return new Promise((resolve, reject) => {
+        if(prefix){
+            let sql = "select code, name from courses where code like $drivername";
+            const params = {$drivername: prefix+'%'};
+            db.all(sql, params, (err, rows) => {
+                if(err){
+                    reject(err.message);
+                } else {
+                    resolve(rows);
+                }
+            });
+        } else {
+            db.all(`SELECT code, name FROM courses`, (err, rows) => {
+                if(err){
+                    reject(err.message);
+                } else {
+                    resolve(rows);
+                }
+            });
+        }
+      });
+  },
+
+  addCourseInstance: function(code, term){
+    let courseInstance = [code, term];  
+    return new Promise((resolve,reject) => {
+        db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, courseInstance, (err) => {
+            if(err){
+                reject(err.message);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+  },
+
+  // adds a user to the CURRENT INSTANCE of a course
+  addUsertoCourseInstance: function(user, code){
+
+  },
+
     // returns all the users enrolled in a courseInstance
   courseUsers: function courseUsers(code, term){
     return new Promise((resolve,reject) => {

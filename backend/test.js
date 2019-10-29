@@ -1,6 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const isEmpty = require("is-empty");
 const user = require("./usersDB")
+const course = require("./courseDB")
 
 let db = new sqlite3.Database("test.db", err => {
   if (err) {
@@ -23,7 +24,7 @@ course_values = [
 
 course_values.forEach(function(entry){
     //console.log(entry);
-    db.run(`INSERT OR IGNORE INTO courses (name, code) VALUES (?, ?)`, entry);
+    db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, entry);
 });
 
 
@@ -90,7 +91,7 @@ user.courseUsers("COMP1000", "19T1").catch(err => {
 });*/
 
 
-user.userCourses("aaaaa", "19T2").then( rows => {
+course.getCourses("COMP").then( rows => {
     console.log(rows);
 });
 
