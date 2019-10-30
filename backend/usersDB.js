@@ -51,30 +51,59 @@ module.exports = {
     return new Promise((resolve, reject) => {
 
       // will assume the user already exists, otherwise this function would never even be called.
+      console.log(updates);
+
+      if(updates.last_login){
+        console.log("Updating last login");
+        db.run(`UPDATE users SET last_login=? WHERE username=?`, [updates.last_login, updates.username], err => {
+          if(err){
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        });
+      }
 
       if(updates.new_password){
-
+        
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(updates.new_password, salt, (err, hash) => {
             if (err) {
               console.log(err);
               return res.status(500).json(err);
             }
-            db.run(`UPDATE users SET password=? WHERE username=?`, [hash, updates.username]);    
+            //console.log("Updating password to " + hash);
+            db.run(`UPDATE users SET password=? WHERE username=?`, [hash, updates.username], err => {
+              if(err){
+                reject(err);
+              } else {
+                resolve(true);
+              }
+            });    
           })
         })
-      }
-
-      if(updates.last_login){
-        db.run(`UPDATE users SET last_login=? WHERE username=?`, [updates.last_login, updates.username]);
-      }
+      } 
 
       if(updates.new_email){
-        db.run(`UPDATE users SET email=? WHERE username=?`, [updates.new_email, updates.username]);
+        //console.log("Updating email" );
+        db.run(`UPDATE users SET email=? WHERE username=?`, [updates.new_email, updates.username], err => {
+          if(err){
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        });
       }
 
       if(updates.new_rank){
-        db.run(`UPDATE users SET rank=? WHERE username=?`, [updates.new_rank, updates.username]);
+        //console.log("Updating rank");
+        db.run(`UPDATE users SET rank=? WHERE username=?`, [updates.new_rank, updates.username], err => {
+          if(err){
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        });
       }
     });
   },

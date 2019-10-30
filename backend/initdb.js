@@ -22,7 +22,8 @@ module.exports = () => {
         chatkitid TEXT UNIQUE,
         rank INTEGER REFERENCES userrank,
         date_joined TEXT,
-        last_login TEXT
+        last_login TEXT,
+        check(rank in (1,2,3))
     );
     
     CREATE TABLE IF NOT EXISTS courses ( 

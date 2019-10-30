@@ -9,6 +9,7 @@ const passport = require('passport');
 // Load input validation
 const validateRegisterInput = require("../validators/register");
 const validateLoginInput = require("../validators/login");
+const validateUpdateInput = require("../validators/update");
 
 // @route POST /register
 // @desc Register user
@@ -62,8 +63,8 @@ router.post("/register", (req, res) => {
 // @desc Login user and return JWT authentication token
 // @access Public
 router.post("/login", 
-  passport.authenticate('local',
-  { successRedirect: "/", failureRedirect: '/login', failureFlash: true}),
+  //passport.authenticate('local',
+  //{ successRedirect: "/", failureRedirect: '/login', failureFlash: true}),
   (req, res) => {
     
   const { errors, isValid } = validateLoginInput(req.body);
@@ -119,15 +120,53 @@ router.get('/logout',  (req, res) => {
 });
 
 
-// @route GET /user/<username>/delete
+// @route GET /:username/delete
 // @desc Deletes the user from the service
 // @access Private
-router.get('/:user/delete', (req, res) => {
+router.get('/:username/delete', (req, res) => {
+  let username = req.params.username;
 
+  user.userExists(username).then(exists => {
+    if(!exists){
+      return res.status(404).json({error: "username does not exist"});
+    }
+  });
+
+
+  user.deleteUser(username).catch(err => {
+    return res.status(500).json(err);
+  }).then( success => {
+    if(success){
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).json( {success: false});
+    }
+  });
 });
 
-router.post('/:user/update', (req, res) => {
 
+// @route POST /:username/update
+// @desc Updates user profile password/email or rank.
+// @access Private
+router.post('/:username/update', (req, res) => {
+
+  const { errors, isValid } = validateUpdateInput(req.body);
+
+  if(!isValid){
+    return res.status(400).json(errors);
+  }
+
+  req.body.username = req.params.username;
+
+  user.updateUser(req.body).catch(err => {
+    return res.status(500).json(err);
+  }).then( success => {
+    if(success){
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(500).json( {success: false});
+    }
+  });
 });
 
 
