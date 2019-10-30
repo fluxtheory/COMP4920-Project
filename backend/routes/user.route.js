@@ -103,6 +103,7 @@ router.post("/login",
             }
           );
         } else {
+          user.updateUser({username: acc.username, last_login : new Date().toString()});
           return res.status(400).json({ error: "Password incorrect." });
         }
       });
@@ -117,21 +118,17 @@ router.get('/logout',  (req, res) => {
   res.redirect('/');
 });
 
-// SHOULD THIS BE HERE, AND NOT IN COURSE.JS?
-// @route POST /user/<username>/course
-// @desc Enrols a user into a course instance
-// @access Private
-router.post('/user/:user/course', (req, res) => {
-
-});
 
 // @route GET /user/<username>/delete
 // @desc Deletes the user from the service
 // @access Private
-router.get('/user/:user/delete', (req, res) => {
+router.get('/:user/delete', (req, res) => {
 
 });
 
+router.post('/:user/update', (req, res) => {
+
+});
 
 
 module.exports = router;

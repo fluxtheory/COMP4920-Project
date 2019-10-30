@@ -34,5 +34,11 @@ router.get('/', (req, res) => {
 
 });
 
+// @route POST /course/<username>/
+// @desc Enrols a user into a course instance
+// @access Private
+router.post('/user/:user/course', (req, res) => {
+
+});
 
 module.exports = router;

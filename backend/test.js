@@ -98,17 +98,25 @@ course.getCourses("COMP").then( rows => {
     console.log(rows);
 });*/
 
+/*
 course.userCourses("johnwickfortnite").catch(err => {
     if(err){
         console.log(err);
     }
 }).then( function(rows) {
     console.log(rows);
-});
+});*/
+
+/*
+user.deleteUser('aaaaa').catch(err => {
+    console.log(err);
+}).then( res => {
+    console.log("Delete success is : " + res);
+});*/
 
 
+console.log(new Date());
 
 
-//console.log(new Date().getFullYear());
 
 db.close();
