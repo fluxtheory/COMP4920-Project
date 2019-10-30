@@ -51,10 +51,10 @@ module.exports = {
     return new Promise((resolve, reject) => {
 
       // will assume the user already exists, otherwise this function would never even be called.
-      console.log(updates);
+      //console.log(updates);
 
       if(updates.last_login){
-        console.log("Updating last login");
+        //console.log("Updating last login");
         db.run(`UPDATE users SET last_login=? WHERE username=?`, [updates.last_login, updates.username], err => {
           if(err){
             reject(err);

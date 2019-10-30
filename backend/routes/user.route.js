@@ -103,8 +103,8 @@ router.post("/login",
               });
             }
           );
-        } else {
           user.updateUser({username: acc.username, last_login : new Date().toString()});
+        } else {
           return res.status(400).json({ error: "Password incorrect." });
         }
       });
