@@ -11,14 +11,17 @@ module.exports = {
 
     // adds a course to the courselist
   addCourse: function(code, name){
-    let course = [code, name];  
+    
     return new Promise((resolve, reject) => {
-        db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, course, (err) => {
+        db.run(`INSERT INTO courses (code, name) VALUES (?, ?)`, [code, name] , (err, rowInserted) => {
             if(err){
-                reject(err.message);
-            } else {
-                resolve(true);
-            }
+                reject({error : "Course already exists!"});
+            } 
+            this.addCourseInstance(code, new Date().getFullYear()+"T1");
+            this.addCourseInstance(code, new Date().getFullYear()+"T2");
+            this.addCourseInstance(code, new Date().getFullYear()+"T3");
+            resolve(true);
+            
         });
     });
   },
@@ -79,7 +82,7 @@ module.exports = {
     });
   },
 
-    // returns all the users enrolled in a courseInstance
+    // returns all the users AND THEIR EMAILS enrolled in a courseInstance
   courseUsers: function(code){
     return new Promise((resolve,reject) => {
       // I want all the USERS enrolled in the current course instance
@@ -96,7 +99,7 @@ module.exports = {
     });
   },
 
-  // returns all the courses enrolled by a user, if semester is not specified then ALL enrollments are returned
+  // returns all the courses enrolled by a user during the current term
   userCourses: function(user){
     return new Promise((resolve,reject) => {
         // I want all COURSES enrolled by a USER during the current TERM

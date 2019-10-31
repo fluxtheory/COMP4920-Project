@@ -6,39 +6,67 @@ const isEmpty = require("is-empty");
 
 // @route POST courses
 // @desc add a course to courselist
+/* @param {
+            code - e.g. "COMP1917"    
+            name - e.g. "Computing 1"
+          }
+*/
 // @access Private, requires login AND higher rank.
-router.post("/add",  (req, res) => {
-   let errors = {};
+router.post("/course",  (req, res) => {
+   //SINCE THIS IS AN INTERNAL API METHOD, I WILL TRUST THAT YOU ENTER LEGIT INFO ONLY. 
+   // Adding a course automatically adds 3 courseInstances to the table - one for each term, so dont worry about that.
 
    if(isEmpty(req.body.code)){
-
+    return res.status(400).json({ error: "Course code required" });
    } 
    
    if(isEmpty(req.body.name)){
-
+    return res.status(400).json({ error: "Course name required." });
    }
+
+   coursedb.addCourse(req.body.code, req.body.name).then(success => {
+        if(success){
+            return res.status(200).json({ success: true });
+        } else {
+            return res.status(400).json({ error: "Course already exists!" });
+        }
+    }).catch(err => { 
+        return res.status(400).json(err)
+    });
     
 });
 
-// @route POST courses
-// @desc add a courseInstance
-// @access Private, requires login AND higher rank.
-router.post("/addInstance", (req, res) => {
-
-});
 
 // @route GET courses
 // @desc GET list of courses
+/* @param {
+        prefix (optional) - e.g. "COMP"
+        }
+*/        
 // @access Private
-router.get('/', (req, res) => {
-
+router.get('/course', (req, res) => {
+    coursedb.getCourses(req.body.prefix).then(rows => {
+        return res.status(200).json(rows);
+    }).catch(err => {
+        return res.status(500).json(err)
+    });
 });
 
 // @route POST /course/<username>/
 // @desc Enrols a user into a course instance
 // @access Private
-router.post('/user/:user/course', (req, res) => {
+router.post('/:course/:user/course', (req, res) => {
 
 });
+
+
+
+// @route GET 
+// @desc returns all the users enrolled in a courseInstance
+// @access Private
+router.get('/:course/users', (req, res) => {
+
+});
+
 
 module.exports = router;

@@ -115,7 +115,7 @@ user.deleteUser('aaaaa').catch(err => {
 });*/
 
 
-console.log(new Date());
+console.log(new Date().getFullYear());
 
 
 
