@@ -33,7 +33,7 @@ require("./config/passport")(passport);
 
 // append /api for our http requests
 app.use('/', users);
-app.use('/course', courses);
+app.use('/', courses);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
