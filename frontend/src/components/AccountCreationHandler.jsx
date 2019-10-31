@@ -95,7 +95,7 @@ function AccountCreationHandler() {
 
   const sendPostValues = () => {
     var xhr = new XMLHttpRequest();
-    var url = 'http://localhost:3001/api/users/register';
+    var url = 'http://localhost:3001/register';
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function() {
