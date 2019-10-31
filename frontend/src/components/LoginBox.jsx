@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { TextField, Button } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
+
 const useStyles = makeStyles(theme => ({
   creationContainer: {
     maxWidth: '1000px',
@@ -30,6 +31,7 @@ function LoginBox() {
     password: '',
   });
 
+
   const [loginHelpString, setLoginHelpString] = React.useState('');
   const [loginSuccess, setLoginSuccess] = React.useState(false);
 
@@ -47,7 +49,7 @@ function LoginBox() {
     var url = 'http://localhost:3001/api/users/login';
     xhr.open('POST', url, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         var json = JSON.parse(xhr.responseText);
         console.log(json);

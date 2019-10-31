@@ -16,10 +16,26 @@ const useStyles = makeStyles({
   },
 });
 
+export const Chatkit = React.createContext({
+  user: null,
+  updateUser: () => {},
+});
+
 function App() {
   const classes = useStyles();
+  
+  const updateUser = user => setChatkitState({...chatkitState, user: user});
 
+  const initState = {
+    user: null,
+    updateUser
+  };
+
+  const [chatkitState, setChatkitState] = React.useState(initState);
+  console.log('chatkit state: ' );
+  console.log(chatkitState);
   return (
+    <Chatkit.Provider value={chatkitState}>
     <Router className={classes.body}>
       <CssBaseline />
       <div>
@@ -60,6 +76,7 @@ function App() {
         </Switch>
       </div>
     </Router>
+    </Chatkit.Provider>
   );
 }
 
