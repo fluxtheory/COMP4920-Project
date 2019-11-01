@@ -11,6 +11,8 @@ const initdb = require("./initdb");
 const keys = require("./config/keys");
 const courses = require("./routes/course");
 
+const Chatkit = require('@pusher/chatkit-server');
+
 
 const API_PORT = 3001;
 const app = express();
@@ -30,6 +32,37 @@ app.use(session({secret: keys.secret, cookie: { maxAge: 60000}, resave: false, s
 app.use(passport.initialize());
 app.use(passport.session());
 require("./config/passport")(passport);
+
+const chatkit = new Chatkit.default({
+    instanceLocator: 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77',
+    key: '9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=', // This is bad, use .env vars
+  })
+
+const allCourses = require('./text/courses.json');
+
+// chatkit.createRoom({
+//     id: 'allChat',
+//     creatorId: 'root',
+//     name: 'All Chat',
+//     customData: { foo: 42 },
+//   })
+//     .then(() => {
+//       console.log('Room cr eated successfully');
+//     }).catch((err) => {
+//       console.log(err);
+//     });
+
+chatkit.addUsersToRoom(
+    {
+        roomId: 'allChat',
+        userIds: ['jordan', 'xavier', 'aashwin']
+    }
+)
+    .then(() => {
+        console.log('users added successfully');
+    }).catch((err) => {
+        console.log(err);
+    });
 
 
 // append /api for our http requests

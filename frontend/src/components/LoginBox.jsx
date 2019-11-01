@@ -4,6 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { TextField, Button } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
+import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
+import { Chatkit } from '../App';
 
 
 const useStyles = makeStyles(theme => ({
@@ -24,8 +26,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const instanceLocator = 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77';
+const tokenProvider = new TokenProvider({
+  url:
+    'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/4c1776d3-a51e-497e-8f3e-0a9f08eabf77/token',
+});
+
 function LoginBox() {
   const classes = useStyles();
+  const chatkit = React.useContext(Chatkit);
   const [values, setValues] = React.useState({
     nameOrEmail: '',
     password: '',
@@ -34,6 +43,27 @@ function LoginBox() {
 
   const [loginHelpString, setLoginHelpString] = React.useState('');
   const [loginSuccess, setLoginSuccess] = React.useState(false);
+  const [username, setusername] = React.useState('');
+
+  React.useEffect(() => {
+    if (!username) return;
+    const chatManager = new ChatManager({
+      instanceLocator: instanceLocator,
+      userId: username,
+      tokenProvider,
+    });
+
+    chatManager
+      .connect()
+      .then(currentUser => {
+        console.log('Successful connection', currentUser);
+        chatkit.updateUser(currentUser);
+        setLoginSuccess(true);
+      })
+      .catch(err => {
+        console.log('Error on connection', err);
+      });
+  }, [username]);
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
@@ -55,7 +85,7 @@ function LoginBox() {
         console.log(json);
         if (json.success === true) {
           localStorage.setItem('userToken', json.token);
-          setLoginSuccess(true);
+          setusername(json.username);
         } else {
           setLoginHelpString(json.error);
         }

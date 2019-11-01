@@ -107,7 +107,8 @@ router.post("/login",
         jwt.sign(payload, keys.secret,{expiresIn: 31556926}, (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: "Bearer " + token,
+              username: acc.username,
             });
           }
         );
