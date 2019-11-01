@@ -11,6 +11,7 @@ const initdb = require("./initdb");
 const keys = require("./config/keys");
 const courses = require("./routes/course");
 
+
 const API_PORT = 3001;
 const app = express();
 app.use(cors());
