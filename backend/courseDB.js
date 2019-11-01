@@ -13,7 +13,7 @@ module.exports = {
   addCourse: function(code, name){
     
     return new Promise((resolve, reject) => {
-        db.run(`INSERT INTO courses (code, name) VALUES (?, ?)`, [code, name] , (err, rowInserted) => {
+        db.run(`INSERT INTO courses (code, name) VALUES (?, ?)`, [code, name] , err => {
             if(err){
                 reject({error : "Course already exists!"});
             } 
@@ -55,7 +55,7 @@ module.exports = {
   addCourseInstance: function(code, term){
     let courseInstance = [code, term];  
     return new Promise((resolve,reject) => {
-        db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, courseInstance, (err) => {
+        db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, courseInstance, err => {
             if(err){
                 reject(err.message);
             } else {
@@ -68,17 +68,15 @@ module.exports = {
   // enrolls a user to the CURRENT INSTANCE of a course
   // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester?
   addUsertoCourseInstance: function(user, code){
-
     return new Promise((resolve, reject) => {
-        db.run(`INSERT OR IGNORE INTO userCourses (username, courseInstance) VALUES
-        (?, (select id from courseInstance where 
-        term = (SELECT term from term WHERE active) AND code = ?);`, [user, code], (err) => {
+        db.run(`INSERT INTO userCourses (username, courseInstance) VALUES
+        (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`, [user, code], err => {
             if(err){
                 reject(err.message);
             } else {
                 resolve(true);
             }
-        })
+        });
     });
   },
 
@@ -96,25 +94,6 @@ module.exports = {
           resolve(rows);
         }
       });
-    });
-  },
-
-  // returns all the courses enrolled by a user during the current term
-  userCourses: function(user){
-    return new Promise((resolve,reject) => {
-        // I want all COURSES enrolled by a USER during the current TERM
-        
-        db.all(`SELECT code FROM courseInstance
-                LEFT JOIN userCourses on
-                courseInstance.id = userCourses.courseInstance 
-                WHERE username = ? 
-                AND term = (SELECT term from term WHERE active);`, user, (err, rows) => {
-          if(err){
-            reject(err);
-          } else {
-            resolve(rows);
-          }
-        });
     });
   }
 }

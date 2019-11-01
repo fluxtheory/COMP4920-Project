@@ -57,7 +57,24 @@ module.exports = () => {
       courseInstance INTEGER REFERENCES courseInstance,
         FOREIGN KEY (username) REFERENCES users(username),
         unique (username, courseInstance)
-    );` 
+    );
+    
+    CREATE TABLE IF NOT EXISTS groups (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      courseInstance INTEGER REFERENCES courseInstance,
+      owner TEXT NOT NULL,
+      FOREIGN KEY (owner) REFERENCES users(username),
+      unique (name, courseInstance)
+    );
+
+    CREATE TABLE IF NOT EXISTS groupUsers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      groupid INTEGER NOT NULL REFERENCES groups,
+      username TEXT NOT NULL,
+      unique(groupid, username)
+    );
+    ` 
   
     let ranks = ["Course Moderator", "Course Helper", "Member"];
     let placeholders = ranks.map((ranks) => '(?)').join(',');
@@ -91,4 +108,5 @@ module.exports = () => {
       });
     });
 
+    db.close();    
 }

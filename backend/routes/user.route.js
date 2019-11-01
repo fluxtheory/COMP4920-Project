@@ -176,9 +176,11 @@ router.post('/:username/update', (req, res) => {
 // @desc returns all the courses enrolled by a user during the current term
 // @access Private
 router.get('/:username/courses', (req, res) => {
-
+  user.userCourses(req.params.username).then(rows => {
+    return res.status(200).json(rows);
+  }).catch(err => {
+    return res.status(500).json(err);
+  });
 });
-
-
 
 module.exports = router;
