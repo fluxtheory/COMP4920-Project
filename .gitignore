@@ -1,4 +1,6 @@
 /env
 /__pycache__
 backend/test.db
+frontend/node_modules
+backend/node_modules
 
