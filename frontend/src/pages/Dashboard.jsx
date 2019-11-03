@@ -10,7 +10,7 @@ const Dashboard = () => {
       <h1>welcome.</h1>
       <div>
         <CourseList />
-        <PublicChat />
+  { /*<PublicChat /> */};
       </div>
     </div>
   );

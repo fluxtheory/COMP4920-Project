@@ -22,11 +22,26 @@ function CourseList() {
 
   const [enrolledCourses, setEnrolledCourses] = React.useState([]);
   const [newCourse, setNewCourse] = React.useState('');
+  const [error, setError] = React.useState('');
 
-  const addCourse = () => {
-    if (newCourse !== '') setEnrolledCourses({ ...enrolledCourses, newCourse });
-    console.log(enrolledCourses);
+
+  console.log('newcouser', newCourse);
+  const handleChange = (event, value) => {
+    if (!value) return setNewCourse('');
+    setNewCourse(value.code);
   };
+
+  const autocompleteHandle = whatever => {
+    console.log(whatever);
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (newCourse === '') return setError('Enter a course plz');
+    console.log(newCourse);
+    if (newCourse !== '') setEnrolledCourses([ ...enrolledCourses, newCourse ]);
+  };
+
   return (
     <div className={classes.CourseListContainer}>
       <Paper className={classes.root}>
@@ -34,22 +49,26 @@ function CourseList() {
           Courses
         </Typography>
         <Typography component="p">Add New Course:</Typography>
+        <form onSubmit={handleSubmit}>
         <Autocomplete
           options={allCourses}
           getOptionLabel={option => option.code}
           style={{ width: 300 }}
+          onChange={handleChange}
           renderInput={params => (
             <TextField
               {...params}
-              value={newCourse}
               variant="outlined"
+              value={newCourse}
               fullWidth
             />
           )}
         />
         <div align="right">
-          <Button onClick={addCourse()}>Add</Button>
+          <Button type="submit">Add</Button>
         </div>
+        </form>
+        {error ? <h1>{error}</h1> : null}
       </Paper>
     </div>
   );
