@@ -52,11 +52,22 @@ router.get('/course', (req, res) => {
     });
 });
 
-// @route POST /course/<username>/
+// @route POST /:course/enrol/
 // @desc Enrols a user into a course instance
+/* @param {
+    username - e.g. "johnwickfortnite"
+        }*/
 // @access Private
-router.post('/:course/:user/course', (req, res) => {
-
+router.post('/:course/enrol', (req, res) => {
+    coursedb.addUsertoCourseInstance(req.body.username, req.params.course).then(success => {
+        if(success){
+            return res.status(200).json({ success: true });
+        } else {
+            return res.status(400).json({ success: false });
+        }
+    }).catch(err => {
+        return res.status(500).json(err);
+    });
 });
 
 
@@ -65,7 +76,11 @@ router.post('/:course/:user/course', (req, res) => {
 // @desc returns all the users enrolled in a courseInstance
 // @access Private
 router.get('/:course/users', (req, res) => {
-
+    coursedb.courseUsers(req.params.course).then(rows => {
+        return res.status(200).json(rows);
+    }).catch(err => {
+        return res.status(500).json(err);
+    });
 });
 
 

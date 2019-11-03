@@ -1,16 +1,17 @@
 const sqlite3 = require("sqlite3").verbose();
 const isEmpty = require("is-empty");
-const user = require("./usersDB")
-const course = require("./courseDB")
+const user = require("./usersDB");
+const course = require("./courseDB");
+const group = require("./groupDB");
 
 let db = new sqlite3.Database("test.db", err => {
   if (err) {
     return console.error(err.message);
   }
-  console.log("Connected to sqlite3 database");
+  //console.log("Connected to sqlite3 database");
 });
 
-
+/*
 course_values = [
     ["COMP1000", "Introduction to World Wide Web, Spreadsheets and Databases"],
     ["COMP1400", "Programming for Designers"],
@@ -83,7 +84,7 @@ userCourses_values.forEach(function(entry){
         }
     });
 });
-
+*/
 /*
 user.courseUsers("COMP1000", "2019T1").catch(err => {
     if(err){
@@ -115,8 +116,66 @@ user.deleteUser('aaaaa').catch(err => {
 });*/
 
 
-console.log(new Date().getFullYear());
+//console.log(new Date().getFullYear());
+
+groups = [
+    ["aaaaa's Group", "COMP1400" , 'aaaaa'],
+    ["aaaaa's Group", "COMP1911" , 'aaaaa'],
+    ["john's Group", "COMP1400" , 'johnwickfortnite']
+
+];
+
+groupUsers = [
+    [1, 'aaaaa'],
+    [3, 'aaaaa'],
+    [1, "johnwickfortnite"],
+    [2, 'asdas']
+];
+
+/*
+groups.forEach(function(entry){
+        
+    db.run(`INSERT INTO groups (name, courseInstance, owner) VALUES (?, ?, ?)`, entry, function(err) {
+        if(err){
+            console.log(err);
+        }
+        console.log(entry);
+    })
+    group.startGroup(entry[2], entry[0], entry[1]).catch(err => {
+        if(err){
+            console.log(err);
+        }
+    });
+    
+});*/
+/*
+group.getListofGroups("COMP1400").then(rows => {
+    console.log(rows);
+}).catch(err => {
+    if(err){
+        console.log(err);
+    }
+});*/
+
+/*
+group.getUserJ("COMP1400").then(rows => {
+    console.log(rows);
+}).catch(err => {
+    if(err){
+        console.log(err);
+    }
+});*/
 
 
+groupUsers.forEach(function(entry){
+    
+    db.run(`INSERT INTO groupUsers (groupid, username) VALUES (?, ?)`, entry, function(err) {
+        if(err){
+            console.log(err);
+        }
+        console.log(entry);
+    })
+    
+});
 
 db.close();

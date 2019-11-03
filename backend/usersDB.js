@@ -140,5 +140,24 @@ module.exports = {
         );
       }
     });
+  },
+
+  // returns all the courses enrolled by a user during the current term
+  userCourses: function(user){
+    return new Promise((resolve,reject) => {
+        // I want all COURSES enrolled by a USER during the current TERM
+        
+        db.all(`SELECT code FROM courseInstance
+                LEFT JOIN userCourses on
+                courseInstance.id = userCourses.courseInstance 
+                WHERE username = ? 
+                AND term = (SELECT term from term WHERE active);`, user, (err, rows) => {
+          if(err){
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+    });
   }
 };
