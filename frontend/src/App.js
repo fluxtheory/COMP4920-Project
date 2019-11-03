@@ -54,14 +54,16 @@ function App() {
                 <Link to="/login">Login</Link>
               </li>
             </ul>
-            <button
-              onClick={e => {
-                localStorage.removeItem('userToken');
-                updateUser(null);
-              }}
-            >
-              Logout
-            </button>
+            {chatkitState.user ? (
+              <button
+                onClick={e => {
+                  localStorage.removeItem('userToken');
+                  updateUser(null);
+                }}
+              >
+                Logout
+              </button>
+            ) : null}
           </nav>
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
