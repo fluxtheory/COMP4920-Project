@@ -33,8 +33,7 @@ function App() {
   };
 
   const [chatkitState, setChatkitState] = React.useState(initState);
-  console.log('chatkit state: ');
-  console.log(chatkitState);
+
   return (
     <Chatkit.Provider value={chatkitState}>
       <Router className={classes.body}>
@@ -55,6 +54,14 @@ function App() {
                 <Link to="/login">Login</Link>
               </li>
             </ul>
+            <button
+              onClick={e => {
+                localStorage.removeItem('userToken');
+                updateUser(null);
+              }}
+            >
+              Logout
+            </button>
           </nav>
           {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
@@ -63,9 +70,8 @@ function App() {
               <Login />
             </Route>
             <Route path="/dashboard">
-              <AuthProtection >
-
-              <Dashboard />
+              <AuthProtection>
+                <Dashboard />
               </AuthProtection>
             </Route>
             <Route path="/createAccount">
@@ -73,8 +79,7 @@ function App() {
             </Route>
             <Route path={['/chat/:id', '/chat']}>
               <AuthProtection>
-
-              <Chat />
+                <Chat />
               </AuthProtection>
             </Route>
             <Route path="/">

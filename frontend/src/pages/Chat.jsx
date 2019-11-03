@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { PrivateChat } from '../components/PrivateChat';
 import { useParams, Switch, Redirect, Route } from 'react-router-dom';
-import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import { Chatkit } from '../App';
 
 const useStyles = makeStyles({
@@ -15,11 +14,6 @@ const useStyles = makeStyles({
     height: '100%',
     width: '100%',
   },
-});
-const instanceLocator = 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77';
-const tokenProvider = new TokenProvider({
-  url:
-    'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/4c1776d3-a51e-497e-8f3e-0a9f08eabf77/token',
 });
 const IdentitySelect = ({ onSelect: handleSelect }) => {
   return (
@@ -66,26 +60,6 @@ const Chat = props => {
   const { id } = useParams();
   const [identity, setIdentity] = React.useState(id || null);
   const chatkit = React.useContext(Chatkit);
-
-  useEffect(() => {
-    if (!id) return;
-    setIdentity(id);
-    const chatManager = new ChatManager({
-      instanceLocator: instanceLocator,
-      userId: id,
-      tokenProvider,
-    });
-
-    chatManager
-      .connect()
-      .then(currentUser => {
-        console.log('Successful connection', currentUser);
-        chatkit.updateUser(currentUser);
-      })
-      .catch(err => {
-        console.log('Error on connection', err);
-      });
-  }, [id]);
 
   const handleIdentitySelect = id => event => {
     event.preventDefault();

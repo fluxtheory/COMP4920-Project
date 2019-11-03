@@ -107,7 +107,7 @@ router.post("/login",
         jwt.sign(payload, keys.secret,{expiresIn: 31556926}, (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token,
+              token,
               username: acc.username,
             });
           }
@@ -193,6 +193,15 @@ router.post('/:username/update', (req, res) => {
 // @access Private
 router.get('/:username/courses', (req, res) => {
 
+});
+
+router.get('/verify-token', (req, res) => {
+  try {
+    const decoded = jwt.verify(req.headers.authorization, keys.secret);
+    return res.send({success: true, username: decoded.username})
+  } catch (err) {
+    return res.status(401).send({success:false, error: err})
+  }
 });
 
 
