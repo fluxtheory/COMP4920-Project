@@ -68,17 +68,7 @@ const PrivateChat = ({ otherUserId }) => {
     setRoomId(roomName);
   }, [chatkit]);
 
-  console.log('chat messages outside handler: ');
-  console.log(chatMessages.toString());
-  const handleOnMessageAndThisTimeIMeantIt = () => {
-    console.log('chat messages inside inside handler: ');
-    console.log(chatMessages.toString());
-    setChatMessages([...chatMessages, message]);
-  };
   const handleOnMessage = message => {
-    console.log('chat messages inside handler: ');
-    console.log(chatMessages.toString());
-    // handleOnMessageAndThisTimeIMeantIt();
     setIncomingMessage(message);
   };
 

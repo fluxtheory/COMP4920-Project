@@ -5,14 +5,6 @@ import { CourseList } from '../components/CourseList';
 import { PublicChat } from '../components/PublicChat';
 
 const Dashboard = () => {
-  if (localStorage.getItem('userToken') === null) {
-    return <Redirect to="/login" />;
-  }
-
-  if (!localStorage.hasOwnProperty('userToken')) {
-    return <Redirect to="/login" />;
-  }
-
   return (
     <div>
       <h1>welcome.</h1>

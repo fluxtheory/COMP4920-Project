@@ -7,6 +7,7 @@ import { CreateAccount } from './pages/CreateAccount';
 import { Dashboard } from './pages/Dashboard';
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { AuthProtection } from './components/AuthProtection';
 
 const useStyles = makeStyles({
   body: {
@@ -62,13 +63,19 @@ function App() {
               <Login />
             </Route>
             <Route path="/dashboard">
+              <AuthProtection >
+
               <Dashboard />
+              </AuthProtection>
             </Route>
             <Route path="/createAccount">
               <CreateAccount />
             </Route>
             <Route path={['/chat/:id', '/chat']}>
+              <AuthProtection>
+
               <Chat />
+              </AuthProtection>
             </Route>
             <Route path="/">
               <Home />
