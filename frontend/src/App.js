@@ -58,6 +58,7 @@ function App() {
               <button
                 onClick={e => {
                   localStorage.removeItem('userToken');
+                  localStorage.removeItem('username');
                   updateUser(null);
                 }}
               >
