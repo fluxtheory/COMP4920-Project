@@ -10,6 +10,12 @@ const passport = require('passport');
 const validateRegisterInput = require("../validators/register");
 const validateLoginInput = require("../validators/login");
 const validateUpdateInput = require("../validators/update");
+const Chatkit = require('@pusher/chatkit-server');
+
+const chatkit = new Chatkit.default({
+  instanceLocator: 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77',
+  key: '9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=', // This is bad, use .env vars
+})
 
 // @route POST /register
 // @desc Register user
@@ -32,7 +38,16 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         password: undefined
       };
-
+      
+      chatkit.createUser({
+        id: req.body.name,
+        name: req.body.name,
+      })
+        .then(() => {
+          console.log('Chatkit user created successfully');
+        }).catch((err) => {
+          console.error('Chatkit error on user creation', err);
+        });
       //hash password
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
@@ -92,7 +107,8 @@ router.post("/login",
         jwt.sign(payload, keys.secret,{expiresIn: 31556926}, (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token,
+              username: acc.username,
             });
           }
         );
@@ -182,5 +198,16 @@ router.get('/:username/courses', (req, res) => {
     return res.status(500).json(err);
   });
 });
+
+router.get('/verify-token', (req, res) => {
+  try {
+    const decoded = jwt.verify(req.headers.authorization, keys.secret);
+    return res.send({success: true, username: decoded.username})
+  } catch (err) {
+    return res.status(401).send({success:false, error: err})
+  }
+});
+
+
 
 module.exports = router;

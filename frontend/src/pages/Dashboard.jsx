@@ -1,13 +1,10 @@
 import React from 'react';
 import { makeStyles, Container } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
-import { CourseList } from '../components/CourseList';
+import { CourseBox } from '../components/course/CourseBox';
+import { PublicChat } from '../components/PublicChat';
 
 const Dashboard = () => {
-  if (localStorage.getItem('userToken') === null) {
-    return <Redirect to="/login" />;
-  }
-
   if (!localStorage.hasOwnProperty('userToken')) {
     return <Redirect to="/login" />;
   }
@@ -16,7 +13,8 @@ const Dashboard = () => {
     <div>
       <h1>welcome.</h1>
       <div>
-        <CourseList />
+        <CourseBox />
+        {/*<PublicChat /> */};
       </div>
     </div>
   );
