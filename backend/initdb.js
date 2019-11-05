@@ -9,7 +9,7 @@ let db = new sqlite3.Database("test.db", err => {
 });
 
 module.exports = () => {
-    let schema_query = `CREATE TABLE IF NOT EXISTS userrank (
+  let schema_query = `CREATE TABLE IF NOT EXISTS userrank (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL UNIQUE
     );
@@ -54,7 +54,7 @@ module.exports = () => {
     CREATE TABLE IF NOT EXISTS userCourses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL,
-      courseInstance INTEGER REFERENCES courseInstance,
+      courseInstance INTEGER NOT NULL REFERENCES courseInstance,
         FOREIGN KEY (username) REFERENCES users(username),
         unique (username, courseInstance)
     );
@@ -74,39 +74,44 @@ module.exports = () => {
       username TEXT NOT NULL,
       unique(groupid, username)
     );
-    ` 
-  
-    let ranks = ["Course Moderator", "Course Helper", "Member"];
-    let placeholders = ranks.map((ranks) => '(?)').join(',');
-    let insert_query = `INSERT OR IGNORE INTO userrank (name) VALUES ` + placeholders;
-    
-    let year = new Date().getFullYear();
-    let monthNow = new Date().getMonth();
-    let terms = [ 
-      [year+"T1", monthNow <= 5], 
-      [year+"T2", monthNow <= 8 && monthNow > 5], 
-      [year+"T3", monthNow <= 12 && monthNow > 8]
-    ];
-    
-    db.exec(schema_query, function(err){
-      if(err){
-        console.log(err);
-      }
-    });
-  
-    db.run(insert_query, ranks, function(err) {
-      if(err){
-        console.log(err);
-      }
-    });
+    `;
 
-    terms.forEach( (entry) => {
-      db.run(`INSERT OR IGNORE INTO term (term, active) VALUES (?, ?)`, entry, function(err){
-        if(err){
+  let ranks = ["Course Moderator", "Course Helper", "Member"];
+  let placeholders = ranks.map(ranks => "(?)").join(",");
+  let insert_query =
+    `INSERT OR IGNORE INTO userrank (name) VALUES ` + placeholders;
+
+  let year = new Date().getFullYear();
+  let monthNow = new Date().getMonth();
+  let terms = [
+    [year + "T1", monthNow <= 5],
+    [year + "T2", monthNow <= 8 && monthNow > 5],
+    [year + "T3", monthNow <= 12 && monthNow > 8]
+  ];
+
+  db.exec(schema_query, function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  db.run(insert_query, ranks, function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+
+  terms.forEach(entry => {
+    db.run(
+      `INSERT OR IGNORE INTO term (term, active) VALUES (?, ?)`,
+      entry,
+      function(err) {
+        if (err) {
           console.log(err);
         }
-      });
-    });
+      }
+    );
+  });
 
-    db.close();    
-}
+  db.close();
+};

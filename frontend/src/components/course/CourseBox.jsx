@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const username = localStorage.getItem('username');
+let username = localStorage.getItem('username');
 
 const getEnrolledCourses = new Promise((resolve, reject) => {
   api
@@ -34,6 +34,7 @@ function CourseBox() {
   const [courseList, setCourseList] = React.useState([]);
 
   React.useEffect(() => {
+    username = localStorage.getItem('username');
     getEnrolledCourses.then(ret => {
       setCourseList([...ret]);
     });
