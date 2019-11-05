@@ -7,6 +7,7 @@ import { TextField, Button } from '@material-ui/core/';
 import { AuthProtection } from '../AuthProtection';
 import { CourseList } from './CourseList';
 import { api } from '../../utils';
+import { AddCourseForm } from './AddCourseForm';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,7 +57,10 @@ function CourseBox() {
 
   return (
     <div>
-      <CourseList courseList={courseList} addCourse={addCourse} />
+      <Paper className={classes.root}>
+        <CourseList courseList={courseList} addCourse={addCourse} />
+        <AddCourseForm addCourse={addCourse} />
+      </Paper>
     </div>
   );
 }
