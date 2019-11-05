@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -14,18 +14,42 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const username = localStorage.getItem('username');
+
+const getEnrolledCourses = new Promise((resolve, reject) => {
+  api
+    .get('/' + username + '/courses')
+    .then(resp => {
+      console.log(resp);
+      resolve(resp.data);
+    })
+    .catch(err => {
+      console.log(err);
+      reject([]);
+    });
+});
+
 function CourseBox() {
   const classes = useStyles();
-
   const [courseList, setCourseList] = React.useState([]);
+
+  React.useEffect(() => {
+    getEnrolledCourses.then(ret => {
+      setCourseList([...ret]);
+    });
+  }, []);
 
   const addCourse = course => {
     api
       .post('/' + course + '/enrol', {
-        username: localStorage.getItem('username'),
+        username,
       })
       .then(response => {
         console.log(response);
+        setCourseList([...courseList, { code: course }]);
+      })
+      .catch(err => {
+        console.log(err);
       });
   };
 

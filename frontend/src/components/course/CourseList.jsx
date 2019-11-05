@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -21,7 +21,7 @@ const allCourses = require('../../text/courses.json');
 function CourseList(props) {
   const classes = useStyles();
 
-  const [enrolledCourses, setEnrolledCourses] = React.useState([]);
+  const enrolledCourses = props.courseList;
   const [newCourse, setNewCourse] = React.useState('');
   const [error, setError] = React.useState('');
 
@@ -33,9 +33,7 @@ function CourseList(props) {
   const handleSubmit = e => {
     e.preventDefault();
     if (newCourse === '') return setError('Enter a course plz');
-    console.log(newCourse);
     if (newCourse !== '') {
-      setEnrolledCourses([...enrolledCourses, newCourse]);
       props.addCourse(newCourse);
     }
   };
@@ -46,6 +44,16 @@ function CourseList(props) {
         <Typography variant="h5" component="h3">
           Courses
         </Typography>
+        {enrolledCourses.map(item => {
+          return (
+            <li
+              key={item.code}
+              className="list-group-item list-group-item-info"
+            >
+              {item.code}
+            </li>
+          );
+        })}
         <Typography component="p">Add New Course:</Typography>
         <form onSubmit={handleSubmit}>
           <Autocomplete
