@@ -7,8 +7,9 @@ import { TextField, Button } from '@material-ui/core/';
 
 const useStyles = makeStyles(theme => ({
   CourseListContainer: {
-    maxWidth: '1000px',
-    margin: '0 auto',
+    margin: '0',
+    position: 'absolute',
+    top: '50%',
   },
   root: {
     padding: theme.spacing(3, 2),

@@ -10,8 +10,15 @@ import { api } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
 
 const useStyles = makeStyles(theme => ({
+  body: {
+    display: 'flex',
+  },
+  addCourseForm: {},
+  courseList: {},
+  leftTab: {},
   root: {
-    padding: theme.spacing(3, 2),
+    flexGrow: 1,
+    height: '500px',
   },
 }));
 
@@ -33,6 +40,7 @@ const getEnrolledCourses = new Promise((resolve, reject) => {
 function CourseBox() {
   const classes = useStyles();
   const [courseList, setCourseList] = React.useState([]);
+  const [courseInFocus, setCourseInFocus] = React.useState('');
 
   React.useEffect(() => {
     username = localStorage.getItem('username');
@@ -56,11 +64,24 @@ function CourseBox() {
   };
 
   return (
-    <div>
-      <Paper className={classes.root}>
-        <CourseList courseList={courseList} addCourse={addCourse} />
-        <AddCourseForm addCourse={addCourse} />
-      </Paper>
+    <div className={classes.root}>
+      <div className={classes.body}>
+        <div className={classes.leftTab}>
+          <Paper className={classes.root}>
+            <div className={classes.courseList}>
+              <CourseList
+                courseList={courseList}
+                courseInFocus={courseInFocus}
+                setCourseInFocus={setCourseInFocus}
+              />
+            </div>
+            <AddCourseForm
+              className={classes.addCourseForm}
+              addCourse={addCourse}
+            />
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 }
