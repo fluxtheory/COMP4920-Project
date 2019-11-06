@@ -117,7 +117,7 @@ user.deleteUser('aaaaa').catch(err => {
 
 
 //console.log(new Date().getFullYear());
-
+/*
 groups = [
     ["aaaaa's Group", "COMP1400" , 'aaaaa'],
     ["aaaaa's Group", "COMP1911" , 'aaaaa'],
@@ -130,7 +130,7 @@ groupUsers = [
     [3, 'aaaaa'],
     [1, "johnwickfortnite"],
     [2, 'asdas']
-];
+];*/
 
 /*
 groups.forEach(function(entry){
@@ -166,7 +166,7 @@ group.getUserJ("COMP1400").then(rows => {
     }
 });*/
 
-
+/*
 groupUsers.forEach(function(entry){
     
     db.run(`INSERT INTO groupUsers (groupid, username) VALUES (?, ?)`, entry, function(err) {
@@ -177,5 +177,8 @@ groupUsers.forEach(function(entry){
     })
     
 });
+*/
 
+const courses = require("./text/courses");
+console.log(courses);
 db.close();

@@ -1,5 +1,6 @@
 const sqlite3 = require("sqlite3").verbose();
 const isEmpty = require("is-empty");
+const courses = require("./text/courses");
 
 let db = new sqlite3.Database("test.db", err => {
   if (err) {
@@ -106,6 +107,15 @@ module.exports = () => {
           console.log(err);
         }
       });
+    });
+
+    courses.forEach( entry => {
+      console.log(entry);
+      db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, [entry.code, entry.name]);
+
+      db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [entry.code, terms[0][0]]);
+      db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [entry.code, terms[1][0]]);
+      db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [entry.code, terms[2][0]]);
     });
 
     db.close();    
