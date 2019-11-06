@@ -55,6 +55,7 @@ function AddCourseForm(props) {
               <TextField
                 {...params}
                 variant="outlined"
+                label="Enter course name/code"
                 value={newCourse}
                 fullWidth
               />
