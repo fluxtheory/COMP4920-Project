@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import { Autocomplete } from '@material-ui/lab/';
 import { TextField, Button } from '@material-ui/core/';
-import { mergeClasses } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
   CourseListContainer: {
@@ -49,6 +46,7 @@ function AddCourseForm(props) {
       {searchbarVisible ? (
         <form onSubmit={handleSubmit}>
           <Autocomplete
+            className={classes.toggleButton}
             options={allCourses}
             getOptionLabel={option => option.code}
             style={{ width: 300 }}
@@ -62,9 +60,14 @@ function AddCourseForm(props) {
               />
             )}
           />
-          <div align="right">
-            <Button type="submit">Add</Button>
-          </div>
+          <Button
+            color="secondary"
+            variant="contained"
+            className={classes.toggleButton}
+            type="submit"
+          >
+            Add Course
+          </Button>
         </form>
       ) : null}
       <Button
@@ -73,7 +76,7 @@ function AddCourseForm(props) {
         variant="contained"
         color="secondary"
       >
-        {searchbarVisible ? '-' : 'Add Course'}
+        {searchbarVisible ? '-' : '+'}
       </Button>
 
       {error ? <h1>{error}</h1> : null}

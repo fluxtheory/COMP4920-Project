@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import { Autocomplete } from '@material-ui/lab/';
 import { TextField, Button } from '@material-ui/core/';
-import { AuthProtection } from '../AuthProtection';
 import { CourseList } from './CourseList';
 import { api } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
+import { UserSearchForm } from './UserSearchForm';
 
 const useStyles = makeStyles(theme => ({
   body: {
@@ -81,8 +79,16 @@ function CourseBox() {
         username,
       })
       .then(response => {
-        console.log(response);
-        setCourseList([...courseList, { code: course }]);
+        const oldCourseList = [...courseList, { code: course }];
+        const newCourseList = [];
+        Object.keys(oldCourseList)
+          .sort()
+          .forEach(key => {
+            console.log(oldCourseList[key]);
+            newCourseList[key] = oldCourseList[key];
+          });
+        console.log(newCourseList);
+        setCourseList([...newCourseList]);
       })
       .catch(err => {
         console.log(err);
@@ -94,6 +100,8 @@ function CourseBox() {
       <Paper className={classes.body}>
         <Paper className={classes.centre}>
           <h1>This is: {courseInFocus}</h1>
+          <h3>Find a user:</h3>
+          <UserSearchForm courseInFocus={courseInFocus} />
         </Paper>
         <Paper className={classes.leftTab}>
           <Button
@@ -117,9 +125,6 @@ function CourseBox() {
             className={classes.addCourseForm}
             addCourse={addCourse}
           />
-          {
-            //<UserSearchBar courseInFocus={courseInFocus} />
-          }
         </Paper>
       </Paper>
     </div>
