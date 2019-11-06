@@ -113,7 +113,7 @@ module.exports = () => {
       }
     );
   });
-
+  /*
   courses.forEach(entry => {
     console.log(entry);
     db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, [
@@ -134,6 +134,7 @@ module.exports = () => {
       terms[2][0]
     ]);
   });
+  */
 
   db.close();
 };

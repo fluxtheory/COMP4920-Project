@@ -11,6 +11,8 @@ const useStyles = makeStyles(theme => ({
   },
   courseButton: {
     margin: '0 auto',
+    width: '100%',
+    display: 'flex',
   },
   root: {
     padding: theme.spacing(3, 2),
@@ -30,7 +32,7 @@ function CourseList(props) {
         return (
           <Button
             key={item.code}
-            classname={classes.courseButton}
+            className={classes.courseButton}
             variant="contained"
             onClick={() => {
               setCourseInFocus(item.code);

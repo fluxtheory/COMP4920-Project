@@ -12,10 +12,36 @@ import { AddCourseForm } from './AddCourseForm';
 const useStyles = makeStyles(theme => ({
   body: {
     display: 'flex',
+    position: 'fixed',
+    top: '15%',
+    bottom: '0%',
+    backgroundColor: 'gray',
+    width: '100%',
+  },
+  leftTab: {
+    position: 'fixed',
+    top: '20%',
+    left: '1%',
+    margin: '100px 0 0 0',
+    height: '500px',
+    width: '20%',
   },
   addCourseForm: {},
   courseList: {},
-  leftTab: {},
+  dashboardButton: {
+    margin: '0 auto',
+    width: '100%',
+    height: '65px',
+    display: 'flex',
+  },
+  centre: {
+    position: 'fixed',
+    top: '20%',
+    left: '21%',
+    margin: '100px 0 0 0',
+    height: '500px',
+    width: '60%',
+  },
   root: {
     flexGrow: 1,
     height: '500px',
@@ -40,7 +66,7 @@ const getEnrolledCourses = new Promise((resolve, reject) => {
 function CourseBox() {
   const classes = useStyles();
   const [courseList, setCourseList] = React.useState([]);
-  const [courseInFocus, setCourseInFocus] = React.useState('');
+  const [courseInFocus, setCourseInFocus] = React.useState('Dashboard');
 
   React.useEffect(() => {
     username = localStorage.getItem('username');
@@ -65,23 +91,37 @@ function CourseBox() {
 
   return (
     <div className={classes.root}>
-      <div className={classes.body}>
-        <div className={classes.leftTab}>
-          <Paper className={classes.root}>
-            <div className={classes.courseList}>
-              <CourseList
-                courseList={courseList}
-                courseInFocus={courseInFocus}
-                setCourseInFocus={setCourseInFocus}
-              />
-            </div>
-            <AddCourseForm
-              className={classes.addCourseForm}
-              addCourse={addCourse}
+      <Paper className={classes.body}>
+        <Paper className={classes.centre}>
+          <h1>This is: {courseInFocus}</h1>
+        </Paper>
+        <Paper className={classes.leftTab}>
+          <Button
+            className={classes.dashboardButton}
+            variant="contained"
+            onClick={() => {
+              setCourseInFocus('Dashboard');
+            }}
+            color={'Dashboard' === courseInFocus ? 'primary' : 'secondary'}
+          >
+            DASHBOARD
+          </Button>
+          <div className={classes.courseList}>
+            <CourseList
+              courseList={courseList}
+              courseInFocus={courseInFocus}
+              setCourseInFocus={setCourseInFocus}
             />
-          </Paper>
-        </div>
-      </div>
+          </div>
+          <AddCourseForm
+            className={classes.addCourseForm}
+            addCourse={addCourse}
+          />
+          {
+            //<UserSearchBar courseInFocus={courseInFocus} />
+          }
+        </Paper>
+      </Paper>
     </div>
   );
 }
