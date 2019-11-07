@@ -114,6 +114,7 @@ module.exports = () => {
     );
   });
   
+  /*
   courses.forEach(entry => {
     // BATCH INSERT THIS!  
     /*
@@ -151,6 +152,7 @@ module.exports = () => {
       }
     });*/
   });
+  */
   
 
   db.close();
