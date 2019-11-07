@@ -113,28 +113,44 @@ module.exports = () => {
       }
     );
   });
-  /*
+  
   courses.forEach(entry => {
-    console.log(entry);
-    db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, [
-      entry.code,
-      entry.name
-    ]);
+    // BATCH INSERT THIS!  
+    db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?,?)`, [
+      entry.code, entry.name
+    ], err => {
+      if(err){
+        console.log(err);
+      }
+      
+    });
 
     db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [
       entry.code,
       terms[0][0]
-    ]);
+    ], err => {
+      if(err){
+        console.log(err);
+      }
+    });
     db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [
       entry.code,
       terms[1][0]
-    ]);
+    ], err => {
+      if(err){
+        console.log(err);
+      }
+    });
     db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [
       entry.code,
       terms[2][0]
-    ]);
+    ], err => {
+      if(err){
+        console.log(err);
+      }
+    });
   });
-  */
+  
 
   db.close();
 };
