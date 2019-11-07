@@ -49,13 +49,14 @@ function AddCourseForm(props) {
             className={classes.toggleButton}
             options={allCourses}
             getOptionLabel={option => option.code}
-            style={{ width: 300 }}
+            style={{ width: '98%' }}
             onChange={handleChange}
             renderInput={params => (
               <TextField
                 {...params}
                 variant="outlined"
-                label="Enter course name/code"
+                type="search"
+                margin="normal"
                 value={newCourse}
                 fullWidth
               />
