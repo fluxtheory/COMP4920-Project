@@ -116,6 +116,7 @@ module.exports = () => {
   
   courses.forEach(entry => {
     // BATCH INSERT THIS!  
+    /*
     db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?,?)`, [
       entry.code, entry.name
     ], err => {
@@ -148,7 +149,7 @@ module.exports = () => {
       if(err){
         console.log(err);
       }
-    });
+    });*/
   });
   
 
