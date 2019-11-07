@@ -5,6 +5,7 @@ import { Message } from './Message';
 import { MessageInput } from './MessageInput';
 // import { useParams } from 'react-router-dom';
 // userParam();
+import { Session } from '../App';
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -14,18 +15,19 @@ const Messages = ({ messages }) =>
   ) : (
     <ul>
       {messages.map(m => {
-        return <Message key={m.id} msg={m}/>;
+        return <Message key={m.id} msg={m} />;
       })}
     </ul>
   );
 
 function PublicChat(props) {
   const classes = useStyles();
-  const chatkit = React.useContext(Chatkit);
+  const session = React.useContext(Session);
+  const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
-  const roomId = props.forCourse +"_public";
+  const roomId = props.forCourse + '_public';
 
   React.useEffect(() => {
     if (!incomingMessage) return;
@@ -37,11 +39,11 @@ function PublicChat(props) {
   };
 
   React.useEffect(() => {
-    chatkit.user
+    session.user
       .fetchMultipartMessages({ roomId })
       .then(messages => {
         setChatMessages([...messages]);
-        return chatkit.user.subscribeToRoomMultipart({
+        return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
             onMessage: handleOnMessage,
@@ -66,7 +68,7 @@ function PublicChat(props) {
   return (
     <div className={classes.yourClassname}>
       <Messages messages={chatMessages} />
-      <MessageInput roomId={roomId}/>
+      <MessageInput roomId={roomId} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { PublicChat } from '../components/PublicChat';
 
 const AllChat = () => {
   return (

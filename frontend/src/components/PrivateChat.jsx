@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Chatkit } from '../App';
+import { Session } from '../App';
 
 const useStyles = makeStyles({
   yourClassname: {
@@ -22,7 +22,7 @@ const Messages = ({ messages }) =>
 const PrivateChat = ({ otherUserId }) => {
   const classes = useStyles();
   const [message, setMessage] = useState('');
-  const chatkit = React.useContext(Chatkit);
+  const session = React.useContext(Session);
   const [roomId, setRoomId] = React.useState(null);
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
@@ -33,23 +33,23 @@ const PrivateChat = ({ otherUserId }) => {
   }, [incomingMessage]);
 
   React.useEffect(() => {
-    if (!chatkit.user) return;
-    console.log(chatkit.user.id);
-    let users = [chatkit.user.id, otherUserId];
+    if (!session.user) return;
+    console.log(session.user.id);
+    let users = [session.user.id, otherUserId];
     users.sort();
 
     let roomName = 'DM_' + users[0] + '_' + users[1];
 
     let roomExists = false;
 
-    chatkit.user.rooms.forEach(room => {
+    session.user.rooms.forEach(room => {
       if (room.id === roomName) {
         roomExists = true;
       }
     });
 
     if (!roomExists) {
-      chatkit.user
+      session.user
         .createRoom({
           id: roomName,
           name: users[0] + ' and ' + users[1],
@@ -66,7 +66,7 @@ const PrivateChat = ({ otherUserId }) => {
     }
 
     setRoomId(roomName);
-  }, [chatkit]);
+  }, [session]);
 
   const handleOnMessage = message => {
     setIncomingMessage(message);
@@ -75,11 +75,11 @@ const PrivateChat = ({ otherUserId }) => {
   React.useEffect(() => {
     if (!roomId) return;
     // subscription to room enables persistent connection
-    chatkit.user
+    session.user
       .fetchMultipartMessages({ roomId })
       .then(messages => {
         setChatMessages([...messages]);
-        return chatkit.user.subscribeToRoomMultipart({
+        return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
             onMessage: handleOnMessage,
@@ -104,7 +104,7 @@ const PrivateChat = ({ otherUserId }) => {
   const handleClick = async event => {
     try {
       setMessage('');
-      await chatkit.user.sendSimpleMessage({
+      await session.user.sendSimpleMessage({
         text: message,
         userId: otherUserId,
         roomId: roomId,

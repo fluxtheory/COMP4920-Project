@@ -53,7 +53,6 @@ function LoginBox() {
         console.log(json);
         if (json.success === true) {
           localStorage.setItem('userToken', json.token);
-          localStorage.setItem('username', json.username);
           setLoginSuccess(true);
         } else {
           setLoginHelpString(json.error);

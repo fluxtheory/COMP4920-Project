@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Chatkit } from '../App';
+import { Session } from '../App';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
@@ -16,14 +16,14 @@ const useStyles = makeStyles(theme => ({
 
 function MessageInput(props) {
   const classes = useStyles();
-  const chatkit = React.useContext(Chatkit);
+  const session = React.useContext(session);
   const roomId = props.roomId;
   const [message, setMessage] = React.useState('');
 
   const handleClick = async event => {
     try {
       setMessage('');
-      await chatkit.user.sendSimpleMessage({
+      await session.user.sendSimpleMessage({
         text: message,
         roomId: roomId,
       });
@@ -37,13 +37,11 @@ function MessageInput(props) {
     setMessage(event.target.value);
   };
 
-
-
   return (
     <div className={classes.MessageInputContainer}>
       <Paper className={classes.root}>
-      <input type="text" onChange={handleChange} value={message} />
-      <button onClick={handleClick}>Send a message!</button>
+        <input type="text" onChange={handleChange} value={message} />
+        <button onClick={handleClick}>Send a message!</button>
       </Paper>
     </div>
   );
