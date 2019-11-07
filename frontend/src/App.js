@@ -46,8 +46,8 @@ function App() {
             <CreateAccount />
           </Route>
           <Route path="/kudo">
+            {/* This is our entire application once logged in */}
             <AuthProtection>
-              {/* This is our entire application once logged in */}
               <Kudo />
             </AuthProtection>
           </Route>
@@ -70,6 +70,27 @@ function App() {
               </li>
               <li>
                 <Link to="/login">Login</Link>
+              </li>
+              {/* TODO: Remove everything below here */}
+              <li>
+                <Link to="/kudo/comp">dummy course dash</Link>
+              </li>
+              <li>
+                <Link to="/kudo/comp/chat">dummy course chat</Link>
+              </li>
+              <li>
+                <Link to="/kudo/comp/feed">dummy course feed</Link>
+              </li>
+              <li>
+                <Link to="/kudo/comp/group">dummy course group chat</Link>
+              </li>
+              <li>
+                <Link to="/kudo/comp/group/settings">
+                  dummy course group chat settings
+                </Link>
+              </li>
+              <li>
+                <Link to="/kudo/comp/dm">dummy course private chat</Link>
               </li>
             </ul>
             {chatkitState.user ? (

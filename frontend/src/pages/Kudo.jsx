@@ -4,6 +4,7 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { Chat } from './Chat';
 import { Dashboard } from './Dashboard';
 import { CoursePage } from './CoursePage';
+import { AuthProtection } from '../components/AuthProtection';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -47,7 +48,6 @@ const makePath = path => {
 
 const Kudo = () => {
   const classes = useStyles();
-  let { path } = useRouteMatch();
 
   return (
     <div className={classes.kudoApp}>
@@ -58,15 +58,32 @@ const Kudo = () => {
             renders the first one that matches the current URL. */}
       <div className={classes.contentArea}>
         <h3>Changing Content</h3>
-        <Switch>
+        <Switch exact>
           <Route path={makePath('/dashboard')}>
+            {/* TODO: this is be be deprecated */}
             <Dashboard />
           </Route>
           <Route path={[makePath('/chat/:id'), makePath('/chat')]}>
             <Chat />
           </Route>
-          <Route path={makePath('/courses/:course')}>
+          <Route exact path={makePath('/:course')}>
+            <h1>I'm the course dashboard</h1>
             <CoursePage />
+          </Route>
+          <Route exact path={makePath('/:course/chat')}>
+            <h1>I'm the course chat</h1>
+          </Route>
+          <Route exact path={makePath('/:course/feed')}>
+            <h1>I'm the course feed</h1>
+          </Route>
+          <Route exact path={makePath('/:course/group')}>
+            <h1>I'm the course group chat</h1>
+          </Route>
+          <Route exact path={makePath('/:course/group/settings')}>
+            <h1>I'm the course group chat management</h1>
+          </Route>
+          <Route exact path={makePath('/:course/dm')}>
+            <h1>I'm the the private chat</h1>
           </Route>
         </Switch>
       </div>
