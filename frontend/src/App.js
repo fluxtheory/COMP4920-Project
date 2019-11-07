@@ -9,12 +9,40 @@ import { CoursePage } from './pages/CoursePage';
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { AuthProtection } from './components/AuthProtection';
+import { UITest } from './pages/UITest';
 
 const useStyles = makeStyles({
-  body: {
-    body: {
-      backgroundColor: 'papayawhip',
-    },
+  kudoApp: {
+    display: 'grid',
+    gridGap: '1rem',
+    gridTemplateColumns: '1fr 5fr 2fr',
+    gridTemplateRows: '1fr 8fr',
+    gridTemplateAreas: `"left tabs right"
+                        "left middle right"
+                        "left middle right"`,
+    height: '100vh',
+    width: '100%',
+    fontSize: '2rem',
+  },
+
+  topTabBar: {
+    gridArea: 'tabs',
+    background: 'red',
+  },
+
+  leftPane: {
+    gridArea: 'left',
+    background: 'blue',
+  },
+
+  rightPane: {
+    gridArea: 'right',
+    background: 'purple',
+  },
+
+  contentArea: {
+    gridArea: 'middle',
+    background: 'papayawhip',
   },
 });
 
@@ -67,34 +95,45 @@ function App() {
               </button>
             ) : null}
           </nav>
-          {/* A <Switch> looks through its children <Route>s and
+          <div className={classes.kudoApp}>
+            <div className={classes.topTabBar}>Tab Bar</div>
+            <div className={classes.leftPane}>Courses Pane</div>
+            <div className={classes.rightPane}>Chat Pane</div>
+            {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-          <Switch>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/dashboard">
-              <AuthProtection>
-                <Dashboard />
-              </AuthProtection>
-            </Route>
-            <Route path="/createAccount">
-              <CreateAccount />
-            </Route>
-            <Route path={['/chat/:id', '/chat']}>
-              <AuthProtection>
-                <Chat />
-              </AuthProtection>
-            </Route>
-            <Route path={['/courses/:course']}>
-              <AuthProtection>
-                <CoursePage />
-              </AuthProtection>
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
-          </Switch>
+            <div className={classes.contentArea}>
+              <h3>Changing Content</h3>
+              <Switch>
+                <Route path="/ui">
+                  <UITest />
+                </Route>
+                <Route path="/login">
+                  <Login />
+                </Route>
+                <Route path="/dashboard">
+                  <AuthProtection>
+                    <Dashboard />
+                  </AuthProtection>
+                </Route>
+                <Route path="/createAccount">
+                  <CreateAccount />
+                </Route>
+                <Route path={['/chat/:id', '/chat']}>
+                  <AuthProtection>
+                    <Chat />
+                  </AuthProtection>
+                </Route>
+                <Route path={['/courses/:course']}>
+                  <AuthProtection>
+                    <CoursePage />
+                  </AuthProtection>
+                </Route>
+                <Route path="/">
+                  <Home />
+                </Route>
+              </Switch>
+            </div>
+          </div>
         </div>
       </Router>
     </Chatkit.Provider>

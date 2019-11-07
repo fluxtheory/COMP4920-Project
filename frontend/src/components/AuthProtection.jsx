@@ -31,10 +31,6 @@ function AuthProtection({ children, ...rest }) {
         const data = res.data;
 
         const { success, username } = data;
-        if (!success) {
-          localStorage.removeItem('userToken');
-          return setCurrState('not-legit');
-        }
 
         const chatManager = new ChatManager({
           instanceLocator: instanceLocator,
@@ -53,6 +49,13 @@ function AuthProtection({ children, ...rest }) {
           });
       })
       .catch(err => {
+        if (err.response && err.response.data) {
+          const { success } = err.response.data;
+          if (!success) {
+            localStorage.removeItem('userToken');
+            return setCurrState('not-legit');
+          }
+        }
         console.error('Boo boo when verifying token', err);
       });
   }, [chatkit]);
