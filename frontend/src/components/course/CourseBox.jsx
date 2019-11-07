@@ -24,6 +24,14 @@ const useStyles = makeStyles(theme => ({
     height: '500px',
     width: '20%',
   },
+  rightTab: {
+    position: 'fixed',
+    top: '20%',
+    left: '81%',
+    margin: '100px 0 0 0',
+    height: '500px',
+    width: '20%',
+  },
   addCourseForm: {},
   courseList: {},
   dashboardButton: {
@@ -37,8 +45,11 @@ const useStyles = makeStyles(theme => ({
     top: '20%',
     left: '21%',
     margin: '100px 0 0 0',
-    height: '500px',
+    //height: '500px',
     width: '60%',
+  },
+  centreWrapper: {
+    margin: '10% 10% 10% 10%',
   },
   root: {
     flexGrow: 1,
@@ -47,12 +58,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let username = localStorage.getItem('username');
+const FOCUS_DEFAULT = "Overview"
 
 const getEnrolledCourses = new Promise((resolve, reject) => {
   api
     .get('/' + username + '/courses')
     .then(resp => {
-      console.log(resp);
       resolve(resp.data);
     })
     .catch(err => {
@@ -64,7 +75,7 @@ const getEnrolledCourses = new Promise((resolve, reject) => {
 function CourseBox() {
   const classes = useStyles();
   const [courseList, setCourseList] = React.useState([]);
-  const [courseInFocus, setCourseInFocus] = React.useState('Dashboard');
+  const [courseInFocus, setCourseInFocus] = React.useState(FOCUS_DEFAULT);
 
   React.useEffect(() => {
     username = localStorage.getItem('username');
@@ -99,20 +110,22 @@ function CourseBox() {
     <div className={classes.root}>
       <Paper className={classes.body}>
         <Paper className={classes.centre}>
+          <div className={classes.centreWrapper}>
           <h1>This is: {courseInFocus}</h1>
           <h3>Find a user:</h3>
           <UserSearchForm courseInFocus={courseInFocus} />
+          </div>
         </Paper>
         <Paper className={classes.leftTab}>
           <Button
             className={classes.dashboardButton}
             variant="contained"
             onClick={() => {
-              setCourseInFocus('Dashboard');
+              setCourseInFocus(FOCUS_DEFAULT);
             }}
-            color={'Dashboard' === courseInFocus ? 'primary' : 'secondary'}
+            color={FOCUS_DEFAULT === courseInFocus ? 'primary' : 'secondary'}
           >
-            DASHBOARD
+            {FOCUS_DEFAULT}
           </Button>
           <div className={classes.courseList}>
             <CourseList
@@ -125,6 +138,9 @@ function CourseBox() {
             className={classes.addCourseForm}
             addCourse={addCourse}
           />
+        </Paper>
+        <Paper className={classes.rightTab}>
+          
         </Paper>
       </Paper>
     </div>
