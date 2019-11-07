@@ -109,14 +109,15 @@ module.exports = () => {
       });
     });
 
+    /*
     courses.forEach( entry => {
-      console.log(entry);
+      //console.log(entry);
       db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?, ?)`, [entry.code, entry.name]);
 
       db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [entry.code, terms[0][0]]);
       db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [entry.code, terms[1][0]]);
       db.run(`INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`, [entry.code, terms[2][0]]);
-    });
+    });*/
 
     db.close();    
 }
