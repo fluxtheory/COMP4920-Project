@@ -6,17 +6,17 @@ import Typography from '@material-ui/core/Typography';
 import { TextField, Button } from '@material-ui/core/';
 
 const CoursePage = () => {
+  const handleSubmit = e => {
+    console.log('Form submitted!');
+  };
 
-    const handleSubmit = e => {
-        console.log("Form submitted!");
-        
-    };
-
-    return <div>
-        <form onSubmit={handleSubmit}>
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
         <Button type="submit">Create Group</Button>
-        </form>
+      </form>
     </div>
-}
+  );
+};
 
 export { CoursePage };

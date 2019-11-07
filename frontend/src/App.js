@@ -10,41 +10,9 @@ import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { AuthProtection } from './components/AuthProtection';
 import { UITest } from './pages/UITest';
+import { Kudo } from './pages/Kudo';
 
-const useStyles = makeStyles({
-  kudoApp: {
-    display: 'grid',
-    gridGap: '1rem',
-    gridTemplateColumns: '1fr 5fr 2fr',
-    gridTemplateRows: '1fr 8fr',
-    gridTemplateAreas: `"left tabs right"
-                        "left middle right"
-                        "left middle right"`,
-    height: '100vh',
-    width: '100%',
-    fontSize: '2rem',
-  },
-
-  topTabBar: {
-    gridArea: 'tabs',
-    background: 'red',
-  },
-
-  leftPane: {
-    gridArea: 'left',
-    background: 'blue',
-  },
-
-  rightPane: {
-    gridArea: 'right',
-    background: 'purple',
-  },
-
-  contentArea: {
-    gridArea: 'middle',
-    background: 'papayawhip',
-  },
-});
+const useStyles = makeStyles({});
 
 export const Chatkit = React.createContext({
   user: null,
@@ -67,6 +35,27 @@ function App() {
     <Chatkit.Provider value={chatkitState}>
       <Router className={classes.body}>
         <CssBaseline />
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/createAccount">
+            <CreateAccount />
+          </Route>
+          <Route path="/kudo">
+            <AuthProtection>
+              {/* This is our entire application once logged in */}
+              <Kudo />
+            </AuthProtection>
+          </Route>
+          {/* TODO: REMOVE THIS */}
+          <Route path="/ui">
+            <UITest />
+          </Route>
+        </Switch>
         <div>
           <nav>
             <ul>
@@ -74,10 +63,10 @@ function App() {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to="/dashboard">Dashboard</Link>
+                <Link to="/kudo/dashboard">Dashboard</Link>
               </li>
               <li>
-                <Link to="/chat">Chat</Link>
+                <Link to="/kudo/chat">Chat</Link>
               </li>
               <li>
                 <Link to="/login">Login</Link>
@@ -95,45 +84,6 @@ function App() {
               </button>
             ) : null}
           </nav>
-          <div className={classes.kudoApp}>
-            <div className={classes.topTabBar}>Tab Bar</div>
-            <div className={classes.leftPane}>Courses Pane</div>
-            <div className={classes.rightPane}>Chat Pane</div>
-            {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-            <div className={classes.contentArea}>
-              <h3>Changing Content</h3>
-              <Switch>
-                <Route path="/ui">
-                  <UITest />
-                </Route>
-                <Route path="/login">
-                  <Login />
-                </Route>
-                <Route path="/dashboard">
-                  <AuthProtection>
-                    <Dashboard />
-                  </AuthProtection>
-                </Route>
-                <Route path="/createAccount">
-                  <CreateAccount />
-                </Route>
-                <Route path={['/chat/:id', '/chat']}>
-                  <AuthProtection>
-                    <Chat />
-                  </AuthProtection>
-                </Route>
-                <Route path={['/courses/:course']}>
-                  <AuthProtection>
-                    <CoursePage />
-                  </AuthProtection>
-                </Route>
-                <Route path="/">
-                  <Home />
-                </Route>
-              </Switch>
-            </div>
-          </div>
         </div>
       </Router>
     </Chatkit.Provider>
