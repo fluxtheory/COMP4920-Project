@@ -1,11 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import { TextField, Button, Box } from '@material-ui/core/';
+import { TextField, Button, Box, Typography } from '@material-ui/core/';
 import { CourseList } from './CourseList';
 import { api } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
-import { UserSearchForm } from './UserSearchForm';
 import { Session } from '../../App';
 
 const useStyles = makeStyles(theme => ({
@@ -20,6 +19,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    background: theme.palette.background.level2,
 
     height: '100%',
   },
@@ -57,16 +57,14 @@ function CoursesPane() {
       .post('/' + course + '/enrol', {
         username,
       })
-      .then(response => {
+      .then(() => {
         const oldCourseList = [...courseList, { code: course }];
         const newCourseList = [];
         Object.keys(oldCourseList)
           .sort()
           .forEach(key => {
-            console.log(oldCourseList[key]);
             newCourseList[key] = oldCourseList[key];
           });
-        console.log(newCourseList);
         setCourseList([...newCourseList]);
       })
       .catch(err => {
@@ -75,9 +73,23 @@ function CoursesPane() {
   };
 
   return (
-    <Paper className={classes.courseBoxWrapper}>
+    <Box className={classes.courseBoxWrapper}>
       <Box>
-        <Paper>
+        <Box
+          py={2}
+          textAlign="center"
+          justifyContent="center"
+          alignItems="center"
+          borderBottom="1px solid darkgrey"
+          bgcolor="hsla(231, 42%, 39%, 1)"
+          color="#f5f5f5"
+          fontSize="h6.fontSize"
+          fontWeight="fontWeightMedium"
+        >
+          COURSES
+        </Box>
+
+        {/* <Paper>
           <Box
             my={1}
             textAlign="center"
@@ -86,7 +98,7 @@ function CoursesPane() {
           >
             Courses
           </Box>
-        </Paper>
+        </Paper> */}
         <div className={classes.courseList}>
           <CourseList
             courseList={courseList}
@@ -107,7 +119,7 @@ function CoursesPane() {
       >
         Overview
       </Button>
-    </Paper>
+    </Box>
   );
 }
 

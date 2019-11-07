@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -11,12 +11,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
   },
   courseButton: {
-    // margin: '0.5rem 0.1rem',
     flex: '0 0 4rem',
+    margin: '0.2rem 0',
   },
-  // root: {
-  //   padding: theme.spacing(3, 2),
-  // },
 }));
 
 function CourseList(props) {
@@ -41,7 +38,9 @@ function CourseList(props) {
             }}
             color={item.code === courseInFocus ? 'primary' : 'secondary'}
           >
-            <Box fontSize="1.5rem">{item.code}</Box>
+            <Box component={Typography} variant="button">
+              {item.code}
+            </Box>
           </Button>
         );
       })}
