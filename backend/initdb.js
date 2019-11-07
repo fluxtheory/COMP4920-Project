@@ -114,6 +114,7 @@ module.exports = () => {
     );
   });
   
+  /*
   courses.forEach(entry => {
     // BATCH INSERT THIS!  
     db.run(`INSERT OR IGNORE INTO courses (code, name) VALUES (?,?)`, [
@@ -150,6 +151,7 @@ module.exports = () => {
       }
     });
   });
+  */
   
 
   db.close();
