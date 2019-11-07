@@ -108,14 +108,4 @@ module.exports = {
       );
     });
   }
-  /*,
-
-  // returns all the courses a user is part of, and what term
-  userCourses: function(username){
-    return new Promise((resolve,reject) => {
-        // asdf
-      });
-    });
-  }
-  */
 };
