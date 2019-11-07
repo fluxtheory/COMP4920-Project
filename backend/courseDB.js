@@ -74,33 +74,35 @@ module.exports = {
   // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester?
   addUsertoCourseInstance: function(user, code) {
     return new Promise((resolve, reject) => {
-
-      userdb.userExists(user).then(user => {
-        if(!user){
-          console.log("1");
-          reject("User does not exist!");
-        } else {
-          db.run(
-            `INSERT INTO userCourses (username, courseInstance) VALUES
+      userdb
+        .userExists(user)
+        .then(user => {
+          if (!user) {
+            console.log("1");
+            reject("User does not exist!");
+          } else {
+            db.run(
+              `INSERT INTO userCourses (username, courseInstance) VALUES
             (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
-            [user.username, code],
-            err => {
-              console.log(user, code);
-              if (err) {
-                console.log("2");
-                reject(err.message);
-              } else {
-                resolve(true);
+              [user.username, code],
+              err => {
+                console.log(user, code);
+                if (err) {
+                  console.log("2");
+                  reject(err.message);
+                } else {
+                  resolve(true);
+                }
               }
-            }
-          );
-        }
-      }).catch(err => {
-        if(err){
-          console.log("3");
-          reject(err);
-        }
-      });
+            );
+          }
+        })
+        .catch(err => {
+          if (err) {
+            console.log("3");
+            reject(err);
+          }
+        });
     });
   },
 
@@ -113,6 +115,26 @@ module.exports = {
       LEFT JOIN courseInstance ON 
       userCourses.courseInstance = courseInstance.id
       where code = ? AND term = (SELECT term from term WHERE active);`,
+        code,
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        }
+      );
+    });
+  },
+
+  // returns all the users AND THEIR EMAILS using kudo this term
+  allUsers: function(code) {
+    return new Promise((resolve, reject) => {
+      db.all(
+        `SELECT DISTINCT username from userCourses
+      LEFT JOIN courseInstance ON 
+      userCourses.courseInstance = courseInstance.id
+      where term = (SELECT term from term WHERE active);`,
         code,
         (err, rows) => {
           if (err) {

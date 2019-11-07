@@ -8,6 +8,7 @@ import { CoursesPane } from '../components/course/CoursesPane';
 import { TabBar } from '../components/TabBar';
 import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
+import { UserSearchForm } from '../components/course/UserSearchForm';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -76,6 +77,7 @@ const Kudo = () => {
         >
           PEERS
         </Box>
+        <UserSearchForm />
       </div>
       {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}

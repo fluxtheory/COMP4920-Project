@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { Typography, Box } from '@material-ui/core';
 import { Session } from '../App';
 
 const useStyles = makeStyles(theme => ({
@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     padding: theme.spacing(3, 2),
+    background: 'silver',
   },
 }));
 
@@ -33,8 +34,6 @@ function Message(props) {
   const username = props.msg.senderId;
   const textContent = props.msg.parts[0].payload.content;
   const session = React.useContext(Session);
-  console.log(session.user.id);
-  console.log(username);
 
   return (
     <div className={classes.messageContainer}>
@@ -46,8 +45,8 @@ function Message(props) {
               : classes.messageFromOther
           }
         >
-          <Typography variant="h5" component="h3" fontWeight="fontWeightBold">
-            {username}
+          <Typography variant="h5" component="h3">
+            <Box fontWeight="fontWeightBold">{username}</Box>
           </Typography>
           <Typography>
             -----------------------------------------------------

@@ -26,7 +26,6 @@ const Messages = ({ messages }) =>
 function PublicChat() {
   const classes = useStyles();
   const session = React.useContext(Session);
-  const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
