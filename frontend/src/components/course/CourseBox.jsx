@@ -6,6 +6,7 @@ import { CourseList } from './CourseList';
 import { api } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
 import { UserSearchForm } from './UserSearchForm';
+import { PublicChat } from '../PublicChat';
 
 const useStyles = makeStyles(theme => ({
   body: {
@@ -114,6 +115,7 @@ function CourseBox() {
           <h1>This is: {courseInFocus}</h1>
           <h3>Find a user:</h3>
           <UserSearchForm courseInFocus={courseInFocus} />
+          <PublicChat forCourse={courseInFocus}/>
           </div>
         </Paper>
         <Paper className={classes.leftTab}>

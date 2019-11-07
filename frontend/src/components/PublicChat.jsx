@@ -15,14 +15,15 @@ const Messages = ({ messages }) =>
     </ul>
   );
 
-function PublicChat() {
+function PublicChat(props) {
   const classes = useStyles();
   const chatkit = React.useContext(Chatkit);
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
-  const roomId = 'allChat';
+  const roomId = props.forCourse +"_Public";
+  console.log(roomId);
 
   React.useEffect(() => {
     if (!incomingMessage) return;
