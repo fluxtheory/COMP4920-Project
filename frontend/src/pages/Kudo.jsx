@@ -5,6 +5,9 @@ import { Chat } from './Chat';
 import { Dashboard } from './Dashboard';
 import { CoursePage } from './CoursePage';
 import { AuthProtection } from '../components/AuthProtection';
+import { CourseBox } from '../components/course/CourseBox';
+import { CoursesPane } from '../components/course/CoursesPane';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -26,6 +29,8 @@ const useStyles = makeStyles(theme => ({
   },
 
   leftPane: {
+    display: 'flex',
+    flexDirection: 'column',
     gridArea: 'left',
     background: 'blue',
   },
@@ -52,7 +57,9 @@ const Kudo = () => {
   return (
     <div className={classes.kudoApp}>
       <div className={classes.topTabBar}>Tab Bar</div>
-      <div className={classes.leftPane}>Courses Pane</div>
+      <div className={classes.leftPane}>
+        <CoursesPane />
+      </div>
       <div className={classes.rightPane}>Chat Pane</div>
       {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}

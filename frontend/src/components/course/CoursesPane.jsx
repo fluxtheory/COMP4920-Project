@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import { TextField, Button } from '@material-ui/core/';
+import { TextField, Button, Box } from '@material-ui/core/';
 import { CourseList } from './CourseList';
 import { api } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
@@ -15,7 +15,12 @@ const useStyles = makeStyles(theme => ({
     height: '65px',
     display: 'flex',
   },
+
   courseBoxWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+
     height: '100%',
   },
 }));
@@ -34,7 +39,7 @@ const getEnrolledCourses = username =>
       });
   });
 
-function CourseBox() {
+function CoursesPane() {
   const classes = useStyles();
   const [courseList, setCourseList] = React.useState([]);
   const [courseInFocus, setCourseInFocus] = React.useState('Dashboard');
@@ -45,7 +50,7 @@ function CourseBox() {
     getEnrolledCourses(username).then(ret => {
       setCourseList([...ret]);
     });
-  }, []);
+  }, [username]);
 
   const addCourse = course => {
     api
@@ -69,33 +74,41 @@ function CourseBox() {
       });
   };
 
-  /* <Paper className={classes.centre}>
-          <h1>This is: {courseInFocus}</h1>
-          <h3>Find a user:</h3>
-          <UserSearchForm courseInFocus={courseInFocus} />
-        </Paper> */
   return (
     <Paper className={classes.courseBoxWrapper}>
+      <Box>
+        <Paper>
+          <Box
+            my={1}
+            textAlign="center"
+            justifyContent="center"
+            alignItems="center"
+          >
+            Courses
+          </Box>
+        </Paper>
+        <div className={classes.courseList}>
+          <CourseList
+            courseList={courseList}
+            courseInFocus={courseInFocus}
+            setCourseInFocus={setCourseInFocus}
+          />
+        </div>
+        <AddCourseForm
+          className={classes.addCourseForm}
+          addCourse={addCourse}
+        />
+      </Box>
       <Button
         className={classes.dashboardButton}
         variant="contained"
-        onClick={() => {
-          setCourseInFocus('Dashboard');
-        }}
+        onClick={() => {}}
         color={'Dashboard' === courseInFocus ? 'primary' : 'secondary'}
       >
-        DASHBOARD
+        Overview
       </Button>
-      <div className={classes.courseList}>
-        <CourseList
-          courseList={courseList}
-          courseInFocus={courseInFocus}
-          setCourseInFocus={setCourseInFocus}
-        />
-      </div>
-      <AddCourseForm className={classes.addCourseForm} addCourse={addCourse} />
     </Paper>
   );
 }
 
-export { CourseBox };
+export { CoursesPane };

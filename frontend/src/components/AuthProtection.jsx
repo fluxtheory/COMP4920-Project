@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
-import { Chatkit } from '../App';
+import { Session } from '../App';
 import { api } from '../utils';
 
 const instanceLocator = 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77';
@@ -12,11 +12,11 @@ const tokenProvider = new TokenProvider({
 });
 
 function AuthProtection({ children, ...rest }) {
-  const chatkit = React.useContext(Chatkit);
+  const session = React.useContext(Session);
   const [currState, setCurrState] = React.useState('initial');
 
   useEffect(() => {
-    if (chatkit.user) {
+    if (session.user) {
       // user already logged in, no problemo
       return setCurrState('legit');
     }
@@ -41,7 +41,7 @@ function AuthProtection({ children, ...rest }) {
         return chatManager
           .connect()
           .then(currentUser => {
-            chatkit.updateUser(currentUser);
+            session.updateUser(currentUser);
             setCurrState('legit');
           })
           .catch(err => {
@@ -58,7 +58,7 @@ function AuthProtection({ children, ...rest }) {
         }
         console.error('Boo boo when verifying token', err);
       });
-  }, [chatkit]);
+  }, [session]);
 
   switch (currState) {
     case 'initial':
@@ -68,7 +68,14 @@ function AuthProtection({ children, ...rest }) {
         </div>
       );
     case 'not-legit':
-      return <Redirect to="/login" />;
+      return (
+        <Redirect
+          to={{
+            pathname: '/login',
+            state: { sneakyBastard: true },
+          }}
+        />
+      );
     case 'legit':
       // cloning so we can pass props to the child components
       return (

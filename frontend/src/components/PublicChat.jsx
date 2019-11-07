@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Chatkit } from '../App';
+import { Session } from '../App';
 
 const useStyles = makeStyles(theme => ({}));
 
@@ -17,7 +17,7 @@ const Messages = ({ messages }) =>
 
 function PublicChat() {
   const classes = useStyles();
-  const chatkit = React.useContext(Chatkit);
+  const session = React.useContext(Session);
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
@@ -34,11 +34,11 @@ function PublicChat() {
   };
 
   React.useEffect(() => {
-    chatkit.user
+    session.user
       .fetchMultipartMessages({ roomId })
       .then(messages => {
         setChatMessages([...messages]);
-        return chatkit.user.subscribeToRoomMultipart({
+        return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
             onMessage: handleOnMessage,
@@ -64,7 +64,7 @@ function PublicChat() {
   const handleClick = async event => {
     try {
       setMessage('');
-      await chatkit.user.sendSimpleMessage({
+      await session.user.sendSimpleMessage({
         text: message,
         roomId: roomId,
       });

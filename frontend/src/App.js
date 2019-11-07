@@ -11,10 +11,11 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { AuthProtection } from './components/AuthProtection';
 import { UITest } from './pages/UITest';
 import { Kudo } from './pages/Kudo';
+import { CoursesPane } from './components/course/CoursesPane';
 
 const useStyles = makeStyles({});
 
-export const Chatkit = React.createContext({
+export const Session = React.createContext({
   user: null,
   updateUser: () => {},
 });
@@ -22,17 +23,17 @@ export const Chatkit = React.createContext({
 function App() {
   const classes = useStyles();
 
-  const updateUser = user => setChatkitState({ ...chatkitState, user: user });
+  const updateUser = user => setSessionState({ ...sessionState, user: user });
 
   const initState = {
     user: null,
     updateUser,
   };
 
-  const [chatkitState, setChatkitState] = React.useState(initState);
+  const [sessionState, setSessionState] = React.useState(initState);
 
   return (
-    <Chatkit.Provider value={chatkitState}>
+    <Session.Provider value={sessionState}>
       <Router className={classes.body}>
         <CssBaseline />
         <Switch>
@@ -54,6 +55,9 @@ function App() {
           {/* TODO: REMOVE THIS */}
           <Route path="/ui">
             <UITest />
+          </Route>
+          <Route path="/courses">
+            <CoursesPane />
           </Route>
         </Switch>
         <div>
@@ -93,21 +97,22 @@ function App() {
                 <Link to="/kudo/comp/dm">dummy course private chat</Link>
               </li>
             </ul>
-            {chatkitState.user ? (
-              <button
-                onClick={e => {
-                  localStorage.removeItem('userToken');
-                  localStorage.removeItem('username');
-                  updateUser(null);
-                }}
-              >
-                Logout
-              </button>
+            {sessionState.user ? (
+              <Link to="/login">
+                <button
+                  onClick={e => {
+                    localStorage.removeItem('userToken');
+                    updateUser(null);
+                  }}
+                >
+                  Logout
+                </button>
+              </Link>
             ) : null}
           </nav>
         </div>
       </Router>
-    </Chatkit.Provider>
+    </Session.Provider>
   );
 }
 
