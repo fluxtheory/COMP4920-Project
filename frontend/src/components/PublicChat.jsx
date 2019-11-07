@@ -22,7 +22,7 @@ function PublicChat(props) {
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
-  const roomId = props.forCourse +"_Public";
+  const roomId = props.forCourse +"_public";
   console.log(roomId);
 
   React.useEffect(() => {

@@ -3,6 +3,12 @@ const router = express.Router();
 const passport = require("passport");
 const coursedb = require("../courseDB");
 const isEmpty = require("is-empty");
+const Chatkit = require('@pusher/chatkit-server');
+
+const chatkit = new Chatkit.default({
+    instanceLocator: 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77',
+    key: '9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=', // This is bad, use .env vars
+  })
 
 // @route POST courses
 // @desc add a course to courselist
@@ -62,6 +68,12 @@ router.post('/:course/enrol', (req, res) => {
     const username  = req.body.username;
     const course = req.params.course;
     console.log(username, course);
+    chatkit.addUsersToRoom({
+        roomId: course + "_public",
+        userIds: [username]
+      })
+        .then(() => console.log('added'))
+        .catch(err => console.error(err))
     // make sure user exists?
     coursedb.addUsertoCourseInstance(username, course).then(success => {
         if(success){
