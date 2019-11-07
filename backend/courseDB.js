@@ -77,14 +77,17 @@ module.exports = {
 
       userdb.userExists(user).then(user => {
         if(!user){
+          console.log("1");
           reject("User does not exist!");
         } else {
           db.run(
             `INSERT INTO userCourses (username, courseInstance) VALUES
             (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
-            [user, code],
+            [user.username, code],
             err => {
+              console.log(user, code);
               if (err) {
+                console.log("2");
                 reject(err.message);
               } else {
                 resolve(true);
@@ -94,6 +97,7 @@ module.exports = {
         }
       }).catch(err => {
         if(err){
+          console.log("3");
           reject(err);
         }
       });
