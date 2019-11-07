@@ -1,4 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
+const userdb = require("./usersDB");
 
 let db = new sqlite3.Database("test.db", err => {
   if (err) {
@@ -73,18 +74,29 @@ module.exports = {
   // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester?
   addUsertoCourseInstance: function(user, code) {
     return new Promise((resolve, reject) => {
-      db.run(
-        `INSERT INTO userCourses (username, courseInstance) VALUES
-        (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
-        [user, code],
-        err => {
-          if (err) {
-            reject(err.message);
-          } else {
-            resolve(true);
-          }
+
+      userdb.userExists(user).then(user => {
+        if(!user){
+          reject("User does not exist!");
+        } else {
+          db.run(
+            `INSERT INTO userCourses (username, courseInstance) VALUES
+            (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
+            [user, code],
+            err => {
+              if (err) {
+                reject(err.message);
+              } else {
+                resolve(true);
+              }
+            }
+          );
         }
-      );
+      }).catch(err => {
+        if(err){
+          reject(err);
+        }
+      });
     });
   },
 

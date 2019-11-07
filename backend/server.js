@@ -10,7 +10,7 @@ const users = require("./routes/user.route");
 const initdb = require("./initdb");
 const keys = require("./config/keys");
 const courses = require("./routes/course");
-
+const groups = require("./routes/group");
 const Chatkit = require('@pusher/chatkit-server');
 
 
@@ -67,7 +67,9 @@ chatkit.addUsersToRoom(
 
 // append /api for our http requests
 app.use('/', users);
+app.use('/', groups);
 app.use('/', courses);
+
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

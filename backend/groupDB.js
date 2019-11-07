@@ -9,6 +9,7 @@ let db = new sqlite3.Database("test.db", err => {
 
 module.exports = {
     startGroup: function(user, group_name, course){
+        
         return new Promise((resolve, reject) => {
             db.run(`INSERT INTO groups (name, courseInstance, owner) 
                 VALUES (?, (SELECT id FROM courseInstance where 
@@ -16,7 +17,7 @@ module.exports = {
                 if(err){
                     reject(err);
                 }
-                this.addUsertoGroup(user, group_name)
+                this.addUsertoGroup(user, group_name, course);
                 resolve(true); 
             });
         });
@@ -40,7 +41,7 @@ module.exports = {
     // returns a list of Groups that the user is part of with respect to a particular course.
     getUserJoinedGroups: function(user, course){
         return new Promise((resolve, reject) => {
-            db.all(`SELECT * FROM groupUsers 
+            db.all(`SELECT name FROM groupUsers 
             LEFT JOIN groups on groupid = groups.id
             LEFT JOIN courseInstance on groups.courseInstance = courseInstance.id
             WHERE username = ? AND code = ?`, [user, course], (err, rows) => {
@@ -59,32 +60,37 @@ module.exports = {
             // delete from groupUsers as well.        
 
             db.run(`DELETE FROM groupUsers WHERE id IN (
-                SELECT * FROM groupUsers 
+                SELECT groupUsers.id FROM groupUsers 
                 LEFT JOIN groups on groupUsers.groupid = groups.id
                 LEFT JOIN courseInstance on groups.courseInstance = courseInstance.id
-                WHERE code = ?
+                WHERE term = (SELECT term FROM term WHERE active)
                 AND name = ?
-                AND term = (SELECT term from term where active);
-            )`, [course, group_name], err => {
+                AND code = ?)`, [group_name, course], err => {
                 if(err){
                     console.log(err);
+                    reject(err);
                 }
                 
                 db.run(`DELETE FROM groups WHERE id IN (
-                    SELECT * FROM groups 
+                    SELECT groups.id FROM groups 
                     LEFT JOIN courseInstance
                     ON groups.courseInstance = courseInstance.id
                     WHERE term = (SELECT term from term WHERE active)
                     AND code = ?
                     AND name = ?)`, [course, group_name], err => {
-
+                        if(err){
+                            console.log(err);
+                            reject(err)
+                        } else {
+                            resolve(true);
+                        }
                 });
             });
 
         });
     },
 
-    addUsertoGroup : function(user, group_name, course){
+    addUsertoGroup : function(username, group_name, course){
         return new Promise((resolve, reject) => {
             db.run(`INSERT INTO groupUsers (groupid, username) VALUES 
             ( 
@@ -94,7 +100,11 @@ module.exports = {
                 and term = (SELECT term from term where active)
                 and code = ?), ?
             )`,[group_name, course, username], err => {
-
+                if(err){
+                    reject(err)
+                } else {
+                    resolve(true);
+                }
             });
         });
     },
@@ -110,7 +120,18 @@ module.exports = {
     // returns all the users in a group
     getGroupUsers : function(group_name, course){
         return new Promise((resolve, reject) => {
-            db.all(``)
+            db.all(`select username from groupUsers
+            LEFT JOIN groups on groupUsers.groupid = groups.id
+            LEFT JOIN courseInstance on groups.courseInstance = courseInstance.id
+            WHERE term = (SELECT term from term WHERE active)
+            AND code = ?
+            AND name = ?`, [course, group_name], (err, rows) => {
+                if(err){
+                    reject(err)
+                } else {
+                    resolve(rows);
+                }
+            });
         });
     }
 }

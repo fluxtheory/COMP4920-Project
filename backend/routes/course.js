@@ -59,7 +59,10 @@ router.get('/course', (req, res) => {
         }*/
 // @access Private
 router.post('/:course/enrol', (req, res) => {
-    coursedb.addUsertoCourseInstance(req.body.username, req.params.course).then(success => {
+    console.log("HELLO2");
+    const {username, course} = req.body;
+    // make sure user exists?
+    coursedb.addUsertoCourseInstance(username, course).then(success => {
         if(success){
             return res.status(200).json({ success: true });
         } else {
@@ -82,6 +85,8 @@ router.get('/:course/users', (req, res) => {
         return res.status(500).json(err);
     });
 });
+
+
 
 
 module.exports = router;
