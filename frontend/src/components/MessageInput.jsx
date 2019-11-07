@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Session } from '../App';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   MessageInputContainer: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 function MessageInput(props) {
   const classes = useStyles();
-  const session = React.useContext(session);
+  const session = React.useContext(Session);
   const roomId = props.roomId;
   const [message, setMessage] = React.useState('');
 
@@ -33,6 +34,10 @@ function MessageInput(props) {
     }
   };
 
+  const handleSubmit = e => {
+    e.preventDefault();
+  };
+
   const handleChange = event => {
     setMessage(event.target.value);
   };
@@ -40,8 +45,17 @@ function MessageInput(props) {
   return (
     <div className={classes.MessageInputContainer}>
       <Paper className={classes.root}>
-        <input type="text" onChange={handleChange} value={message} />
-        <button onClick={handleClick}>Send a message!</button>
+        <form onSubmit={handleSubmit}>
+          <input type="text" onChange={handleChange} value={message} />
+          <Button
+            type="submit"
+            variant="contained"
+            color="secondary"
+            onClick={handleClick}
+          >
+            Send Message
+          </Button>
+        </form>
       </Paper>
     </div>
   );

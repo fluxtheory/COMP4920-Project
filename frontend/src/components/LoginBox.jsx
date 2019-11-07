@@ -67,7 +67,7 @@ function LoginBox() {
   };
 
   if (loginSuccess === true) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/kudo/dashboard" />;
   }
 
   return (

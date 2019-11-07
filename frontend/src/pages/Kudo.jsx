@@ -6,6 +6,7 @@ import { Dashboard } from './Dashboard';
 import { CoursePage } from './CoursePage';
 import { CoursesPane } from '../components/course/CoursesPane';
 import { TabBar } from '../components/TabBar';
+import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
@@ -93,7 +94,7 @@ const Kudo = () => {
             <CoursePage />
           </Route>
           <Route exact path={makePath('/:course/chat')}>
-            <h1>I'm the course chat</h1>
+            <PublicChat />
           </Route>
           <Route exact path={makePath('/:course/feed')}>
             <h1>I'm the course feed</h1>
