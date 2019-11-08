@@ -135,4 +135,4 @@ function CustomizedExpansionPanels() {
   );
 }
 
-export { CustomizedExpansionPanels as SacredChatPane };
+export { CustomizedExpansionPanels as ChatPane };

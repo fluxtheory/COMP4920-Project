@@ -9,7 +9,8 @@ import { TabBar } from '../components/TabBar';
 import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
 import { UserSearchForm } from '../components/course/UserSearchForm';
-import { SacredChatPane } from '../components/SacredChatPane';
+import { ChatPane } from '../components/ChatPane';
+import { classes } from 'istanbul-lib-coverage';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -55,55 +56,58 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// TODO: we can potentially even get rid of the kudo prefix
-const makePath = path => {
-  return `/kudo${path}`;
-};
-
 const Kudo = () => {
   const classes = useStyles();
 
   return (
     <div className={classes.kudoApp}>
-      <div className={classes.topTabBar}>
-        <TabBar />
-      </div>
-      <Box
-        py={2}
-        textAlign="center"
-        justifyContent="center"
-        alignItems="center"
-        borderBottom="1px solid darkgrey"
-        bgcolor="hsla(231, 42%, 39%, 1)"
-        color="#f5f5f5"
-        fontSize="h6.fontSize"
-        fontWeight="fontWeightMedium"
-        className={classes.leftPaneTitle}
-      >
-        COURSES
-      </Box>
+      <SacredTopBar />
+      <SacredLeftPane />
+      <SacredRightPane />
+      <PlebbyChangingContent />
+    </div>
+  );
+};
+
+const SacredLeftPane = () => {
+  const classes = useStyles();
+  return (
+    <React.Fragment>
+      <PaneTitle title="COURSES" className={classes.leftPaneTitle} />
       <div className={classes.leftPane}>
         <CoursesPane />
       </div>
-      <Box
-        py={2}
-        textAlign="center"
-        justifyContent="center"
-        alignItems="center"
-        borderBottom="1px solid darkgrey"
-        bgcolor="hsla(231, 42%, 39%, 1)"
-        color="#f5f5f5"
-        fontSize="h6.fontSize"
-        fontWeight="fontWeightMedium"
-        className={classes.rightPaneTitle}
-      >
-        PEERS
-      </Box>
+    </React.Fragment>
+  );
+};
+
+const SacredRightPane = () => {
+  const classes = useStyles();
+  return (
+    <React.Fragment>
+      <PaneTitle title="PEERS" className={classes.rightPaneTitle} />
       <div className={classes.rightPane}>
-        <SacredChatPane />
+        <ChatPane />
       </div>
-      {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+    </React.Fragment>
+  );
+};
+
+const SacredTopBar = () => {
+  const classes = useStyles();
+  return (
+    <React.Fragment>
+      <div className={classes.topTabBar}>
+        <TabBar />
+      </div>
+    </React.Fragment>
+  );
+};
+
+const PlebbyChangingContent = () => {
+  const classes = useStyles();
+  return (
+    <React.Fragment>
       <div className={classes.contentArea}>
         <h3>Changing Content</h3>
         <Switch>
@@ -135,7 +139,30 @@ const Kudo = () => {
           </Route>
         </Switch>
       </div>
-    </div>
+    </React.Fragment>
+  );
+};
+
+// TODO: we can potentially even get rid of the kudo prefix
+const makePath = path => {
+  return `/kudo${path}`;
+};
+const PaneTitle = ({ title, ...props }) => {
+  return (
+    <Box
+      py={2}
+      textAlign="center"
+      justifyContent="center"
+      alignItems="center"
+      borderBottom="1px solid darkgrey"
+      bgcolor="hsla(231, 42%, 39%, 1)"
+      color="#f5f5f5"
+      fontSize="h6.fontSize"
+      fontWeight="fontWeightMedium"
+      {...props}
+    >
+      {title}
+    </Box>
   );
 };
 
