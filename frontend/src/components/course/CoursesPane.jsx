@@ -75,30 +75,6 @@ function CoursesPane() {
   return (
     <Box className={classes.courseBoxWrapper}>
       <Box>
-        <Box
-          py={2}
-          textAlign="center"
-          justifyContent="center"
-          alignItems="center"
-          borderBottom="1px solid darkgrey"
-          bgcolor="hsla(231, 42%, 39%, 1)"
-          color="#f5f5f5"
-          fontSize="h6.fontSize"
-          fontWeight="fontWeightMedium"
-        >
-          COURSES
-        </Box>
-
-        {/* <Paper>
-          <Box
-            my={1}
-            textAlign="center"
-            justifyContent="center"
-            alignItems="center"
-          >
-            Courses
-          </Box>
-        </Paper> */}
         <div className={classes.courseList}>
           <CourseList
             courseList={courseList}

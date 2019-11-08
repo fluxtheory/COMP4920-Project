@@ -9,6 +9,7 @@ import { TabBar } from '../components/TabBar';
 import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
 import { UserSearchForm } from '../components/course/UserSearchForm';
+import { SacredChatPane } from '../components/SacredChatPane';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     // gridGap: '1rem',
     gridTemplateColumns: '1.5fr 8fr 1.5fr',
     gridTemplateRows: '1fr 15fr',
-    gridTemplateAreas: `"left tabs right"
+    gridTemplateAreas: `"leftTitle tabs rightTitle"
                         "left middle right"
                         "left middle right"`,
     height: '100vh',
@@ -29,6 +30,9 @@ const useStyles = makeStyles(theme => ({
     background: 'red',
   },
 
+  leftPaneTitle: {
+    gridArea: 'leftTitle',
+  },
   leftPane: {
     display: 'flex',
     flexDirection: 'column',
@@ -36,9 +40,13 @@ const useStyles = makeStyles(theme => ({
     background: 'blue',
   },
 
+  rightPaneTitle: {
+    gridArea: 'rightTitle',
+  },
   rightPane: {
     gridArea: 'right',
     background: theme.palette.background.level2,
+    display: 'flex',
   },
 
   contentArea: {
@@ -60,24 +68,39 @@ const Kudo = () => {
       <div className={classes.topTabBar}>
         <TabBar />
       </div>
+      <Box
+        py={2}
+        textAlign="center"
+        justifyContent="center"
+        alignItems="center"
+        borderBottom="1px solid darkgrey"
+        bgcolor="hsla(231, 42%, 39%, 1)"
+        color="#f5f5f5"
+        fontSize="h6.fontSize"
+        fontWeight="fontWeightMedium"
+        className={classes.leftPaneTitle}
+      >
+        COURSES
+      </Box>
       <div className={classes.leftPane}>
         <CoursesPane />
       </div>
+      <Box
+        py={2}
+        textAlign="center"
+        justifyContent="center"
+        alignItems="center"
+        borderBottom="1px solid darkgrey"
+        bgcolor="hsla(231, 42%, 39%, 1)"
+        color="#f5f5f5"
+        fontSize="h6.fontSize"
+        fontWeight="fontWeightMedium"
+        className={classes.rightPaneTitle}
+      >
+        PEERS
+      </Box>
       <div className={classes.rightPane}>
-        <Box
-          py={2}
-          textAlign="center"
-          justifyContent="center"
-          alignItems="center"
-          borderBottom="1px solid darkgrey"
-          bgcolor="hsla(231, 42%, 39%, 1)"
-          color="#f5f5f5"
-          fontSize="h6.fontSize"
-          fontWeight="fontWeightMedium"
-        >
-          PEERS
-        </Box>
-        <UserSearchForm />
+        <SacredChatPane />
       </div>
       {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}

@@ -4,9 +4,25 @@ import { TextField, Button } from '@material-ui/core/';
 import { api } from '../../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
+import ChildCareIcon from '@material-ui/icons/ChildCare';
 
 const useStyles = makeStyles(theme => ({
-  root: {},
+  courseUsersChatContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  },
+
+  userListContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    marginTop: '0.2rem',
+  },
+
+  userButton: {
+    justifyContent: 'start',
+  },
 }));
 
 const getAllUsers = function(course) {
@@ -47,10 +63,9 @@ function UserSearchForm(props) {
   };
 
   return (
-    <div>
+    <div className={classes.courseUsersChatContainer}>
       <form onSubmit={handleSubmit}>
         <Autocomplete
-          //className={}
           options={users}
           getOptionLabel={option => option.username}
           onChange={handleChange}
@@ -65,16 +80,16 @@ function UserSearchForm(props) {
           )}
         />
       </form>
-      <Typography component="div">
-        <Box margin="10px" fontWeight="fontWeightBold">
-          All Users:
-        </Box>
-      </Typography>
-      <ul>
+      <div className={classes.userListContainer}>
         {users.map(u => {
-          return <Button key={u.username}>{u.username}</Button>;
+          return (
+            <Button classes={{ root: classes.userButton }} key={u.username}>
+              <ChildCareIcon />
+              <Box mx={1}>{u.username}</Box>
+            </Button>
+          );
         })}
-      </ul>
+      </div>
     </div>
   );
 }
