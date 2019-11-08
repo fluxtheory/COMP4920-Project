@@ -23,14 +23,20 @@ export default function Sidebar(props) {
   const classes = useStyles();
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {
+    //console.log("Routename", routeName);
     return window.location.href.indexOf(routeName) > -1 ? true : false;
   }
+  //console.log("DUMPING PROPS");
+  //console.log(props);
   const { color, logo, image, logoText, routes } = props;
-  var links = (
+  //console.log("ROUTES.MAP");
+  var links = ( // 
     <List className={classes.list}>
       {routes.map((prop, key) => {
+        //console.log("Prop",prop, "Key", key);
         var activePro = " ";
         var listItemClasses;
+        // focused page is highlighted
         if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
           listItemClasses = classNames({
@@ -39,13 +45,14 @@ export default function Sidebar(props) {
         } else {
           listItemClasses = classNames({
             [" " + classes[color]]: activeRoute(prop.layout + prop.path)
-          });
+          }); 
         }
         const whiteFontClasses = classNames({
           [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
         });
         return (
           <NavLink
+            //this one redirects to the chosen page!
             to={prop.layout + prop.path}
             className={activePro + classes.item}
             activeClassName="active"
@@ -80,6 +87,8 @@ export default function Sidebar(props) {
       })}
     </List>
   );
+  console.log("LINKS");
+  console.log(links);
   var brand = (
     <div className={classes.logo}>
       <a
@@ -137,8 +146,8 @@ export default function Sidebar(props) {
             })
           }}
         >
-          {brand}
-          <div className={classes.sidebarWrapper}>{links}</div>
+          {brand}   
+          <div className={classes.sidebarWrapper}>{links}</div> 
           {image !== undefined ? (
             <div
               className={classes.background}
@@ -146,9 +155,9 @@ export default function Sidebar(props) {
             />
           ) : null}
         </Drawer>
-      </Hidden>
+      </Hidden> 
     </div>
-  );
+  ); // links are rendered on line 144
 }
 
 Sidebar.propTypes = {

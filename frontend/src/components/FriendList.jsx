@@ -7,6 +7,8 @@ import { TextField, Button } from '@material-ui/core';
 
 const useStyle;
 
-function FriendList() {
+export function FriendList() {
 
+
+    return
 }

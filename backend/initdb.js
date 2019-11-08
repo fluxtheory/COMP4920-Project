@@ -75,6 +75,14 @@ module.exports = () => {
       username TEXT NOT NULL,
       unique(groupid, username)
     );
+
+    CREATE TABLE IF NOT EXISTS forumTitle (
+
+    );
+
+    CREATE TABLE IF NOT EXISTS forumPosts (
+
+    );
     `;
 
   let ranks = ["Course Moderator", "Course Helper", "Member"];
@@ -150,7 +158,7 @@ module.exports = () => {
       if(err){
         console.log(err);
       }
-    });*/
+    });
   });
   */
   

@@ -5,7 +5,6 @@ import { Chat } from './pages/Chat';
 import { Login } from './pages/Login';
 import { CreateAccount } from './pages/CreateAccount';
 import { Dashboard } from './pages/Dashboard';
-import { CoursePage } from './pages/CoursePage';
 import { makeStyles } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { AuthProtection } from './components/AuthProtection';
@@ -20,7 +19,7 @@ const useStyles = makeStyles({
 
 export const Chatkit = React.createContext({
   user: null,
-  updateUser: () => {},
+  updateUser: () => { },
 });
 
 function App() {
@@ -86,18 +85,13 @@ function App() {
                 <Chat />
               </AuthProtection>
             </Route>
-            <Route path={['/courses/:course']}>
-              <AuthProtection>
-                <CoursePage />
-              </AuthProtection>
-            </Route>
             <Route path="/">
               <Home />
             </Route>
           </Switch>
         </div>
       </Router>
-    </Chatkit.Provider>
+    </Chatkit.Provider >
   );
 }
 
