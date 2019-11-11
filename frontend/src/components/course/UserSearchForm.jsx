@@ -5,6 +5,7 @@ import { api } from '../../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
+import { useRouteMatch } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
 const getAllUsers = function(course) {
   return new Promise((resolve, reject) => {
     api
-      .get('/users')
+      .get('/' + course + '/users')
       .then(resp => {
         console.log(resp.data);
         resolve(resp.data);
@@ -43,7 +44,8 @@ const getAllUsers = function(course) {
 function UserSearchForm(props) {
   const classes = useStyles();
 
-  const course = props.courseInFocus;
+  const { params } = useRouteMatch('/kudo/:course');
+  const course = params.course;
   const [users, setUsers] = React.useState([]);
 
   React.useEffect(() => {
