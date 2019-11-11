@@ -178,12 +178,6 @@ db = new sqlite3.Database("test.db", err => {
       db.run("commit");
       courseEntry.finalize();
       courseInstanceEntry.finalize();
-      db.close(err => {
-        if (err) {
-          console.error("seeding screwed up");
-          console.error(err);
-        } 
-      });
     });
   });
 });
