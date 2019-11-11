@@ -1,28 +1,27 @@
-const sqlite3 = require("sqlite3").verbose();
 const userdb = require("./usersDB");
+const getdb = require("./db").getDb;
 
-let db = new sqlite3.Database("test.db", err => {
-  if (err) {
-    return console.error(err.message);
-  }
-  //console.log("Connected to sqlite3 database");
-});
+let db = getdb();
 
 module.exports = {
+  
   // adds a course to the courselist
   addCourse: function(code, name) {
     return new Promise((resolve, reject) => {
-      db.run(
-        `INSERT INTO courses (code, name) VALUES (?, ?)`,
-        [code, name],
-        err => {
+      let sql = `INSERT INTO courses (code, name) VALUES (?, ?)`; 
+      db.run(sql, [code, name], function(err){
           if (err) {
-            reject({ error: "Course already exists!" });
+            reject(err.message);
           }
-          this.addCourseInstance(code, new Date().getFullYear() + "T1");
-          this.addCourseInstance(code, new Date().getFullYear() + "T2");
-          this.addCourseInstance(code, new Date().getFullYear() + "T3");
-          resolve(true);
+
+          if(this.changes){
+            this.addCourseInstance(code, new Date().getFullYear() + "T1");
+            this.addCourseInstance(code, new Date().getFullYear() + "T2");
+            this.addCourseInstance(code, new Date().getFullYear() + "T3");
+            resolve(true);
+          } else {
+            resolve(false);
+          }
         }
       );
     });
@@ -56,22 +55,19 @@ module.exports = {
   addCourseInstance: function(code, term) {
     let courseInstance = [code, term];
     return new Promise((resolve, reject) => {
-      db.run(
-        `INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`,
-        courseInstance,
-        err => {
+      let sql = `INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`;
+      db.run(sql, courseInstance, function(err){
           if (err) {
             reject(err.message);
-          } else {
-            resolve(true);
-          }
+          } 
+          (this.changes) ? resolve(true) : resolve(false);
         }
       );
     });
   },
 
   // enrolls a user to the CURRENT INSTANCE of a course
-  // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester?
+  // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester? Yes
   addUsertoCourseInstance: function(user, code) {
     return new Promise((resolve, reject) => {
 
@@ -84,9 +80,9 @@ module.exports = {
             (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
             [user.username, code],
             err => {
-              console.log(user, code);
+              
               if (err) {
-                reject("Error during user insertion!");
+                reject(err.message);
               } else {
                 resolve(true);
               }
@@ -113,7 +109,7 @@ module.exports = {
         code,
         (err, rows) => {
           if (err) {
-            reject(err);
+            reject(err.message);
           } else {
             resolve(rows);
           }

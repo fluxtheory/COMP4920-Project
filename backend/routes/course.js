@@ -61,7 +61,7 @@ router.get('/course', (req, res) => {
 router.post('/:course/enrol', (req, res) => {
     const username  = req.body.username;
     const course = req.params.course;
-    console.log(username, course);
+    
     // make sure user exists?
     coursedb.addUsertoCourseInstance(username, course).then(success => {
         if(success){

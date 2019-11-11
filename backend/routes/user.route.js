@@ -112,9 +112,11 @@ router.post("/login",
             });
           }
         );
-        user.updateUser({username: acc.username, last_login : new Date().toString()});
+        user.updateUser({username: acc.username, last_login : new Date().toString()}).catch(err => {
+          console.log(err);
+        });
       } else {
-        return res.status(400).json({ error: "Password incorrect." });
+        return res.status(403).json({ error: "Password incorrect." });
       }
     });
   }).catch(err => {
@@ -133,23 +135,17 @@ router.get('/logout',  (req, res) => {
 });
 
 
-// @route GET /:username/delete
+// @route POST /:username/delete
 // @desc Deletes the user from the service
 // @access Private
-router.get('/:username/delete', (req, res) => {
-  let username = req.params.username;
-
-  user.userExists(username).then(exists => {
-    if(!exists){
-      return res.status(404).json({error: "username does not exist"});
-    }
-  });
+router.post('/:username/delete', (req, res) => {
+  const username = req.params.username;
 
   user.deleteUser(username).then( success => {
     if(success){
-      return res.status(200).json({ success: true });
+      return res.status(200).json({"success": success });
     } else {
-      return res.status(500).json( {success: false});
+      return res.status(404).json({"success": success});
     }
   }).catch(err => {
     return res.status(500).json(err);
@@ -157,17 +153,19 @@ router.get('/:username/delete', (req, res) => {
 });
 
 
-// @route POST /:username/update
+// @route PUT /:username/update
 // @desc Updates user profile password/email or rank.
 /* @param {
-            last_login (optional), 
-            new_email (optional), 
-            new_password (optional),
-            new_rank (optional)
+            (new_last_login),
+            OR
+            (
+              new_email (optional), 
+              new_password (optional),
+            )
           }
 */
 // @access Private
-router.post('/:username/update', (req, res) => {
+router.put('/:username/update', (req, res) => {
 
   const { errors, isValid } = validateUpdateInput(req.body);
 
@@ -175,26 +173,42 @@ router.post('/:username/update', (req, res) => {
     return res.status(400).json(errors);
   }
 
-  req.body.username = req.params.username;
-
-  user.updateUser(req.body).then( success => {
+  user.updateUser(req.params.username, req.body).then( success => {
     if(success){
       return res.status(200).json({ success: true });
     } else {
-      return res.status(500).json( {success: false});
+      return res.status(400).json( {success: false});
     }
   }).catch(err => {
     return res.status(500).json(err);
   });
 });
 
-// @route GET 
+// @route GET /:username/courses
 // @desc returns all the courses enrolled by a user during the current term
 // @access Private
 router.get('/:username/courses', (req, res) => {
   user.userCourses(req.params.username).then(rows => {
     return res.status(200).json(rows);
   }).catch(err => {
+    return res.status(500).json(err);
+  });
+});
+
+// @route POST /:username/add-friend 
+// @desc Adds friend to friendlist
+// @body { friendname }
+// @access Private
+router.post('/:username/add-friend', (req, res) => {
+  user.addFriend(req.params.username, req.body.friendname)
+  .then(success => {
+    if(success){
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(400).json( {success: false});
+    }
+  })
+  .catch(err => {
     return res.status(500).json(err);
   });
 });

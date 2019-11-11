@@ -7,10 +7,11 @@ const logger = require('morgan');
 const passport = require("passport");
 
 const users = require("./routes/user.route");
-const initdb = require("./initdb");
+const initdb = require("./db").initDb;
 const keys = require("./config/keys");
 const courses = require("./routes/course");
 const groups = require("./routes/group");
+const feed = require("./routes/feed");
 const Chatkit = require('@pusher/chatkit-server');
 
 
@@ -26,7 +27,7 @@ app.use(bodyParser.json());
 app.use(logger('dev'));
 
 
-initdb();
+//initdb();
 
 app.use(session({secret: keys.secret, cookie: { maxAge: 60000}, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
@@ -38,7 +39,7 @@ const chatkit = new Chatkit.default({
     key: '9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=', // This is bad, use .env vars
   })
 
-const allCourses = require('./text/courses.json');
+//const allCourses = require('./text/courses.json');
 
 // chatkit.createRoom({
 //     id: 'allChat',
@@ -51,7 +52,7 @@ const allCourses = require('./text/courses.json');
 //     }).catch((err) => {
 //       console.log(err);
 //     });
-
+/*
 chatkit.addUsersToRoom(
     {
         roomId: 'allChat',
@@ -63,13 +64,18 @@ chatkit.addUsersToRoom(
     }).catch((err) => {
         console.log(err);
     });
-
+*/
 
 // append /api for our http requests
 app.use('/', users);
 app.use('/', groups);
 app.use('/', courses);
+app.use('/', feed);
 
 
 // launch our backend into a port
-app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+initdb(err => {
+    app.listen(API_PORT, () => {
+        console.log(`LISTENING ON PORT ${API_PORT}`)
+    });
+})

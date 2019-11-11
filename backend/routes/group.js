@@ -80,9 +80,9 @@ router.post("/:course/group/add", (req, res) => {
     groupdb.addUsertoGroup(req.body.username, req.body.group_name, req.params.course)
     .then(success => {
         if(success){
-            return res.status(200).json({success: true});
+            return res.status(200).json({"success": true});
         } else {
-            return res.status(400).json({success: false});
+            return res.status(400).json({"success": false});
         }
     })
     .catch(err => {
@@ -93,9 +93,20 @@ router.post("/:course/group/add", (req, res) => {
 
 //@route POST /:course/:group-name/remove
 //@desc Remove or Leave from a group
+//@body group_name, username
 //@access Private
 router.post("/:course/group/remove", (req, res) => {
-
+    groupdb.removeUserfromGroup(req.body.username, req.body.group_name, req.params.course)
+    .then(success =>{
+        if(success){
+            return res.status(200).json({"success": success});
+        } else {
+            return res.status(404).json({"success": success});
+        }
+    })
+    .catch(err => {
+        return res.status(500).json(err);
+    })
 });
 
 
