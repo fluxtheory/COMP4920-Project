@@ -89,7 +89,7 @@ function UserSearchForm(props) {
               classes={{ root: classes.userButton }}
               key={u.username}
               component={Link}
-              to={u.username + '/dm'}
+              to={'/kudo/' + u.username + '/dm'}
             >
               <ChildCareIcon />
               <Box mx={1}>{u.username}</Box>

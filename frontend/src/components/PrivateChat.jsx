@@ -4,16 +4,22 @@ import { Session } from '../App';
 import { Message } from '../components/Message';
 import { MessageInput } from '../components/MessageInput';
 import { useParams } from 'react-router-dom';
+import loadingCircle from '../img/circle128x128.gif';
 
 const useStyles = makeStyles({
-  yourClassname: {
-    color: 'blue',
+  messages: {
+    height: '55vh',
+    overflow: 'auto',
   },
 });
 
 const Messages = ({ messages }) =>
   !messages.length ? (
-    'Loading messages'
+    <img
+      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+      src={loadingCircle}
+      alt="Loading Messages..."
+    />
   ) : (
     <ul>
       {messages.map(m => {
@@ -120,8 +126,10 @@ const PrivateChat = () => {
   };
 
   return (
-    <div className={classes.yourClassname}>
-      <Messages messages={chatMessages} />
+    <div>
+      <div className={classes.messages}>
+        <Messages messages={chatMessages} />
+      </div>
       <MessageInput roomId={roomId} />
     </div>
   );

@@ -8,7 +8,7 @@ import loadingCircle from '../img/circle128x128.gif';
 
 const useStyles = makeStyles(theme => ({
   messages: {
-    height: '500px',
+    maxHeight: '55vh',
     overflow: 'auto',
   },
 }));
@@ -73,7 +73,7 @@ function PublicChat() {
   // subscribe to all chat
   // send message to all chat
   return (
-    <div className={classes.yourClassname}>
+    <div>
       <div className={classes.messages}>
         <Messages messages={chatMessages} />
       </div>
