@@ -5,7 +5,7 @@ import { api } from '../../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -85,7 +85,12 @@ function UserSearchForm(props) {
       <div className={classes.userListContainer}>
         {users.map(u => {
           return (
-            <Button classes={{ root: classes.userButton }} key={u.username}>
+            <Button
+              classes={{ root: classes.userButton }}
+              key={u.username}
+              component={Link}
+              to={u.username + '/dm'}
+            >
               <ChildCareIcon />
               <Box mx={1}>{u.username}</Box>
             </Button>

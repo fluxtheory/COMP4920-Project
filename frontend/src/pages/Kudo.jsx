@@ -8,9 +8,8 @@ import { CoursesPane } from '../components/course/CoursesPane';
 import { TabBar } from '../components/TabBar';
 import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
-import { UserSearchForm } from '../components/course/UserSearchForm';
 import { ChatPane } from '../components/ChatPane';
-import { classes } from 'istanbul-lib-coverage';
+import { PrivateChat } from '../components/PrivateChat';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -134,8 +133,8 @@ const PlebbyChangingContent = () => {
           <Route exact path={makePath('/:course/group/settings')}>
             <h1>I'm the course group chat management</h1>
           </Route>
-          <Route exact path={makePath('/:course/dm')}>
-            <h1>I'm the the private chat</h1>
+          <Route exact path={makePath('/:user/dm')}>
+            <PrivateChat />
           </Route>
         </Switch>
       </div>

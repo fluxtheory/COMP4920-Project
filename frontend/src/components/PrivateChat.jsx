@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Session } from '../App';
+import { Message } from '../components/Message';
+import { MessageInput } from '../components/MessageInput';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles({
   yourClassname: {
@@ -14,16 +17,17 @@ const Messages = ({ messages }) =>
   ) : (
     <ul>
       {messages.map(m => {
-        return <li key={m.id}>{m.parts[0].payload.content}</li>;
+        return <Message key={m.id} msg={m} />;
       })}
     </ul>
   );
 
-const PrivateChat = ({ otherUserId }) => {
+const PrivateChat = () => {
   const classes = useStyles();
   const [message, setMessage] = useState('');
   const session = React.useContext(Session);
   const [roomId, setRoomId] = React.useState(null);
+  const otherUserId = useParams().user;
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
@@ -58,7 +62,7 @@ const PrivateChat = ({ otherUserId }) => {
           customData: {},
         })
         .then(room => {
-          console.log(`Created room called ${room.name}`);
+          console.log(`Created room called ${room.name} (id ${room.id})`);
         })
         .catch(err => {
           console.log(`Error creating room ${err}`);
@@ -118,8 +122,7 @@ const PrivateChat = ({ otherUserId }) => {
   return (
     <div className={classes.yourClassname}>
       <Messages messages={chatMessages} />
-      <input type="text" onChange={handleChange} value={message} />
-      <button onClick={handleClick}>Send a message!</button>
+      <MessageInput roomId={roomId} />
     </div>
   );
 };
