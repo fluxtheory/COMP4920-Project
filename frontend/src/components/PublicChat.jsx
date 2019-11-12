@@ -4,6 +4,7 @@ import { Message } from './Message';
 import { MessageInput } from './MessageInput';
 import { useParams } from 'react-router-dom';
 import { Session } from '../App';
+import loadingCircle from '../img/circle128x128.gif';
 
 const useStyles = makeStyles(theme => ({
   messages: {
@@ -14,7 +15,11 @@ const useStyles = makeStyles(theme => ({
 
 const Messages = ({ messages }) =>
   !messages.length ? (
-    'Loading messages'
+    <img
+      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+      src={loadingCircle}
+      alt="Loading Messages..."
+    />
   ) : (
     <ul>
       {messages.map(m => {
