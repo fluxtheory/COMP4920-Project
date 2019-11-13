@@ -205,9 +205,26 @@ let query = `INSERT INTO users (username, password, email) VALUES(?, ?, ?)`;
         console.log("Rows inserted: "+ this.changes);
       });
 */
-      
+   /*    
 let query = `UPDATE users SET email = ? WHERE username = ?`;
 db.run(query, ["the_frost_wyrm@hotmail.com", "fluxtheory"], function(err) {
   console.log("Updated id: " + this.lastID);
   console.log("Rows updated: "+ this.changes);
 });
+ */
+
+/*
+function test(){
+    return new Promise((resolve, reject) => {
+        reject(1, true, "hey");
+    });
+}
+
+test().then( (a,b,c) => {
+    //console.log(a,b,c);
+}).catch((err, a, b) => {
+    console.log(err,a,b);
+})*/
+
+let test = [];
+console.log(isEmpty(test));

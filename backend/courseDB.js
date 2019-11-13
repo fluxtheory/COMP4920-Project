@@ -73,21 +73,30 @@ module.exports = {
 
       userdb.userExists(user).then(user => {
         if(!user){
-          reject("User does not exist!");
+          resolve(false);
         } else {
-          db.run(
-            `INSERT INTO userCourses (username, courseInstance) VALUES
-            (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
-            [user.username, code],
-            err => {
-              
-              if (err) {
-                reject(err.message);
-              } else {
-                resolve(true);
-              }
+          let sql = `SELECT COUNT(username) as COUNT from userCourses where username = ?`
+          db.run(sql, user, (err, row) => {
+            if(err){
+              reject(err.message);
             }
-          );
+            if(row.COUNT < 4){
+              db.run(
+                `INSERT INTO userCourses (username, courseInstance) VALUES
+                (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
+                [user.username, code],
+                err => { 
+                  if (err) {
+                    reject(err.message);
+                  } else {
+                    resolve(true);
+                  }
+                }
+              );
+            } else {
+              reject(false);
+            }
+          })
         }
       }).catch(err => {
         if(err){
@@ -97,24 +106,67 @@ module.exports = {
     });
   },
 
-  // returns all the users AND THEIR EMAILS enrolled in a courseInstance
+  // returns all the usernames enrolled in a courseInstance
   courseUsers: function(code) {
     return new Promise((resolve, reject) => {
       // I want all the USERS enrolled in the current course instance
       db.all(
-        `SELECT * from userCourses
+        `SELECT username from userCourses
       LEFT JOIN courseInstance ON 
       userCourses.courseInstance = courseInstance.id
       where code = ? AND term = (SELECT term from term WHERE active);`,
         code,
         (err, rows) => {
           if (err) {
-            reject(err.message);
+            reject({code: 500, msg: err.message});
           } else {
-            resolve(rows);
+            resolve({code: 200, data: rows});
           }
         }
       );
     });
+  },
+
+  addCourseDeadline: function(code, assignment){
+    return new Promise((resolve, reject) => {
+      const { title, desc, startdate, deadline } = assignment;
+
+      let sql = `INSERT INTO courseInstanceDeadlines (cInstanceid, title, desc, startdate, deadline)
+       VALUES ( 
+         (SELECT id FROM courseInstance WHERE code = ? AND term = (SELECT term FROM term WHERE active)),
+          ?, ?, ?, ?)`;
+      db.run(sql, [code, title, desc, startdate, deadline], function(err){
+        if(err){
+          reject({code: 500, msg: err.message});
+        } else {
+          (this.changes) 
+            ? resolve({code: 200, msg: "OK"}) 
+            : resolve({code: 400, msg: "Failed to Insert, check your values again"});          
+        }
+      });
+    });
+  },
+
+  getCourseDeadlines: function(code){
+    return new Promise((resolve, reject) => {
+      //if passed an array of course codes instead of a single course code...
+      let placeholders = '?'; 
+
+      if(code.length){
+        placeholders = code.map(code => "(?)").join(",");  
+      }
+      let sql = `SELECT title, desc, startdate, deadline FROM courseInstanceDeadlines
+                LEFT JOIN courseInstance ON courseInstanceDeadlines.cInstanceid = courseInstance.id
+                WHERE term = (SELECT term from term where active)
+                AND code = ` + placeholders;
+      db.all(sql, code, (err, rows) => {
+        if(err){
+          reject({code: 500, msg: err.message});
+        } else {
+          let empty = !isEmpty(row);
+          resolve({success : succ, code: (empty) ? 200 : 404, data: rows, msg: (empty) ? "OK" : "Cannot find any deadlines"});
+        }
+      })
+    })
   }
 };

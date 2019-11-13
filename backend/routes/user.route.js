@@ -27,52 +27,43 @@ router.post("/register", (req, res) => {
     return res.status(400).json(errors);
   }
 
-  user.userExists(req.body.name).then(function(acc) {
-    //check if username or email exists in the database
-    if (acc) {
-      errors.error = req.body.name + " already exists in the db!";
-      return res.status(400).json(errors);
-    } else {
-      let newUser = {
-        username: req.body.name,
-        email: req.body.email,
-        password: undefined
-      };
-      
-      chatkit.createUser({
-        id: req.body.name,
-        name: req.body.name,
-      })
-        .then(() => {
-          console.log('Chatkit user created successfully');
-        }).catch((err) => {
-          console.error('Chatkit error on user creation', err);
-        });
-      //hash password
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(req.body.password, salt, (err, hash) => {
-          if (err) {
-            console.log(err);
-            return res.status(500).json(err);
-          }
+  let newUser = {
+    username: req.body.name,
+    email: req.body.email,
+    password: undefined
+  };
+  
+  //hash password
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(req.body.password, salt, (err, hash) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json(err);
+      }
 
-          newUser.password = hash;
+      newUser.password = hash;
 
-          user
-            .addUser(newUser)
-            .catch(err => {
-              if (err) {
-                return res.status(500).json(err);
-              }
-            })
-            .then(() => {
-              return res.status(200).json({ success: true });
-            });
-        });
+      user.addUser(newUser)
+      .then( reply => {
+        if(reply.code == 200){
+          chatkit.createUser({
+            id: req.body.name,
+            name: req.body.name,
+          }).then(() => {
+            console.log('Chatkit user created successfully');
+          }).catch((err) => {
+            console.error('Chatkit error on user creation', err);
+          });
+        }
+        return res.status(reply.code).json(reply);
+      }).catch(err => {
+        if (err) {
+          return res.status(err.code).json(err);
+        }
       });
-    }
+    });
   });
-}); // returns in a promise chain is a TOP LEVEL RETURN.
+}); 
 
 // @route POST /login
 // @desc Login user and return JWT authentication token
@@ -121,7 +112,7 @@ router.post("/login",
     });
   }).catch(err => {
     if (err) {
-      return res.status(500).json(err);
+      return res.status(err.code).json(err);
     }
   });
 });
@@ -129,7 +120,7 @@ router.post("/login",
 // @route GET /logout
 // @desc Logs out of an existing session
 // @access Public
-router.get('/logout',  (req, res) => {
+router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
@@ -141,14 +132,10 @@ router.get('/logout',  (req, res) => {
 router.post('/:username/delete', (req, res) => {
   const username = req.params.username;
 
-  user.deleteUser(username).then( success => {
-    if(success){
-      return res.status(200).json({"success": success });
-    } else {
-      return res.status(404).json({"success": success});
-    }
+  user.deleteUser(username).then( reply => {
+    return res.status(reply.code).json(reply);
   }).catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
 
@@ -161,6 +148,7 @@ router.post('/:username/delete', (req, res) => {
             (
               new_email (optional), 
               new_password (optional),
+              new_zid (optional)
             )
           }
 */
@@ -173,14 +161,10 @@ router.put('/:username/update', (req, res) => {
     return res.status(400).json(errors);
   }
 
-  user.updateUser(req.params.username, req.body).then( success => {
-    if(success){
-      return res.status(200).json({ success: true });
-    } else {
-      return res.status(400).json( {success: false});
-    }
+  user.updateUser(req.params.username, req.body).then( reply => {
+    return res.status(reply.code).json(reply);
   }).catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
 
@@ -188,30 +172,64 @@ router.put('/:username/update', (req, res) => {
 // @desc returns all the courses enrolled by a user during the current term
 // @access Private
 router.get('/:username/courses', (req, res) => {
-  user.userCourses(req.params.username).then(rows => {
-    return res.status(200).json(rows);
+  user.userCourses(req.params.username).then(reply => {
+    if(reply.success){
+      return res.status(reply.code).json(reply.data);
+    } else {
+      return res.status(reply.code).json(reply.msg);
+    }
+    
   }).catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
 
-// @route POST /:username/add-friend 
+// @route POST /user/add-friend 
 // @desc Adds friend to friendlist
-// @body { friendname }
+// @body { username, friendname }
 // @access Private
 router.post('/:username/add-friend', (req, res) => {
-  user.addFriend(req.params.username, req.body.friendname)
-  .then(success => {
-    if(success){
-      return res.status(200).json({ success: true });
+  user.addFriend(req.body.username, req.body.friendname)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+});
+
+// @route GET /user
+// @desc Retrieves user information from the db.
+// @body { user1, user2 ... }
+// @access Private
+router.get('/user', (req, res) => {
+  user.getUserInfo(req.body)
+  .then(reply => {
+    if(reply.success){
+      return res.status(reply.code).json(reply.data);
     } else {
-      return res.status(400).json( {success: false});
+      return res.status(reply.code).json(reply.msg);
     }
   })
   .catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
+
+// @route POST /user
+// @desc Modifies user privileges
+// @body { username }
+// @access Private
+router.post('/user/promote', (req, res) =>{
+  user.promoteUser(req.body.username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+})
+
 
 router.get('/verify-token', (req, res) => {
   try {

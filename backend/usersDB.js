@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const getdb = require("./db").getDb;
 const groupdb = require("./groupDB");
+const isEmpty = require("is-empty");
 
 let db = getdb();
 
@@ -14,10 +15,12 @@ module.exports = {
       
       let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
       db.run(query, [username, password, email, null, 3, date_joined], function(err) {
-        if (err) {
-          reject(err.message);
+        if(err) {
+          reject({code: 400, msg: err.message});
         } else {
-          (this.lastID) ? resolve(true) : resolve(false);
+          (this.lastID) 
+            ? resolve({code: 200, msg: "OK"}) 
+            : resolve({code: 503, msg: "Not available at this time"});
         }
       });
     });
@@ -29,11 +32,11 @@ module.exports = {
       let sql = `UPDATE users SET rank = ? WHERE username = ?`;
       db.run(sql, [rank, username], function(err){
         if(err){
-          reject(err.message);
+          reject({code: 500, msg: err.message});
         }
-
-        (this.changes) ? resolve(true) : resolve(false);
-          
+        (this.changes) 
+          ? resolve({code: 200, msg: "OK"}) 
+          : resolve({code: 404, msg: "User not found"});
       });
     });
   },
@@ -44,18 +47,22 @@ module.exports = {
       let sql = `DELETE FROM users WHERE username = ?`;
       db.run(sql, user, function(err){
         if (err) {
-          reject(err.message);
+          reject({code: 500, msg: err.message});
         }
 
         if(this.changes){ 
-          db.run(`DELETE FROM userCourses WHERE username = ?`, user);
-          db.run(`DELETE FROM userFriends WHERE userid = ? OR friendid = ?`, [user, user]);
-          db.run(`DELETE FROM groupUsers WHERE username = ?`, user);
-          db.run(`UPDATE forumPosts SET userId = ? WHERE userId = ?` [null, user]);
-          groupdb.deleteUser(user);
-          resolve(true);
+          // unenrol users from courses
+          db.run(`DELETE FROM userCourses WHERE username = ?`, user).catch(err => { console.log(err.message)});
+          // remove friend listings
+          db.run(`DELETE FROM userFriends WHERE userid = ? OR friendid = ?`, [user, user]).catch(err => { console.log(err.message)});
+          // remove user from any existing groups
+          db.run(`DELETE FROM groupUsers WHERE username = ?`, user).catch(err => { console.log(err.message)});
+          // remove post identification but keeping post content.
+          db.run(`UPDATE forumPosts SET userId = ? WHERE userId = ?` [null, user]).catch(err => { console.log(err.message)});
+          
+          resolve({code: 200, msg: "OK"});
         } else {
-          resolve(false);
+          resolve({code: 404, msg: "User not found"});
         }
       });
     });
@@ -63,27 +70,27 @@ module.exports = {
 
   updateUser: function(updates){
     return new Promise((resolve, reject) => {
-      //console.log(user, updates);
+      
       if(updates.last_login){
         db.run(`UPDATE users SET last_login=? WHERE username=?`, [updates.last_login, updates.username], err => {
           if(err){
-            reject(err.message);
+            reject({code: 500, msg: err.message});
           } else {
-            resolve(true);
+            resolve({code: 200, msg: "OK"});
           }
         });
       } else {
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(updates.new_password, salt, (err, hash) => {
             if (err) {
-              reject(err.message);
+              reject({code: 500, msg: err.message});
             }
-            let sql = `UPDATE users SET password=?, email = ? WHERE username=?`;
-            db.run(sql, [hash, updates.new_email, updates.username], function(err){
+            let sql = `UPDATE users SET password=?, email = ?, zid=? WHERE username=?`;
+            db.run(sql, [hash, updates.new_email, updates.new_zid, updates.username], function(err){
               if(err){
-                reject(err.message);
+                reject({code: 500, msg: err.message});
               } 
-              (this.changes) ? resolve(true) : resolve(false);
+              (this.changes) ? resolve({code: 200, msg: "OK"}) : resolve({code: 404, msg: "User not found"});
             });    
           })
         });
@@ -97,12 +104,12 @@ module.exports = {
         let sql = `INSERT INTO userFriends (userid, friendid) VALUES (?, ?), (?, ?)`;
         db.run(sql, [username, friendname, friendname, username], function(err){
           if(err){
-            reject(err.message);
+            reject({code: 500, msg: err.message});
           } 
-          (this.changes) ? resolve(true) : resolve(false);
+          (this.changes) ? resolve({code: 200, msg: "OK"}) : resolve({code: 400, msg: "Failed to Insert, check your values again"});
         });
       } else {
-        reject(username + " Or " + friendname + " is not a valid userid!");
+        resolve({code: 404, msg: "User not found"});
       }
     })
   },
@@ -115,9 +122,9 @@ module.exports = {
           identifier,
           (err, row) => {
             if (err) {
-              reject(err.message);
+              reject({code: 500, msg: err.message});
             } else {
-              resolve(row);
+              resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row});
             }
           }
         );
@@ -127,9 +134,9 @@ module.exports = {
           identifier,
           (err, row) => {
             if (err) {
-              reject(err.message);
+              reject({code: 500, msg: err.message});
             } else {
-              resolve(row);
+              resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row});
             }
           }
         );
@@ -147,11 +154,47 @@ module.exports = {
                   AND term = (SELECT term from term WHERE active);`;
         db.all(sql, user, (err, rows) => {
           if(err){
-            reject(err.message);
+            reject({code: 500, msg: err.message});
           } else {
-            resolve(rows);
+            resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row, msg: (success) ? "OK" : "Username not found"});
           }
         });
     });
+  },
+
+  // minus password of course
+  getUserInfo: function(userArray){
+    return new Promise((resolve, reject) => {
+      
+      if(userArray.length == 1){
+        db.get(`SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username = ?`, userArray[0], (err, row) => {
+          if(err){
+            reject({code: 500, msg: err.message});
+          }
+          resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row, msg: (success) ? "OK" : "Username(s) not found"});
+        })
+      }
+
+      //if(userArray.length > 10){
+        /*
+        var i, j, temparray, chunk = 10;
+        for (i=0,j=array.length; i<j; i+=chunk) {
+            temparray = array.slice(i,i+chunk);
+            // do whatever
+        }*/
+        //let sql = `SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username IN ` + placeholders;
+      //} else {
+        let placeholders = userArray.map(user => "(?)").join(",");
+        let sql = `SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username IN ` + placeholders;
+        //console.log(sql);
+        db.all(sql, userArray, (err, row) => {
+          if(err){
+            reject({code: 500, msg: err.message});
+          }
+          let empty = !isEmpty(row);
+          resolve({success : empty, code: (empty) ? 200 : 404, msg: (empty) ? "OK" : "Course not in db", data: row});
+        })
+      //}
+    })
   }
 };

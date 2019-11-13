@@ -57,6 +57,16 @@ db = new sqlite3.Database("test.db", err => {
       unique (code, term)
   );
 
+  CREATE TABLE IF NOT EXISTS courseInstanceDeadlines (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cInstanceid INETGER REFERENCES courseInstance,
+    title TEXT NOT NULL,
+    desc TEXT,
+    startdate TIMESTAMP NOT NULL,
+    deadline TIMESTAMP NOT NULL,
+    unique (cInstanceid, startdate, deadline)
+  );
+
   CREATE TABLE IF NOT EXISTS term (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   term VARCHAR(6) NOT NULL UNIQUE,
@@ -145,7 +155,7 @@ db = new sqlite3.Database("test.db", err => {
         }
       );
     });
-
+    /*
     db.serialize(() => {
       db.run("begin transaction");
       const courseEntry = db.prepare(
@@ -178,7 +188,7 @@ db = new sqlite3.Database("test.db", err => {
       db.run("commit");
       courseEntry.finalize();
       courseInstanceEntry.finalize();
-    });
+    });*/
   });
 });
 
