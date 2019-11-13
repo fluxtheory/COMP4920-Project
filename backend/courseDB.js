@@ -73,7 +73,7 @@ module.exports = {
 
       userdb.userExists(user).then(user => {
         if(!user){
-          resolve(false);
+          resolve({code: 404, msg: "User not found"});
         } else {
           let sql = `SELECT COUNT(username) as COUNT from userCourses where username = ?`
           db.run(sql, user, (err, row) => {
@@ -87,14 +87,14 @@ module.exports = {
                 [user.username, code],
                 err => { 
                   if (err) {
-                    reject(err.message);
+                    reject({code: 500, msg: err.message});
                   } else {
-                    resolve(true);
+                    resolve({code: 200, msg: "OK"});
                   }
                 }
               );
             } else {
-              reject(false);
+              reject({code: 400, msg: "Cannot enrol user in more than 4 courses!"});
             }
           })
         }

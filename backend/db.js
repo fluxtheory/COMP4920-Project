@@ -106,7 +106,8 @@ db = new sqlite3.Database("test.db", err => {
   userId INTEGER REFERENCES users,
   kudos INTEGER DEFAULT 0,
   datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  postContent TEXT NOT NULL 
+  postContent TEXT NOT NULL,
+  sticky BOOLEAN DEFAULT 0 NOT NULL 
   );
 
   CREATE TABLE IF NOT EXISTS userFriends (

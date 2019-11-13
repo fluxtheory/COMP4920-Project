@@ -11,15 +11,11 @@ router.post('/:course/feed/post', (req, res) => {
     const { parentId, username, content } = req.body;
 
     feeddb.addPost(parentId, username, req.params.course, content)
-    .then(success => {
-        if(success){
-            return res.status(200).json({"success" : success});
-        } else {
-            return res.status(400).json({"success" : success});
-        }
+    .then(reply => {
+        return res.status(reply.code).json(reply);
     })
     .catch(err => {
-        return res.status(500).json(err);
+        return res.status(err.code).json(err);
     });
 });
 
@@ -41,15 +37,9 @@ router.post('/:course/feed/:id/delete', (req, res) => {
     });
 });
 
-// edit post
-// @route PUT /:course/feed/:id/edit
-// @desc Edits a post made by the user and ONLY by the user.
-// @access private
-//router.put();
-
-// upboat poast
+// toggle upboat poast
 // @route POST /:course/feed/:id/upvote
-// @desc Attaches a like to a post.
+// @desc Attaches a like to a post. Clicking again removes the like.
 // @access private
 router.post('/:course/feed/:id/upvote', (req, res) => {
     feeddb.upvotePost(req.params.id)
@@ -79,5 +69,41 @@ router.get('/:course/feed', (req, res) => {
     });
 });
 
+
+// edit post
+// @route PUT /:course/feed/:id
+// @desc Edit a post
+// @body { post }
+// @access private
+router.put('/:course/feed/:id', (req, res) => {
+    const { course, id } = req.params;
+    const post = req.body.post;
+
+    feeddb.editPost(id, post)
+    .then(reply => {
+
+    })
+    .catch(err => {
+
+    })
+
+});
+
+
+// toggle sticky post
+// @route POST /:course/feed/id/sticky
+// @desc Toggle Sticky a post
+// @access private
+router.post('/:course/feed/:id/sticky', (req, res) => {
+    const { course, id } = req.params;
+
+    feeddb.toggleStickyPost(id)
+    .then(reply => {
+        return res.status(reply.code).json(reply);
+    })
+    .catch(err => {
+        return res.status(err.code).json(err);
+    })
+});
 
 module.exports = router;
