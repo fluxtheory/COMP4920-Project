@@ -25,15 +25,11 @@ router.post('/:course/feed/post', (req, res) => {
 // @access private
 router.post('/:course/feed/:id/delete', (req, res) => {
     feeddb.deletePost(req.params.id)
-    .then(success => {
-        if(success){
-            return res.status(200).json({"success" : success});
-        } else {
-            return res.status(400).json({"success" : success});
-        }
+    .then(reply => {
+        return res.status(reply.code).json(reply);
     })
     .catch(err => {
-        return res.status(500).json(err);
+        return res.status(err.code).json(err);
     });
 });
 
@@ -43,15 +39,11 @@ router.post('/:course/feed/:id/delete', (req, res) => {
 // @access private
 router.post('/:course/feed/:id/upvote', (req, res) => {
     feeddb.upvotePost(req.params.id)
-    .then(success => {
-        if(success){
-            return res.status(200).json({"success" : success});
-        } else {
-            return res.status(400).json({"success" : success});
-        }
+    .then(reply => {
+        return res.status(reply.code).json(reply);
     })
     .catch(err => {
-        return res.status(500).json(err);
+        return res.status(err.code).json(err);
     });
 });
 
@@ -65,7 +57,7 @@ router.get('/:course/feed', (req, res) => {
         return res.status(200).json(posts);
     })
     .catch(err => {
-        return res.status(500).json(err);
+        return res.status(err.code).json(err);
     });
 });
 
@@ -81,10 +73,10 @@ router.put('/:course/feed/:id', (req, res) => {
 
     feeddb.editPost(id, post)
     .then(reply => {
-
+        return res.status(reply.code).json(reply);
     })
     .catch(err => {
-
+        return res.status(err.code).json(err);
     })
 
 });
