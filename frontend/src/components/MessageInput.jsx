@@ -41,6 +41,7 @@ function MessageInput(props) {
     } catch (err) {
       throw Error(`Sending message via Chatkit fucked up: ${err}`);
     } finally {
+      setMessage('');
     }
   };
 
