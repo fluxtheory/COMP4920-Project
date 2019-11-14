@@ -13,7 +13,7 @@ const courses = require("./routes/course");
 const groups = require("./routes/group");
 const feed = require("./routes/feed");
 const Chatkit = require('@pusher/chatkit-server');
-
+const config = require('config');
 
 const API_PORT = 3001;
 const app = express();
@@ -23,7 +23,9 @@ app.use(cors());
 // bodyParser, parses the request body to be a readable json format
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(logger("dev"));
+if(config.util.getEnv('NODE_ENV') !== 'test') {
+    app.use(logger("dev"));
+}
 
 
 app.use(
