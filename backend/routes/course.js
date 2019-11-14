@@ -74,6 +74,7 @@ router.post("/:course/enrol", (req, res) => {
   const username = req.body.username;
   const course = req.params.course;
   console.log(username, course);
+  // TODO: promise chaining
   chatkit
     .addUsersToRoom({
       roomId: course + "_public",

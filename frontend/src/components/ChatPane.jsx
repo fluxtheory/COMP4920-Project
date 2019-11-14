@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import { Redirect, useParams, useRouteMatch } from 'react-router-dom';
+import { Redirect, useParams, useRouteMatch, Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { UserSearchForm } from './course/UserSearchForm';
-import { Fab } from '@material-ui/core';
-import { flexbox } from '@material-ui/system';
+import { Fab, Button, Box } from '@material-ui/core';
+import { Session } from '../App';
+
+// MRTODO: this file needs to be better named
+// MRTODO: even it's own folder with each supanel as a component
 
 const ExpansionPanel = withStyles({
   root: {
@@ -73,6 +76,17 @@ const useStyles = makeStyles(theme => ({
 
   addGroupButton: {
     margin: '0.8rem 0',
+  },
+  groupListContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginTop: '0.2rem',
+    justifyContent: 'start',
+    alignContent: 'start',
+  },
+
+  userButton: {
+    justifyContent: 'start',
   },
 }));
 
@@ -147,6 +161,26 @@ const GroupsSubpanel = () => {
   const classes = useStyles();
   const [addRequest, setAddRequest] = React.useState(false);
   const { params } = useRouteMatch('/kudo/:course');
+  const session = useContext(Session);
+  const [groups, setGroups] = useState([]);
+
+  console.log('Groups subpanel:');
+  console.log(groups);
+  // MRTODO: update on group creation
+  useEffect(() => {
+    console.log(session.user.rooms);
+    const courseGroups = session.user.rooms
+      .map(room => room.id)
+      .filter(room => room.startsWith('__'))
+      .map(room => room.split('__group__')[1])
+      .map(room => room.split('|'))
+      .map(([_, a, b]) => {
+        // MRTODO: remove malformed group manes -> no ened to check for 'b'
+        if (a === params.course && b) return b;
+      });
+    setGroups(courseGroups);
+  }, [params.course]);
+  // MRTODO: find a way to update group list on new group
 
   useEffect(() => {
     if (addRequest) setAddRequest(false);
@@ -161,8 +195,23 @@ const GroupsSubpanel = () => {
     return <Redirect to={`/kudo/${params.course}/group/create`} />;
   }
 
+  // MRTODO: clean
   return (
     <div className={classes.groupSubpanelContainer}>
+      <div className={classes.groupListContainer}>
+        {groups.map(u => {
+          return (
+            <Button
+              component={Link}
+              to={`/kudo/${params.course}/group/${u}`}
+              classes={{ root: classes.userButton }}
+              key={u}
+            >
+              <Box mx={1}>{u}</Box>
+            </Button>
+          );
+        })}
+      </div>
       <Fab
         className={classes.addGroupButton}
         onClick={handleClick}

@@ -7,9 +7,10 @@ import { CoursePage } from './CoursePage';
 import { CoursesPane } from '../components/course/CoursesPane';
 import { TabBar } from '../components/TabBar';
 import { PublicChat } from '../components/PublicChat';
-import { Box } from '@material-ui/core';
+import { Box, Typography, TextField } from '@material-ui/core';
 import { UserSearchForm } from '../components/course/UserSearchForm';
 import { ChatPane } from '../components/ChatPane';
+import { CreateGroup } from './CreateGroup';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -104,11 +105,6 @@ const SacredTopBar = () => {
 };
 
 // MRTODO: remove
-const GroupCreate = () => {
-  const { params } = useRouteMatch('/kudo/:course/group/create');
-  return <h1>{`I'm create group chat for course: ${params.course} `}</h1>;
-};
-
 const GroupChat = () => {
   const { params } = useRouteMatch('/kudo/:course/group/:group');
   return (
@@ -121,7 +117,6 @@ const PlebbyChangingContent = () => {
   return (
     <React.Fragment>
       <div className={classes.contentArea}>
-        <h3>Changing Content</h3>
         <Switch>
           <Route path={makePath('/dashboard')}>
             {/* TODO: this is be be deprecated */}
@@ -141,7 +136,7 @@ const PlebbyChangingContent = () => {
             <h1>I'm the course feed</h1>
           </Route>
           <Route exact path={makePath('/:course/group/create')}>
-            <GroupCreate />
+            <CreateGroup />
           </Route>
           <Route exact path={makePath('/:course/group/:group')}>
             <GroupChat />

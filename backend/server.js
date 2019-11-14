@@ -11,7 +11,13 @@ const initdb = require("./initdb");
 const keys = require("./config/keys");
 const courses = require("./routes/course");
 const groups = require("./routes/group");
-const Chatkit = require("@pusher/chatkit-server");
+const Chatkit = require("@pusher/chatkit-server"); 
+
+// MRTODO: module exports this
+// export const chatkit = new Chatkit.default({
+//   instanceLocator: 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77',
+//   key: '9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=', // This is bad, use .env vars
+// })
 
 const API_PORT = 3001;
 const app = express();
