@@ -87,6 +87,8 @@ module.exports = {
 
     sortCourseFeed: function(posts){
       var List = require('linked-list');
+
+      //posts.forEach();
       return posts;
     },
 

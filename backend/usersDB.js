@@ -81,12 +81,16 @@ module.exports = {
         });
       } else {
         bcrypt.genSalt(10, (err, salt) => {
+          if(err){
+            reject({code: 500, msg: err.message});
+          }
           bcrypt.hash(updates.new_password, salt, (err, hash) => {
             if (err) {
               reject({code: 500, msg: err.message});
             }
-            let sql = `UPDATE users SET password=?, email = ?, zid=? WHERE username=?`;
-            db.run(sql, [hash, updates.new_email, updates.new_zid, updates.username], function(err){
+            let sql = `UPDATE users SET password=?, email = ? WHERE username=?`;
+            
+            db.run(sql, [hash, updates.new_email, updates.username], function(err){
               if(err){
                 reject({code: 500, msg: err.message});
               } 
@@ -136,7 +140,8 @@ module.exports = {
             if (err) {
               reject({code: 500, msg: err.message});
             } else {
-              resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row});
+              let empty = !isEmpty(row);
+              resolve({success : empty, code: (empty) ? 200 : 404, data: row});
             }
           }
         );
@@ -156,7 +161,8 @@ module.exports = {
           if(err){
             reject({code: 500, msg: err.message});
           } else {
-            resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row, msg: (success) ? "OK" : "Username not found"});
+            let empty = !isEmpty(rows);
+            resolve({success : empty, code: (empty) ? 200 : 404, data: rows, msg: (empty) ? "OK" : "Username not found"});
           }
         });
     });

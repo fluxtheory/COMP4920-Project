@@ -104,6 +104,17 @@ module.exports = {
         });
     },
 
+    transferGroupLeader: function(new_leader, group_name, course){
+        return new Promise((resolve, reject) => {
+            db.run(`UPDATE groups SET owner = ? WHERE id = ?`, [row.username, row.groupid], err => {
+                if(err){
+                    reject(err.message);
+                } else {
+                    resolve(true);
+                }
+            });
+        })
+    },
 
     leaveGroup: function(user, group_name, course){
         
@@ -152,13 +163,7 @@ module.exports = {
                                 }
 
                                 // user promotion.
-                                db.run(`UPDATE groups SET owner = ? WHERE id = ?`, [row.username, row.groupid], err => {
-                                    if(err){
-                                        reject(err.message);
-                                    } else {
-                                        resolve(true);
-                                    }
-                                });  
+                                this.transferGroupLeader()                   
                             });
                             
                         } else {

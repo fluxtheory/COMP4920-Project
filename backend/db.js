@@ -110,6 +110,7 @@ db = new sqlite3.Database("test.db", err => {
   sticky BOOLEAN DEFAULT 0 NOT NULL 
   );
 
+
   CREATE TABLE IF NOT EXISTS userFriends (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userid TEXT REFERENCES users NOT NULL,
@@ -118,6 +119,14 @@ db = new sqlite3.Database("test.db", err => {
   );`;
 
   // do we need both topicId and parentId??
+  /*
+  CREATE TABLE IF NOT EXISTS groupFormation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
+    
+    desc
+    wantGroup BOOLEAN NOT NULL,
+  );*/
 
   let ranks = ["Course Moderator", "Course Helper", "Member"];
   let placeholders = ranks.map(ranks => "(?)").join(",");
