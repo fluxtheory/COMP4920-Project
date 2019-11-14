@@ -60,7 +60,11 @@ function PostCompact(props) {
         </Link>
         <Paper className={classes.upvoteSection}>
           <div className={classes.upvoteButton}>
-            <UpvoteButton initialUpvoteState={false} />
+            {post ? (
+              <UpvoteButton thisPost={post} initialUpvoteState={false} />
+            ) : (
+              <div></div>
+            )}
           </div>
           <Typography className={classes.upvoteButton} component="p">
             {post.kudos}

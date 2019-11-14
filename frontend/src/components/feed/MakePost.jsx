@@ -8,24 +8,6 @@ import { api } from '../../utils';
 import { Session } from '../../App';
 import { Redirect } from 'react-router-dom';
 
-/*
-// @route POST /:course/feed/post
-// @desc Add/reply to a post in the course topic feed.
-// @body parentId, username, content
-// @access private
-router.post("/:course/feed/post", (req, res) => {
-    const { parentId, username, content } = req.body;
-  
-    feeddb
-      .addPost(parentId, username, req.params.course, content)
-      .then(reply => {
-        return res.status(reply.code).json(reply);
-      })
-      .catch(err => {
-        return res.status(err.code).json(err);
-      });
-  });
-*/
 const useStyles = makeStyles(theme => ({
   MakePostContainer: {
     maxWidth: '1000px',

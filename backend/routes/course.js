@@ -79,6 +79,13 @@ router.post("/:course/enrol", (req, res) => {
     .addUsertoCourseInstance(username, course)
     .then(success => {
       if (success) {
+        chatkit
+          .addUsersToRoom({
+            roomId: course + "_public",
+            userIds: [username]
+          })
+          .then(() => console.log("added"))
+          .catch(err => console.error(err));
         return res.status(200).json({ success: true });
       } else {
         return res.status(404).json({ success: false });

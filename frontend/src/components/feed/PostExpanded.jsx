@@ -19,11 +19,19 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'cream',
     border: '3px solid red',
   },
-  postSection: {
+  postTitleSection: {
     width: '70%',
     height: '100%',
     margin: '0.5rem',
     float: 'left',
+    overflow: 'auto',
+  },
+  postContentSection: {
+    width: '99%%',
+    height: '50vh',
+    margin: '0.5rem',
+    float: 'left',
+    overflow: 'auto',
   },
   upvoteSection: {
     width: '20%',
@@ -78,30 +86,34 @@ function PostExpanded() {
   return (
     <div className={classes.PostContainer}>
       <Paper className={classes.post}>
-        <Paper className={classes.postSection}>
+        <Paper className={classes.postTitleSection}>
           <Typography
-            className={classes.postSection}
+            className={classes.postTitleSection}
             variant="h5"
             component="h3"
           >
-            {thisPost ? thisPost.title : 'lol'}
+            {thisPost ? thisPost.title : 'loading...'}
           </Typography>
         </Paper>
-        <Paper className={classes.postSection}>
+        <Paper className={classes.postTitleSection}>
           <Typography
-            className={classes.postSection}
+            className={classes.postContentSection}
             variant="h5"
             component="h3"
           >
-            {thisPost ? thisPost.postContent : 'lol'}
+            {thisPost ? thisPost.postContent : 'loading...'}
           </Typography>
         </Paper>
         <Paper className={classes.upvoteSection}>
           <div className={classes.upvoteButton}>
-            <UpvoteButton initialUpvoteState={false} />
+            {thisPost ? (
+              <UpvoteButton thisPost={thisPost} initialUpvoteState={false} />
+            ) : (
+              <div></div>
+            )}
           </div>
           <Typography className={classes.upvoteButton} component="p">
-            {thisPost ? thisPost.kudos : 'lol'}
+            {thisPost ? thisPost.kudos : 'loading...'}
           </Typography>
         </Paper>
       </Paper>
