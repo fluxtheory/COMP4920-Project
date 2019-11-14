@@ -30,16 +30,37 @@ const useStyles = makeStyles(theme => ({
 const getLastFiveChats = function(session) {
   return new Promise((resolve, reject) => {
     // note: rooms are provided in descending order of the last message sent
+    // get room
+    // identify DM_ in id
+    // get user id of other user whom isnt the current session holder
     try {
       let ret = [];
+      console.log(session.user.rooms.length);
       for (let i = 0; i < 5 || i >= session.user.rooms.length; i++) {
         let nextRoom = session.user.rooms[i];
+
         let id_split = nextRoom.id.split('_');
-        let otherUser = '';
         if (id_split[0] !== 'DM') continue;
-        if (id_split[1] === session.user.id) otherUser = id_split[2];
-        else otherUser = id_split[1];
-        ret.push(otherUser);
+        console.log(nextRoom.id);
+
+        // need to subscribe to see the users
+        session.user
+          .subscribeToRoomMultipart({
+            roomId: nextRoom.id,
+            hooks: {
+              onMessage: () => {},
+            },
+            messageLimit: 0, // Don't fetch, and notify about, old messages
+          })
+          .then(() => {
+            let otherUser = '';
+            // you can DM yourself as a clipboard of sorts. We dont want that in active chats
+            if (nextRoom.users.length === 1) return;
+            if (nextRoom.users[0].id === session.user.id)
+              otherUser = nextRoom.users[1].id;
+            else otherUser = nextRoom.users[0].id;
+            ret.push(otherUser);
+          });
       }
       resolve(ret);
     } catch (err) {
