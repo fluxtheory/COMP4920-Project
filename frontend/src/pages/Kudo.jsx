@@ -10,7 +10,6 @@ import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
 import { UserSearchForm } from '../components/course/UserSearchForm';
 import { ChatPane } from '../components/ChatPane';
-import { classes } from 'istanbul-lib-coverage';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -104,6 +103,19 @@ const SacredTopBar = () => {
   );
 };
 
+// MRTODO: remove
+const GroupCreate = () => {
+  const { params } = useRouteMatch('/kudo/:course/group/create');
+  return <h1>{`I'm create group chat for course: ${params.course} `}</h1>;
+};
+
+const GroupChat = () => {
+  const { params } = useRouteMatch('/kudo/:course/group/:group');
+  return (
+    <h1>{`I'm the course group chat for group: ${params.group} and course: ${params.course} `}</h1>
+  );
+};
+
 const PlebbyChangingContent = () => {
   const classes = useStyles();
   return (
@@ -128,8 +140,11 @@ const PlebbyChangingContent = () => {
           <Route exact path={makePath('/:course/feed')}>
             <h1>I'm the course feed</h1>
           </Route>
-          <Route exact path={makePath('/:course/group')}>
-            <h1>I'm the course group chat</h1>
+          <Route exact path={makePath('/:course/group/create')}>
+            <GroupCreate />
+          </Route>
+          <Route exact path={makePath('/:course/group/:group')}>
+            <GroupChat />
           </Route>
           <Route exact path={makePath('/:course/group/settings')}>
             <h1>I'm the course group chat management</h1>

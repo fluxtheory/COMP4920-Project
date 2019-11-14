@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import { Redirect, useParams, useRouteMatch } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { UserSearchForm } from './course/UserSearchForm';
+import { Fab } from '@material-ui/core';
+import { flexbox } from '@material-ui/system';
 
 const ExpansionPanel = withStyles({
   root: {
@@ -60,6 +63,16 @@ const useStyles = makeStyles(theme => ({
   paneContainer: {
     display: 'flex',
     flexDirection: 'column',
+  },
+
+  groupSubpanelContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+
+  addGroupButton: {
+    margin: '0.8rem 0',
   },
 }));
 
@@ -123,16 +136,44 @@ function CustomizedExpansionPanels() {
           <Typography>Groups</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-            lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+          <GroupsSubpanel />
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>
   );
 }
+
+const GroupsSubpanel = () => {
+  const classes = useStyles();
+  const [addRequest, setAddRequest] = React.useState(false);
+  const { params } = useRouteMatch('/kudo/:course');
+
+  useEffect(() => {
+    if (addRequest) setAddRequest(false);
+  }, [addRequest]);
+
+  const handleClick = () => {
+    setAddRequest(true);
+  };
+
+  if (addRequest) {
+    console.log('adding course!');
+    return <Redirect to={`/kudo/${params.course}/group/create`} />;
+  }
+
+  return (
+    <div className={classes.groupSubpanelContainer}>
+      <Fab
+        className={classes.addGroupButton}
+        onClick={handleClick}
+        // variant="contained"
+        size="small"
+        color="secondary"
+      >
+        +
+      </Fab>
+    </div>
+  );
+};
 
 export { CustomizedExpansionPanels as ChatPane };
