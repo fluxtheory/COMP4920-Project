@@ -76,7 +76,7 @@ const PrivateChat = () => {
     }
 
     setRoomId(roomName);
-  }, [session]);
+  }, [session, useParams().user]);
 
   const handleOnMessage = message => {
     setIncomingMessage(message);
