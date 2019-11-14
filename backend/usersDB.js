@@ -52,13 +52,29 @@ module.exports = {
 
         if(this.changes){ 
           // unenrol users from courses
-          db.run(`DELETE FROM userCourses WHERE username = ?`, user).catch(err => { console.log(err.message)});
+          db.run(`DELETE FROM userCourses WHERE username = ?`, user, err => {
+            if(err){
+              console.log(err.message)
+            }
+          })
           // remove friend listings
-          db.run(`DELETE FROM userFriends WHERE userid = ? OR friendid = ?`, [user, user]).catch(err => { console.log(err.message)});
+          db.run(`DELETE FROM userFriends WHERE userid = ? OR friendid = ?`, [user, user], err => {
+            if(err){
+              console.log(err.message)
+            }
+          })
           // remove user from any existing groups
-          db.run(`DELETE FROM groupUsers WHERE username = ?`, user).catch(err => { console.log(err.message)});
+          db.run(`DELETE FROM groupUsers WHERE username = ?`, user, err => {
+            if(err){
+              console.log(err.message)
+            }
+          })
           // remove post identification but keeping post content.
-          db.run(`UPDATE forumPosts SET userId = ? WHERE userId = ?` [null, user]).catch(err => { console.log(err.message)});
+          db.run(`UPDATE forumPosts SET userId = ? WHERE userId = ?`, [null, user], err => {
+            if(err){
+              console.log(err.message)
+            }
+          })
           
           resolve({code: 200, msg: "OK"});
         } else {

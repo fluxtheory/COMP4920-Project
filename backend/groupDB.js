@@ -104,7 +104,7 @@ module.exports = {
         });
     },
 
-    transferGroupLeader: function(new_leader, group_name, course){
+    transferGroupOwnership: function(new_leader, group_name, course){
         return new Promise((resolve, reject) => {
             db.run(`UPDATE groups SET owner = ? WHERE id = ?`, [row.username, row.groupid], err => {
                 if(err){
@@ -163,7 +163,7 @@ module.exports = {
                                 }
 
                                 // user promotion.
-                                this.transferGroupLeader()                   
+                                this.transferGroupOwnership();                   
                             });
                             
                         } else {

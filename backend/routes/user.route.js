@@ -40,7 +40,7 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         password: undefined
       };
-      
+      /*
       chatkit.createUser({
         id: req.body.name,
         name: req.body.name,
@@ -49,7 +49,7 @@ router.post("/register", (req, res) => {
           console.log('Chatkit user created successfully');
         }).catch((err) => {
           console.error('Chatkit error on user creation', err);
-        });
+        });*/
       //hash password
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
@@ -93,7 +93,7 @@ router.post("/login",
   //check if account exists
   user.userExists(req.body.nameOrEmail).then(acc => {
     if (!acc.success) {
-      console.log(acc);
+      //console.log(acc);
       return res.status(404).json({ error: "Username not found." });
     }
 
