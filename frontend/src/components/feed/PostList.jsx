@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Post } from './Post';
+import { PostCompact } from './PostCompact';
 import { useRouteMatch, Link } from 'react-router-dom';
 import { Session } from '../../App';
 import { api } from '../../utils';
@@ -48,11 +48,11 @@ function PostList() {
 
   return (
     <div className={classes.PostListContainer}>
-      <ul>
-        <Post />
-        <Post />
-        <Post />
-      </ul>
+      <div className={classes.userListContainer}>
+        {posts.map(p => {
+          return <PostCompact post={p} key={p.id} />;
+        })}
+      </div>
     </div>
   );
 }
