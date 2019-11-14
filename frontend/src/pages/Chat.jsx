@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { PrivateChat } from '../components/PrivateChat';
 import { useParams, Switch, Redirect, Route } from 'react-router-dom';
-import { Chatkit } from '../App';
+import { Session } from '../App';
 
 const useStyles = makeStyles({
   chatPage: {
@@ -59,7 +59,7 @@ const Chat = props => {
   const classes = useStyles();
   const { id } = useParams();
   const [identity, setIdentity] = React.useState(id || null);
-  const chatkit = React.useContext(Chatkit);
+  const session = React.useContext(Session);
 
   const handleIdentitySelect = id => event => {
     event.preventDefault();

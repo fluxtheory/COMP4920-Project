@@ -53,7 +53,6 @@ function LoginBox() {
         console.log(json);
         if (json.success === true) {
           localStorage.setItem('userToken', json.token);
-          localStorage.setItem('username', json.username);
           setLoginSuccess(true);
         } else {
           setLoginHelpString(json.error);
@@ -68,7 +67,7 @@ function LoginBox() {
   };
 
   if (loginSuccess === true) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/kudo/dashboard" />;
   }
 
   return (
