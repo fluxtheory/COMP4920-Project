@@ -4,18 +4,19 @@ let db = getdb();
 
 module.exports = {
   // add/reply comment
-  addPost: function(user, course, content, parentId, title) {
+  addPost: function(user, course, content, rootId, branchId, title) {
     return new Promise((resolve, reject) => {
       db.run(
         `INSERT INTO forumPosts 
-        (courseInstanceId, parentId, userId, datetime, postContent, title) 
+        (courseInstanceId, rootId, branchId, userId, datetime, postContent, title) 
         VALUES ( (SELECT courseInstance.id FROM courseInstance 
                   WHERE term = (SELECT term from term where active) 
                   AND code = ?),
-        ?, ?, ?, ?, ?)`,
-        [course, parentId, user, new Date(), content, title],
+        ?, ?, ?, ?, ?, ?)`,
+        [course, rootId, branchId, user, new Date(), content, title],
         err => {
           if (err) {
+            console.log(err);
             reject({ code: 500, msg: err.message });
           }
 
@@ -94,6 +95,27 @@ module.exports = {
             reject({ code: 500, msg: err.message });
           } else {
             sorted = this.sortCourseFeed(rows);
+            resolve(sorted);
+          }
+        }
+      );
+    });
+  },
+
+  // get post and all that have it as a root
+  getPostAndChildren: function(postId) {
+    return new Promise((resolve, reject) => {
+      db.all(
+        `SELECT * FROM forumPosts 
+          WHERE courseInstanceId = 
+              (SELECT id FROM courseInstance 
+              WHERE term = (SELECT term FROM term WHERE active)
+              AND (rootId = ? OR id = ?))`,
+        [postId, postId],
+        (err, rows) => {
+          if (err) {
+            reject({ code: 500, msg: err.message });
+          } else {
             resolve(sorted);
           }
         }

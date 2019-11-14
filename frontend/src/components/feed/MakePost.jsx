@@ -56,7 +56,8 @@ function MakePost() {
     console.log({ username, values });
     api
       .post('/' + course + '/feed/post', {
-        parentId: null,
+        rootId: null,
+        branchId: null,
         username,
         content: values.content,
         title: values.title,

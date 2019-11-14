@@ -12,6 +12,7 @@ import { ChatPane } from '../components/ChatPane';
 import { PrivateChat } from '../components/PrivateChat';
 import { CourseFeed } from '../components/feed/CourseFeed';
 import { MakePost } from '../components/feed/MakePost';
+import { PostExpanded } from '../components/feed/PostExpanded';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -131,6 +132,9 @@ const PlebbyChangingContent = () => {
           </Route>
           <Route exact path={makePath('/:course/feed/new')}>
             <MakePost />
+          </Route>
+          <Route exact path={makePath('/:course/post/:postId')}>
+            <PostExpanded />
           </Route>
           <Route exact path={makePath('/:course/group')}>
             <h1>I'm the course group chat</h1>

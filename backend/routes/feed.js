@@ -4,13 +4,13 @@ const feeddb = require("../feedDB");
 
 // @route POST /:course/feed/post
 // @desc Add/reply to a post in the course topic feed.
-// @body parentId, username, content
+// @body rootId, branchId, username, content, title
 // @access private
 router.post("/:course/feed/post", (req, res) => {
-  const { parentId, username, content, title } = req.body;
+  const { rootId, branchId, username, content, title } = req.body;
 
   feeddb
-    .addPost(username, req.params.course, content, parentId, title)
+    .addPost(username, req.params.course, content, rootId, branchId, title)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })
@@ -60,6 +60,23 @@ router.get("/:course/feed", (req, res) => {
       return res.status(200).json(posts);
     })
     .catch(err => {
+      return res.status(err.code).json(err);
+    });
+});
+
+// get post and children
+// @route GET /post/:postId
+// @desc Retrieves the post with the given id and all that
+// have it as their rootId
+// @access private
+router.get("/post/:postId", (req, res) => {
+  feeddb
+    .getPostAndChildren(req.params.postId)
+    .then(posts => {
+      return res.status(200).json(posts);
+    })
+    .catch(err => {
+      console.log(err);
       return res.status(err.code).json(err);
     });
 });

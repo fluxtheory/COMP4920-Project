@@ -102,7 +102,8 @@ db = new sqlite3.Database("test.db", err => {
   CREATE TABLE IF NOT EXISTS forumPosts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
-  parentId INTEGER REFERENCES forumPosts,
+  rootId INTEGER REFERENCES forumPosts,
+  branchId INTEGER REFERENCES forumPosts,
   userId INTEGER REFERENCES users,
   kudos INTEGER DEFAULT 0,
   datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

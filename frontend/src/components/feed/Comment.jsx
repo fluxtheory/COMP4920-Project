@@ -40,9 +40,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function PostCompact(props) {
+function Comment(props) {
   const classes = useStyles();
-  const post = props.post;
+  const post = props.thisPost;
+  const allPosts = props.allPosts;
+  const children = allPosts.filter(i => i.branchId === post.id);
+  console.log(children);
 
   return (
     <div className={classes.PostContainer}>
@@ -54,7 +57,7 @@ function PostCompact(props) {
               variant="h5"
               component="h3"
             >
-              {post.title}
+              {post.content}
             </Typography>
           </Paper>
         </Link>
@@ -66,9 +69,15 @@ function PostCompact(props) {
             {post.kudos}
           </Typography>
         </Paper>
+        <div>
+          {children.map(p => {
+            if (p.id !== post.id)
+              return <Comment allPosts={allPosts} thisPost={p} key={p.id} />;
+          })}
+        </div>
       </Paper>
     </div>
   );
 }
 
-export { PostCompact };
+export { Comment };
