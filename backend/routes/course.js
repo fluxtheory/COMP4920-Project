@@ -79,8 +79,12 @@ router.post("/:course/enrol", (req, res) => {
       roomId: course + "_public",
       userIds: [username]
     })
-    .then(() => console.log("added"))
-    .catch(err => console.error(err));
+    .then(() => {
+      console.log("added");
+    })
+    .catch(err => {
+      console.error(err);
+    });
   // make sure user exists?
   coursedb
     .addUsertoCourseInstance(username, course)
