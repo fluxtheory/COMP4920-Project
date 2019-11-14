@@ -47,7 +47,14 @@ function Message(props) {
         >
           <Typography variant="h5" component="h3">
             <Box fontWeight="fontWeightBold">{username}</Box>
-            <Box>{' - ' + props.msg.createdAt}</Box>
+            <Box>
+              {' - ' +
+                new Date(props.msg.createdAt)
+                  .toString()
+                  .split(' ')
+                  .slice(0, 5)
+                  .join(' ')}
+            </Box>
           </Typography>
           <Typography>
             -----------------------------------------------------
