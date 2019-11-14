@@ -74,7 +74,6 @@ module.exports = {
             resolve({ code: 404, msg: "User not found" });
           } else {
             let sql = `SELECT COUNT(username) as COUNT from userCourses where username = ?`;
-
             db.get(sql, user.data.username, (err, row) => {
               if (err) {
                 console.log(err.message);
@@ -85,7 +84,7 @@ module.exports = {
                 db.run(
                   `INSERT INTO userCourses (username, courseInstance) VALUES
                 (?, (select id from courseInstance where term = (SELECT term from term WHERE active) AND code = ?))`,
-                  [user.username, code],
+                  [user.data.username, code],
                   err => {
                     if (err) {
                       reject({ code: 500, msg: err.message });

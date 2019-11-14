@@ -36,12 +36,12 @@ const getLastFiveChats = function(session) {
     try {
       let ret = [];
       console.log(session.user.rooms.length);
-      for (let i = 0; i < 5 || i >= session.user.rooms.length; i++) {
+      for (let i = 0; i < 5 && i < session.user.rooms.length; i++) {
         let nextRoom = session.user.rooms[i];
+        console.log(nextRoom.id);
 
         let id_split = nextRoom.id.split('_');
         if (id_split[0] !== 'DM') continue;
-        console.log(nextRoom.id);
 
         // need to subscribe to see the users
         session.user
@@ -55,7 +55,7 @@ const getLastFiveChats = function(session) {
           .then(() => {
             let otherUser = '';
             // you can DM yourself as a clipboard of sorts. We dont want that in active chats
-            if (nextRoom.users.length === 1) return;
+            if (nextRoom.users.length < 2) return;
             if (nextRoom.users[0].id === session.user.id)
               otherUser = nextRoom.users[1].id;
             else otherUser = nextRoom.users[0].id;
