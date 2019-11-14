@@ -10,6 +10,8 @@ import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
 import { ChatPane } from '../components/ChatPane';
 import { PrivateChat } from '../components/PrivateChat';
+import { CourseFeed } from '../components/feed/CourseFeed';
+import { MakePost } from '../components/feed/MakePost';
 
 const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -125,7 +127,10 @@ const PlebbyChangingContent = () => {
             <PublicChat />
           </Route>
           <Route exact path={makePath('/:course/feed')}>
-            <h1>I'm the course feed</h1>
+            <CourseFeed />
+          </Route>
+          <Route exact path={makePath('/:course/feed/new')}>
+            <MakePost />
           </Route>
           <Route exact path={makePath('/:course/group')}>
             <h1>I'm the course group chat</h1>
