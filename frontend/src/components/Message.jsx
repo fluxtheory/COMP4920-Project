@@ -47,6 +47,7 @@ function Message(props) {
         >
           <Typography variant="h5" component="h3">
             <Box fontWeight="fontWeightBold">{username}</Box>
+            <Box>{' - ' + props.msg.createdAt}</Box>
           </Typography>
           <Typography>
             -----------------------------------------------------

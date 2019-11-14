@@ -6,6 +6,7 @@ import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { UserSearchForm } from './course/UserSearchForm';
+import { ActiveChats } from './ActiveChats';
 
 const ExpansionPanel = withStyles({
   root: {
@@ -102,12 +103,7 @@ function CustomizedExpansionPanels() {
           <Typography>Active Chats</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-            dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada
-            lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+          <ActiveChats />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel
