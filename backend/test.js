@@ -3,14 +3,17 @@ const isEmpty = require("is-empty");
 const user = require("./usersDB");
 const course = require("./courseDB");
 const group = require("./groupDB");
+const getdb = require("./db").getDb;
 
+let db = getdb();
+/*
 let db = new sqlite3.Database("test.db", err => {
   if (err) {
     return console.error(err.message);
   }
   //console.log("Connected to sqlite3 database");
 });
-
+*/
 /*
 course_values = [
     ["COMP1000", "Introduction to World Wide Web, Spreadsheets and Databases"],
@@ -179,6 +182,52 @@ groupUsers.forEach(function(entry){
 });
 */
 
-const courses = require("./text/courses");
-console.log(courses);
-db.close();
+//const courses = require("./text/courses");
+//console.log(courses);
+
+/*
+let sql = `DELETE FROM users WHERE username = ?`;
+db.run(sql, "fluxtheory", function(err){
+    console.log("Deleting " + this.lastID);
+    console.log("Rows deleted: " + this.changes);
+    if (err) {
+      console.log(err.message);
+    }
+    if( `${this.changes}` > 0){
+      db.run(`DELETE FROM userCourses WHERE username = ?`, "fluxtheory");
+    }
+});
+*/
+/*
+let query = `INSERT INTO users (username, password, email) VALUES(?, ?, ?)`;
+      db.run(query, ["fluxtheory", "fjalfk", "@hotmail.com"], function(err) {
+        console.log("Inserted into id: " + this.lastID);
+        console.log("Rows inserted: "+ this.changes);
+      });
+*/
+   /*    
+let query = `UPDATE users SET email = ? WHERE username = ?`;
+db.run(query, ["the_frost_wyrm@hotmail.com", "fluxtheory"], function(err) {
+  console.log("Updated id: " + this.lastID);
+  console.log("Rows updated: "+ this.changes);
+});
+ */
+
+/*
+function test(){
+    return new Promise((resolve, reject) => {
+        reject(1, true, "hey");
+    });
+}
+
+test().then( (a,b,c) => {
+    //console.log(a,b,c);
+}).catch((err, a, b) => {
+    console.log(err,a,b);
+})*/
+
+let test = [];
+console.log(isEmpty(test));
+
+
+

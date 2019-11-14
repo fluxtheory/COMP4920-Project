@@ -17,9 +17,11 @@ const chatkit = new Chatkit.default({
   key: '9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=', // This is bad, use .env vars
 })
 
+
 // @route POST /register
 // @desc Register user
 // @access Public
+
 router.post("/register", (req, res) => {
   const { errors, isValid } = validateRegisterInput(req.body);
   
@@ -29,7 +31,7 @@ router.post("/register", (req, res) => {
 
   user.userExists(req.body.name).then(function(acc) {
     //check if username or email exists in the database
-    if (acc) {
+    if (acc.success) {
       errors.error = req.body.name + " already exists in the db!";
       return res.status(400).json(errors);
     } else {
@@ -72,7 +74,7 @@ router.post("/register", (req, res) => {
       });
     }
   });
-}); // returns in a promise chain is a TOP LEVEL RETURN.
+});
 
 // @route POST /login
 // @desc Login user and return JWT authentication token
@@ -90,17 +92,18 @@ router.post("/login",
 
   //check if account exists
   user.userExists(req.body.nameOrEmail).then(acc => {
-    if (!acc) {
+    if (!acc.success) {
+      console.log(acc);
       return res.status(404).json({ error: "Username not found." });
     }
 
     //check password
-    bcrypt.compare(req.body.password, acc.password).then(isMatch => {
+    bcrypt.compare(req.body.password, acc.data.password).then(isMatch => {
       if (isMatch) {
         // JWT payload
         const payload = {
-          email: acc.email,
-          username: acc.username
+          email: acc.data.email,
+          username: acc.data.username
         };
 
         //sign token
@@ -108,18 +111,24 @@ router.post("/login",
             res.json({
               success: true,
               token,
-              username: acc.username,
+              username: acc.data.username,
             });
           }
         );
-        user.updateUser({username: acc.username, last_login : new Date().toString()});
+        user.updateUser({username: acc.data.username, last_login : new Date().toString()}).catch(err => {
+          console.log(err);
+        });
       } else {
-        return res.status(400).json({ error: "Password incorrect." });
+        return res.status(403).json({ error: "Password incorrect." });
+      }
+    }).catch(err => {
+      if(err){
+        console.log(err);
       }
     });
   }).catch(err => {
     if (err) {
-      return res.status(500).json(err);
+      return res.status(err.code).json(err);
     }
   });
 });
@@ -127,47 +136,40 @@ router.post("/login",
 // @route GET /logout
 // @desc Logs out of an existing session
 // @access Public
-router.get('/logout',  (req, res) => {
+router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
 });
 
 
-// @route GET /:username/delete
+// @route POST /:username/delete
 // @desc Deletes the user from the service
 // @access Private
-router.get('/:username/delete', (req, res) => {
-  let username = req.params.username;
+router.post('/:username/delete', (req, res) => {
+  const username = req.params.username;
 
-  user.userExists(username).then(exists => {
-    if(!exists){
-      return res.status(404).json({error: "username does not exist"});
-    }
-  });
-
-  user.deleteUser(username).then( success => {
-    if(success){
-      return res.status(200).json({ success: true });
-    } else {
-      return res.status(500).json( {success: false});
-    }
+  user.deleteUser(username).then( reply => {
+    return res.status(reply.code).json(reply);
   }).catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
 
 
-// @route POST /:username/update
+// @route PUT /:username/update
 // @desc Updates user profile password/email or rank.
 /* @param {
-            last_login (optional), 
-            new_email (optional), 
-            new_password (optional),
-            new_rank (optional)
+            (new_last_login),
+            OR
+            (
+              new_email (optional), 
+              new_password (optional),
+              new_zid (optional)
+            )
           }
 */
 // @access Private
-router.post('/:username/update', (req, res) => {
+router.put('/:username/update', (req, res) => {
 
   const { errors, isValid } = validateUpdateInput(req.body);
 
@@ -175,29 +177,75 @@ router.post('/:username/update', (req, res) => {
     return res.status(400).json(errors);
   }
 
-  req.body.username = req.params.username;
-
-  user.updateUser(req.body).then( success => {
-    if(success){
-      return res.status(200).json({ success: true });
-    } else {
-      return res.status(500).json( {success: false});
-    }
+  user.updateUser(req.params.username, req.body).then( reply => {
+    return res.status(reply.code).json(reply);
   }).catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
 
-// @route GET 
+// @route GET /:username/courses
 // @desc returns all the courses enrolled by a user during the current term
 // @access Private
 router.get('/:username/courses', (req, res) => {
-  user.userCourses(req.params.username).then(rows => {
-    return res.status(200).json(rows);
+  user.userCourses(req.params.username).then(reply => {
+    if(reply.success){
+      return res.status(reply.code).json(reply.data);
+    } else {
+      return res.status(reply.code).json(reply.msg);
+    }
+    
   }).catch(err => {
-    return res.status(500).json(err);
+    return res.status(err.code).json(err);
   });
 });
+
+// @route POST /user/add-friend 
+// @desc Adds friend to friendlist
+// @body { username, friendname }
+// @access Private
+router.post('/:username/add-friend', (req, res) => {
+  user.addFriend(req.body.username, req.body.friendname)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+});
+
+// @route GET /user
+// @desc Retrieves user information from the db.
+// @body { user1, user2 ... }
+// @access Private
+router.get('/user', (req, res) => {
+  user.getUserInfo(req.body)
+  .then(reply => {
+    if(reply.success){
+      return res.status(reply.code).json(reply.data);
+    } else {
+      return res.status(reply.code).json(reply.msg);
+    }
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+});
+
+// @route POST /user
+// @desc Modifies user privileges
+// @body { username }
+// @access Private
+router.post('/user/promote', (req, res) =>{
+  user.promoteUser(req.body.username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+})
+
 
 router.get('/verify-token', (req, res) => {
   try {

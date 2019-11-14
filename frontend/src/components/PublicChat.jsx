@@ -1,28 +1,40 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import { Chatkit } from '../App';
+import { Message } from './Message';
+import { MessageInput } from './MessageInput';
+import { useParams } from 'react-router-dom';
+import { Session } from '../App';
+import loadingCircle from '../img/circle128x128.gif';
 
-const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  messages: {
+    maxHeight: '55vh',
+    overflow: 'auto',
+  },
+}));
 
 const Messages = ({ messages }) =>
   !messages.length ? (
-    'Loading messages'
+    <img
+      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+      src={loadingCircle}
+      alt="Loading Messages..."
+    />
   ) : (
     <ul>
       {messages.map(m => {
-        return <li key={m.id}>{m.parts[0].payload.content}</li>;
+        return <Message key={m.id} msg={m} />;
       })}
     </ul>
   );
 
 function PublicChat() {
   const classes = useStyles();
-  const chatkit = React.useContext(Chatkit);
-  const [message, setMessage] = useState('');
+  const session = React.useContext(Session);
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
-  const roomId = 'allChat';
+  const roomId = useParams().course + '_public';
 
   React.useEffect(() => {
     if (!incomingMessage) return;
@@ -34,11 +46,11 @@ function PublicChat() {
   };
 
   React.useEffect(() => {
-    chatkit.user
+    session.user
       .fetchMultipartMessages({ roomId })
       .then(messages => {
         setChatMessages([...messages]);
-        return chatkit.user.subscribeToRoomMultipart({
+        return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
             onMessage: handleOnMessage,
@@ -57,30 +69,15 @@ function PublicChat() {
       });
   }, [roomId]);
 
-  const handleChange = event => {
-    setMessage(event.target.value);
-  };
-
-  const handleClick = async event => {
-    try {
-      setMessage('');
-      await chatkit.user.sendSimpleMessage({
-        text: message,
-        roomId: roomId,
-      });
-    } catch (err) {
-      throw Error(`Sending message via Chatkit fucked up: ${err}`);
-    } finally {
-    }
-  };
   // fetch messages from all chat
   // subscribe to all chat
   // send message to all chat
   return (
-    <div className={classes.yourClassname}>
-      <Messages messages={chatMessages} />
-      <input type="text" onChange={handleChange} value={message} />
-      <button onClick={handleClick}>Send a message!</button>
+    <div>
+      <div className={classes.messages}>
+        <Messages messages={chatMessages} />
+      </div>
+      <MessageInput roomId={roomId} />
     </div>
   );
 }

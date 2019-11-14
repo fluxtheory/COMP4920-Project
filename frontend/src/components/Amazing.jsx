@@ -20,7 +20,7 @@ function Amazing() {
     <div className={classes.amazingContainer}>
       <Paper className={classes.root}>
         <Typography variant="h5" component="h3">
-          How Amazing is this?
+          Welcome to Kudo!
         </Typography>
         <Typography component="p">jonsnow420blazeit</Typography>
       </Paper>

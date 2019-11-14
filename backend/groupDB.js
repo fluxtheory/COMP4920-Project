@@ -1,11 +1,6 @@
-const sqlite3 = require("sqlite3").verbose();
+const getdb = require("./db").getDb;
 
-let db = new sqlite3.Database("test.db", err => {
-    if (err) {
-      return console.error(err.message);
-    }
-    //console.log("Connected to sqlite3 database");
-});
+let db = getdb();
 
 module.exports = {
     startGroup: function(user, group_name, course){
@@ -109,11 +104,112 @@ module.exports = {
         });
     },
 
-    removeUserfromGroup : function(user, group_name){
+    transferGroupLeader: function(new_leader, group_name, course){
         return new Promise((resolve, reject) => {
+            db.run(`UPDATE groups SET owner = ? WHERE id = ?`, [row.username, row.groupid], err => {
+                if(err){
+                    reject(err.message);
+                } else {
+                    resolve(true);
+                }
+            });
+        })
+    },
 
-            // if owner leaves, ownership falls to second to join member. If no members are remaining the group is destroyed.
-            db.run();
+    leaveGroup: function(user, group_name, course){
+        
+        // if owner leaves, ownership falls to second to join member. If no members are remaining the group is destroyed.
+        //check if user is owner
+        // if not, remove him as usual.
+
+        return new Promise((resolve, reject) => {
+            db.get(`select owner from groups
+            LEFT JOIN courseInstance on groups.courseInstance = courseInstance.id
+            WHERE term = (SELECT term FROM term WHERE active)
+            and code = ?
+            and name = ?`, [course, group_name], (err, rows) => {
+                if(err){
+                    reject(err.message);
+                }
+
+                if(rows.owner === user){
+                    // check if the group has more members afterwards, 
+                    //if 0. Delete the group as well.
+                    // else
+                    //delete owner
+                    //promote second earliest to join user to owner.
+                    
+                    db.get(`select count(username) as COUNT from groupUsers
+                    LEFT JOIN groups ON groupUsers.groupid = groups.id
+                    LEFT JOIN courseInstance ON groups.courseInstance = courseInstance.id
+                    WHERE term = (SELECT term from term where active)
+                    AND name = ?`, user, (err, rows) => {
+                        if(err){
+                            reject(err.message);
+                        }
+//UPDATE forumPosts SET kudoes = kudoes + 1 WHERE id = ?`, id, err =>{
+                        if(rows.COUNT > 1){
+                            //delete user from group then promote next user to owner
+                            this.removeUserfromGroup(user, group_name, course).catch();
+
+                            // find the next user in the group.
+                            db.get(`select groupid, username from groupUsers
+                            LEFT JOIN groups ON groupUsers.groupid = groups.id
+                            LEFT JOIN courseInstance ON groups.courseInstance = courseInstance.id
+                            WHERE term = (SELECT term from term where active)
+                            AND name = ?`, [], (err, row) => {
+                                if(err){
+                                    reject(err.message);
+                                }
+
+                                // user promotion.
+                                this.transferGroupLeader()                   
+                            });
+                            
+                        } else {
+                            //delete user from group then delete group.
+                            this.removeUserfromGroup(user, group_name, course).catch( err => {
+                                if(err){
+                                    reject(err.message);
+                                } else {
+                                    resolve(true);
+                                }
+                            });
+                            this.deleteGroup(group_name, course).catch(err => {
+                                if(err){
+                                    reject(err.message);
+                                } else {
+                                    resolve(true);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    this.removeUserfromGroup(user, group_name, course).catch(err => {
+                        if(err){
+                            reject(err.message);
+                        } else {
+                            resolve(true);
+                        }
+                    });
+                }
+            });
+        });
+    },
+
+    removeUserfromGroup : function(user, group_name, course){
+        db.run(`DELETE FROM groupUsers WHERE id IN (
+            select groupUsers.id from groupUsers
+            LEFT JOIN groups ON groupUsers.groupid = groups.id
+            LEFT JOIN courseInstance ON groups.courseInstance = courseInstance.id
+            WHERE term = (SELECT term from term where active)
+            AND username = ?
+            AND name = ?
+            AND code = ?
+        )`, [user, group_name, course], err => {
+            if(err){
+                throw err;
+            }
         });
     },
 
@@ -127,7 +223,7 @@ module.exports = {
             AND code = ?
             AND name = ?`, [course, group_name], (err, rows) => {
                 if(err){
-                    reject(err)
+                    reject(err.message)
                 } else {
                     resolve(rows);
                 }
