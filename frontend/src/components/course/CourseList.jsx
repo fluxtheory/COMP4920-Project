@@ -1,21 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   courseListContainer: {
-    maxWidth: '1000px',
-    margin: '0 auto',
+    display: 'flex',
+    flexDirection: 'column',
   },
   courseButton: {
-    margin: '0 auto',
-    width: '100%',
-    display: 'flex',
-  },
-  root: {
-    padding: theme.spacing(3, 2),
+    flex: '0 0 4rem',
+    margin: '0.2rem 0',
   },
 }));
 
@@ -31,6 +28,8 @@ function CourseList(props) {
       {enrolledCourses.map(item => {
         return (
           <Button
+            component={Link}
+            to={`/kudo/${item.code}`}
             key={item.code}
             className={classes.courseButton}
             variant="contained"
@@ -39,7 +38,9 @@ function CourseList(props) {
             }}
             color={item.code === courseInFocus ? 'primary' : 'secondary'}
           >
-            {item.code}
+            <Box component={Typography} variant="button">
+              {item.code}
+            </Box>
           </Button>
         );
       })}

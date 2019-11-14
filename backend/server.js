@@ -27,22 +27,21 @@ if(config.util.getEnv('NODE_ENV') !== 'test') {
     app.use(logger("dev"));
 }
 
-
 app.use(
-    session({
-        secret: keys.secret,
-        cookie: { maxAge: 60000 },
-        resave: false,
-        saveUninitialized: false
-    })
+  session({
+    secret: keys.secret,
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 require("./config/passport")(passport);
 
 const chatkit = new Chatkit.default({
-instanceLocator: "v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77",
-key:
+  instanceLocator: "v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77",
+  key:
     "9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=" // This is bad, use .env vars
 });
 
@@ -75,15 +74,14 @@ chatkit
 */
 
 // append /api for our http requests
-app.use('/', users);
-app.use('/', groups);
-app.use('/', courses);
-app.use('/', feed);
-
+app.use("/", users);
+app.use("/", groups);
+app.use("/", courses);
+app.use("/", feed);
 
 // launch our backend into a port
 initdb(err => {
-    app.listen(API_PORT, () => {
-        console.log(`LISTENING ON PORT ${API_PORT}`)
-    });
+  app.listen(API_PORT, () => {
+    console.log(`LISTENING ON PORT ${API_PORT}`);
+  });
 });
