@@ -4,16 +4,16 @@ let db = getdb();
 
 module.exports = {
   // add/reply comment
-  addPost: function(user, course, content, parentId) {
+  addPost: function(user, course, content, parentId, title) {
     return new Promise((resolve, reject) => {
       db.run(
         `INSERT INTO forumPosts 
-        (courseInstanceId, parentId, userId, datetime, postContent) 
+        (courseInstanceId, parentId, userId, datetime, postContent, title) 
         VALUES ( (SELECT courseInstance.id FROM courseInstance 
                   WHERE term = (SELECT term from term where active) 
                   AND code = ?),
-        ?, ?, ?, ?)`,
-        [course, parentId, user, new Date(), content],
+        ?, ?, ?, ?, ?)`,
+        [course, parentId, user, new Date(), content, title],
         err => {
           if (err) {
             reject({ code: 500, msg: err.message });

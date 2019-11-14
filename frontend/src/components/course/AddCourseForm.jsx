@@ -29,9 +29,6 @@ function AddCourseForm(props) {
   const [error, setError] = React.useState('');
 
   const handleChange = (event, value) => {
-    console.log('course handle chnage');
-    console.log(event);
-    console.log(value);
     if (!value) {
       props.addCourse(newCourse);
       return setNewCourse('');

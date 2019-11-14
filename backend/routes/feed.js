@@ -7,10 +7,10 @@ const feeddb = require("../feedDB");
 // @body parentId, username, content
 // @access private
 router.post("/:course/feed/post", (req, res) => {
-  const { parentId, username, content } = req.body;
+  const { parentId, username, content, title } = req.body;
 
   feeddb
-    .addPost(parentId, username, req.params.course, content)
+    .addPost(username, req.params.course, content, parentId, title)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })
