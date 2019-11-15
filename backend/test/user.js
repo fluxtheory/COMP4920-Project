@@ -8,6 +8,13 @@ let should = chai.should();
 
 chai.use(chaiHttp);
 
+describe('', () => {
+    chai.request("http://localhost:3001")
+        .post('/testacc/delete')
+        .end();    
+    });
+
+
 describe('/POST register', () => {
     it('should register a user', (done) => {
         
@@ -44,7 +51,7 @@ describe('/POST register', () => {
         .set('content-type', 'application/x-www-form-urlencoded')
         .send(newUser)
         .end((err, res) => {
-            res.should.have.status(400);
+            res.should.have.status(500);
             res.body.should.be.a('object');
                 //res.body.length.should.be.eql(1);
             done();
@@ -124,7 +131,7 @@ describe('/POST User Promotion', () => {
         });
     })
 });
-
+/*
 describe('/PUT User Profile Update', () => {
     it("should update testacc's details with correct input", (done) => {
         chai.request("http://localhost:3001")
@@ -150,16 +157,14 @@ describe('/PUT User Profile Update', () => {
     it("should fail to update a non-existent user's details", (done) => {
         
     })
-});
+});*/
 
 describe('/GET User Profile', () => {
     it("should retrieve the user details of one user", (done) => {
         chai.request("http://localhost:3001")
-        .get( ('/user/promote'))
-        .set('content-type', 'application/x-www-form-urlencoded')
-        .send({usernames : 
-            [ { username: "testacc" } ]
-        })
+        .get( ('/user'))
+        .set('content-type', 'application/json')
+        .send({usernames : "testacc"})
         .end((err, res) => {
             res.should.have.status(200);
                 //res.body.should.be.a('object');
@@ -172,35 +177,34 @@ describe('/GET User Profile', () => {
     })
 
     it("should retries the user details of multiple users", (done) => {
+        let users = {
+            usernames: [
+                "fluxtheory",
+                "zerohedge",
+                "dailystorm",
+                "nonexistentUser"
+            ]
+        };
+
         chai.request("http://localhost:3001")
         .get( ('/user'))
-        .set('content-type', 'application/x-www-form-urlencoded')
-        .send({usernames : [
-                { username : "fluxtheory"},
-                { username : "zerohedge"},
-                { username: "dailystorm"},
-                { username: "nonexistentUser"}
-            ]
-        })
+        .set('content-type', 'application/json')
+        .send(users)
         .end((err, res) => {
             res.should.have.status(200);
-            /*
-                FINISH THIS.
-            */
-            //res.body.email.should.equal("testacc@unsw.edu.au");
-            res.body.rank.should.equal(3);
-            res.body.karma.should.equal(0);
+            
             done();
         });
     })
 });
 
 
-
-describe('Add/Get Friend', () => {
+describe('Add/Get/Remove Friend', () => {
     it("should add 'fluxtheory' as testacc's friend", (done) => {
         chai.request("http://localhost:3001")
-        .post()
+        .post('/testacc/add-friend')
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .send({friendname: "fluxtheory"})
         .end((err, res) => {
             res.should.have.status(200);
                 //res.body.should.be.a('object');
@@ -211,11 +215,55 @@ describe('Add/Get Friend', () => {
 
     it("should retrieve the user 'testacc's friend list", (done) => {
         chai.request("http://localhost:3001")
-        .post()
+        .get('/testacc/friends')
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.data[0].friendid.should.equal('fluxtheory');
+                //res.body.should.be.a('object');
+                //res.body.length.should.be.eql(1);
+            done();
+        });
+    })
+
+    it("should retrieve the user 'fluxtheory's friend list", (done) => {
+        chai.request("http://localhost:3001")
+        .get('/fluxtheory/friends')
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.data[0].friendid.should.equal('testacc');
+                //res.body.should.be.a('object');
+                //res.body.length.should.be.eql(1);
+            done();
+        });
+    })
+
+    it("should defriend 'testacc's from 'fluxtheory's friendlist", (done) => {
+        chai.request("http://localhost:3001")
+        .post('/fluxtheory/remove-friend')
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .send({friendname: "testacc"})
         .end((err, res) => {
             res.should.have.status(200);
                 //res.body.should.be.a('object');
                 //res.body.length.should.be.eql(1);
+            done();
+        });
+
+        chai.request("http://localhost:3001")
+        .get('/fluxtheory/friends')
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.data[0].friendid.should.equal(null);
+            
+            done();
+        });
+
+        chai.request("http://localhost:3001")
+        .get('/testacc/friends')
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body.data.should.equal(null);
+            
             done();
         });
     })
@@ -224,8 +272,28 @@ describe('Add/Get Friend', () => {
 });
 
 describe('/GET Course Retrieval Group', () => {
+    it("should retrieve the course list of user 'fluxtheory'", (done) => {
+        chai.request("http://localhost:3001")
+        .get('/fluxtheory/courses')
+        .end((err, res) => {
+            res.should.have.status(200);
+            res.body[0].code.should.equal('COMP1911');
+            res.body[1].code.should.equal('COMP3311');
+            res.body[2].code.should.equal('COMP4920');
+            done();
+        });
+    })
 
+    it("should fail to retrieve the course list of non-existent user", (done) => {
+        chai.request("http://localhost:3001")
+        .get('/idontexist/courses')
+        .end((err, res) => {
+            res.should.have.status(404);
+            done();
+        });
+    })
 });
+
 
 describe('/POST Delete User', () => {
     it("should delete user 'testacc'", (done) => {
@@ -250,23 +318,3 @@ describe('/POST Delete User', () => {
         });
     })
 });
-
-/*
- * Test the /GET route
- */
-/*
-describe('/GET user', () => {
-    it('it should GET all the users information', (done) => {
-    chai.request("http://localhost:3001")
-        .get('/user')
-        .set('content-type', 'application/x-www-form-urlencoded')
-        .send({username: "fluxtheory"})
-        .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('array');
-                res.body.length.should.be.eql(1);
-            done();
-        });
-    });
-});
-*/

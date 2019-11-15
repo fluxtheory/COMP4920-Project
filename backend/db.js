@@ -110,6 +110,12 @@ db = new sqlite3.Database("test.db", err => {
   sticky BOOLEAN DEFAULT 0 NOT NULL 
   );
 
+  CREATE TABLE IF NOT EXISTS userUpvotedPosts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    userid TEXT REFERENCES users NOT NULL,
+    postid INTEGER REFERENCES forumPosts NOT NULL,
+    unique(userid, postid)
+  );
 
   CREATE TABLE IF NOT EXISTS userFriends (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

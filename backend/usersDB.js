@@ -84,9 +84,10 @@ module.exports = {
     });
   },
 
-  updateUser: function(updates){
+  updateUser: function(user, updates){
     return new Promise((resolve, reject) => {
-      
+      console.log("User is ", user);
+      console.log("Updates is ",updates);
       if(updates.last_login){
         db.run(`UPDATE users SET last_login=? WHERE username=?`, [updates.last_login, updates.username], err => {
           if(err){
@@ -134,6 +135,30 @@ module.exports = {
     })
   },
 
+  defriend: function(username, friendname){
+    return new Promise((resolve, reject) => {
+      if(this.userExists(username) && this.userExists(friendname)){
+        let sql = `DELETE FROM userFriends WHERE userid = ? AND friendid = ?`;
+      
+        db.run(sql, [username, friendname], function(err){
+          if(err){
+            reject({code: 500, msg: err.message});
+          } 
+          (this.changes) ? resolve({code: 200, msg: "OK"}) : resolve({code: 400, msg: "Failed to Insert, check your values again"});
+        });
+
+        db.run(sql, [friendname, username], function(err){
+          if(err){
+            reject({code: 500, msg: err.message});
+          } 
+          (this.changes) ? resolve({code: 200, msg: "OK"}) : resolve({code: 400, msg: "Failed to Insert, check your values again"});
+        });
+      } else {
+        resolve({code: 404, msg: "User(s) not found"});
+      }
+    })
+  },
+
   getFriendList: function(username){
     return new Promise((resolve, reject) => {
       let sql = `SELECT friendid FROM userFriends WHERE userid = ?`;
@@ -141,9 +166,9 @@ module.exports = {
         if(err){
           reject({code: 500, msg: err.message});
         }
-        (!isEmpty(rows)) 
-          ? resolve({code: 200, data: rows, msg: "OK"})
-          : resolve({code: 404, msg: "User not found"});
+        
+        resolve({code: 200, data: rows, msg: "OK"});
+          
       })
     })
   },
@@ -183,56 +208,73 @@ module.exports = {
   // returns all the courses enrolled by a user during the current term
   userCourses: function(user){
     return new Promise((resolve,reject) => {
-        let sql = `SELECT code FROM courseInstance
+      this.userExists(user).then(reply => {
+        if(reply.code == 200){
+          let sql = `SELECT code FROM courseInstance
                   LEFT JOIN userCourses on
                   courseInstance.id = userCourses.courseInstance 
                   WHERE username = ? 
                   AND term = (SELECT term from term WHERE active);`;
-        db.all(sql, user, (err, rows) => {
-          if(err){
-            reject({code: 500, msg: err.message});
-          } else {
-            let empty = !isEmpty(rows);
-            resolve({code: (empty) ? 200 : 404, data: rows, msg: (empty) ? "OK" : "Username not found"});
-          }
-        });
+          db.all(sql, user, (err, rows) => {
+            if(err){
+              reject({code: 500, msg: err.message});
+            } else {
+              resolve({code: 200, data: rows});
+            }
+          });
+        } else {
+          resolve({code: 404, msg: "Cant find user"});
+        }
+      }).catch(function(err) {
+        if(err){
+          reject({code: 500, msg: err.message});
+        } 
+      })
+        
     });
   },
 
   // minus password of course
-  getUserInfo: function(userArray){
+  getUserInfo: function(users){
     return new Promise((resolve, reject) => {
       
-      if(userArray.length == 1){
-        db.get(`SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username = ?`, userArray[0], (err, row) => {
+      //console.log(users);
+      if(!(require('util').isArray(users))){
+        db.get(`SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username = ?`, users, (err, row) => {
           if(err){
             reject({code: 500, msg: err.message});
           }
+          //console.log(row);
           let empty = !isEmpty(row);
+          //console.log("Empty is ",empty);
           resolve({code: (empty) ? 200 : 404, data: row, msg: (empty) ? "OK" : "Username(s) not found"});
         })
-      }
-
-      //if(userArray.length > 10){
-        /*
-        var i, j, temparray, chunk = 10;
-        for (i=0,j=array.length; i<j; i+=chunk) {
-            temparray = array.slice(i,i+chunk);
-            // do whatever
-        }*/
-        //let sql = `SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username IN ` + placeholders;
-      //} else {
-        let placeholders = userArray.map(user => "(?)").join(",");
+      } else {
+        
+        //if(userArray.length > 10){
+          /*
+          var i, j, temparray, chunk = 10;
+          for (i=0,j=array.length; i<j; i+=chunk) {
+              temparray = array.slice(i,i+chunk);
+              // do whatever
+          }*/
+          //let sql = `SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username IN ` + placeholders;
+        //} else { 
+          
+        let placeholders = users.map(user => "?").join(",");
+        placeholders = "("+placeholders+")";
         let sql = `SELECT email, zid, rank, date_joined, last_login, karma FROM users WHERE username IN ` + placeholders;
         //console.log(sql);
-        db.all(sql, userArray, (err, row) => {
+        db.all(sql, users, (err, rows) => {
           if(err){
             reject({code: 500, msg: err.message});
           }
-          let empty = !isEmpty(row);
-          resolve({code: (empty) ? 200 : 404, msg: (empty) ? "OK" : "Course not in db", data: row});
+          //console.log(rows);
+          let empty = !isEmpty(rows);
+          resolve({code: (empty) ? 200 : 404, msg: (empty) ? "OK" : "Course not in db", data: rows});
         })
-      //}
+        //}
+      }
     })
   }
 };

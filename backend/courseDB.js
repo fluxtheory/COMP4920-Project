@@ -159,9 +159,13 @@ module.exports = {
       //if passed an array of course codes instead of a single course code...
       let placeholders = "?";
 
-      if (code.length) {
+      if (require('util').isArray(code)) {
         placeholders = code.map(code => "(?)").join(",");
       }
+
+      /*
+      PLACEHOLDERS ONLY WORKS FOR INSERT
+      */
       let sql =
         `SELECT title, desc, startdate, deadline FROM courseInstanceDeadlines
                 LEFT JOIN courseInstance ON courseInstanceDeadlines.cInstanceid = courseInstance.id

@@ -60,15 +60,14 @@ router.post("/register", (req, res) => {
 
           newUser.password = hash;
 
-          user
-            .addUser(newUser)
+          user.addUser(newUser)
+            .then(() => {
+              return res.status(200).json({ success: true });
+            })
             .catch(err => {
               if (err) {
                 return res.status(500).json(err);
               }
-            })
-            .then(() => {
-              return res.status(200).json({ success: true });
             });
         });
       });
@@ -91,19 +90,19 @@ router.post("/login",
   }
 
   //check if account exists
-  user.userExists(req.body.nameOrEmail).then(acc => {
-    if (!acc.success) {
+  user.userExists(req.body.nameOrEmail).then(reply => {
+    if (reply.code == 404) {
       //console.log(acc);
       return res.status(404).json({ error: "Username not found." });
     }
 
     //check password
-    bcrypt.compare(req.body.password, acc.data.password).then(isMatch => {
+    bcrypt.compare(req.body.password, reply.data.password).then(isMatch => {
       if (isMatch) {
         // JWT payload
         const payload = {
-          email: acc.data.email,
-          username: acc.data.username
+          email: reply.data.email,
+          username: reply.data.username
         };
 
         //sign token
@@ -111,11 +110,11 @@ router.post("/login",
             res.json({
               success: true,
               token,
-              username: acc.data.username,
+              username: reply.data.username,
             });
           }
         );
-        user.updateUser({username: acc.data.username, last_login : new Date().toString()}).catch(err => {
+        user.updateUser({username: reply.data.username, last_login : new Date().toString()}).catch(err => {
           console.log(err);
         });
       } else {
@@ -156,6 +155,8 @@ router.post('/:username/delete', (req, res) => {
 });
 
 
+
+//BROKEN AS SHIT, DO NOT USE.
 // @route PUT /:username/update
 // @desc Updates user profile password/email or rank.
 /* @param {
@@ -176,7 +177,7 @@ router.put('/:username/update', (req, res) => {
   if(!isValid){
     return res.status(400).json(errors);
   }
-
+  console.log(req.body);
   user.updateUser(req.params.username, req.body).then( reply => {
     return res.status(reply.code).json(reply);
   }).catch(err => {
@@ -202,10 +203,24 @@ router.get('/:username/courses', (req, res) => {
 
 // @route POST /:username/add-friend 
 // @desc Adds friend to friendlist
-// @body { username, friendname }
+// @body { friendname }
 // @access Private
 router.post('/:username/add-friend', (req, res) => {
-  user.addFriend(req.body.username, req.body.friendname)
+  user.addFriend(req.params.username, req.body.friendname)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+});
+
+// @route POST /:username/add-friend 
+// @desc defriend someone from the friendlist
+// @body { friendname }
+// @access Private
+router.post('/:username/remove-friend', (req, res) => {
+  user.defriend(req.params.username, req.body.friendname)
   .then(reply => {
     return res.status(reply.code).json(reply);
   })
@@ -232,10 +247,10 @@ router.get('/:username/friends', (req, res) => {
 
 // @route GET /user
 // @desc Retrieves user information from the db.
-// @body { usernames = [ {username: ""}, {username: ""} ... etc] }
+// @body { usernames = [ "user1", "user2" ... etc] }
 // @access Private
 router.get('/user', (req, res) => {
-  user.getUserInfo(req.body.users)
+  user.getUserInfo(req.body.usernames)
   .then(reply => {
     if(reply.code == 200){
       return res.status(reply.code).json(reply.data);

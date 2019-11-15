@@ -56,16 +56,20 @@ module.exports = {
       });
     },
     // upboat
-    upvotePost: function(postid){
+    upvotePost: function(postid, user){
       return new Promise((resolve, reject) => {
         let sql = `UPDATE forumPosts SET kudos = kudos + 1 WHERE id = ?`;
         db.run(sql, postid, function(err) {
           if(err){
             reject({code: 500, msg: err.message});
           } 
-          (this.changes) 
-          ? resolve({code: 200, msg: "OK"}) 
-          : resolve({code: 404, msg: "Post not found"});
+          if(this.changes) {
+            db.run(`INSERT INTO userUpvotedPosts (userid, postid) VALUES (?, ?)`, [user, postid]);
+            resolve({code: 200, msg: "OK"}) 
+          } else {
+            resolve({code: 404, msg: "Post not found"});
+          }
+          
         });
       });
     },
