@@ -104,9 +104,9 @@ module.exports = {
             if (err) {
               reject({code: 500, msg: err.message});
             }
-            let sql = `UPDATE users SET password=?, email = ? WHERE username=?`;
+            let sql = `UPDATE users SET password=?, email = ?, zid=? WHERE username=?`;
             
-            db.run(sql, [hash, updates.new_email, updates.username], function(err){
+            db.run(sql, [hash, updates.new_email, updates.username, updates.new_zid], function(err){
               if(err){
                 reject({code: 500, msg: err.message});
               } 
@@ -134,6 +134,20 @@ module.exports = {
     })
   },
 
+  getFriendList: function(username){
+    return new Promise((resolve, reject) => {
+      let sql = `SELECT friendid FROM userFriends WHERE userid = ?`;
+      db.all(sql, username, (err, rows) => {
+        if(err){
+          reject({code: 500, msg: err.message});
+        }
+        (!isEmpty(rows)) 
+          ? resolve({code: 200, data: rows, msg: "OK"})
+          : resolve({code: 404, msg: "User not found"});
+      })
+    })
+  },
+
   userExists: function userExists(identifier) {
     return new Promise((resolve, reject) => {
       if (identifier.includes("@")) {
@@ -144,7 +158,8 @@ module.exports = {
             if (err) {
               reject({code: 500, msg: err.message});
             } else {
-              resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row});
+              let empty = !isEmpty(row); 
+              resolve({code: (empty) ? 200 : 404, data: row});
             }
           }
         );
@@ -157,7 +172,7 @@ module.exports = {
               reject({code: 500, msg: err.message});
             } else {
               let empty = !isEmpty(row);
-              resolve({success : empty, code: (empty) ? 200 : 404, data: row});
+              resolve({code: (empty) ? 200 : 404, data: row});
             }
           }
         );
@@ -178,7 +193,7 @@ module.exports = {
             reject({code: 500, msg: err.message});
           } else {
             let empty = !isEmpty(rows);
-            resolve({success : empty, code: (empty) ? 200 : 404, data: rows, msg: (empty) ? "OK" : "Username not found"});
+            resolve({code: (empty) ? 200 : 404, data: rows, msg: (empty) ? "OK" : "Username not found"});
           }
         });
     });
@@ -193,7 +208,8 @@ module.exports = {
           if(err){
             reject({code: 500, msg: err.message});
           }
-          resolve({success : !isEmpty(row), code: (success) ? 200 : 404, data: row, msg: (success) ? "OK" : "Username(s) not found"});
+          let empty = !isEmpty(row);
+          resolve({code: (empty) ? 200 : 404, data: row, msg: (empty) ? "OK" : "Username(s) not found"});
         })
       }
 
@@ -214,7 +230,7 @@ module.exports = {
             reject({code: 500, msg: err.message});
           }
           let empty = !isEmpty(row);
-          resolve({success : empty, code: (empty) ? 200 : 404, msg: (empty) ? "OK" : "Course not in db", data: row});
+          resolve({code: (empty) ? 200 : 404, msg: (empty) ? "OK" : "Course not in db", data: row});
         })
       //}
     })

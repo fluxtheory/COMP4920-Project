@@ -7,12 +7,13 @@ module.exports = {
     // add/reply comment
     addPost: function(user, course, content, parentId){
       return new Promise((resolve, reject) => {
-        db.run(`INSERT INTO forumPosts 
+        let sql = `INSERT INTO forumPosts 
         (courseInstanceId, parentId, userId, datetime, postContent) 
         VALUES ( (SELECT courseInstance.id FROM courseInstance 
                   WHERE term = (SELECT term from term where active) 
                   AND code = ?),
-        ?, ?, ?, ?)`, [course, parentId, user, new Date(), content], err => {
+        ?, ?, ?, ?)`;
+        db.run(sql, [course, parentId, user, new Date(), content], function(err) {
           if(err){
             reject({code: 500, msg: err.message});
           }
@@ -28,7 +29,8 @@ module.exports = {
     // delete post
     deletePost: function(postid){
       return new Promise((resolve, reject) => {
-        db.run(`DELETE FROM forumPosts where id = ?`, postid, err => {
+        let sql = `DELETE FROM forumPosts where id = ?`;
+        db.run(sql, postid, function(err) {
           if(err){
             reject({code: 500, msg: err.message});
           } 
@@ -42,7 +44,8 @@ module.exports = {
 
     editPost: function(postid, content){
       return new Promise((resolve, reject) => {
-        db.run(`UPDATE forumPosts SET postContent = ? WHERE id = ?`, [content, postid], err => {
+        let sql = `UPDATE forumPosts SET postContent = ? WHERE id = ?`;
+        db.run(sql, [content, postid], function(err) {
           if(err){
             reject({code: 500, msg: err.message});
           }    
@@ -55,7 +58,8 @@ module.exports = {
     // upboat
     upvotePost: function(postid){
       return new Promise((resolve, reject) => {
-        db.run(`UPDATE forumPosts SET kudoes = kudoes + 1 WHERE id = ?`, postid, err =>{
+        let sql = `UPDATE forumPosts SET kudoes = kudoes + 1 WHERE id = ?`;
+        db.run(sql, postid, function(err) {
           if(err){
             reject({code: 500, msg: err.message});
           } 
@@ -69,12 +73,13 @@ module.exports = {
     // get course posts
     getCourseFeed: function(course){
       return new Promise((resolve, reject) => {
-        db.all(`SELECT * FROM forumPosts 
-        WHERE courseInstanceId = 
+        let sql = `SELECT * FROM forumPosts 
+            WHERE courseInstanceId = 
             (SELECT id FROM courseInstance 
             WHERE term = (SELECT term FROM term WHERE active)
             AND code = ?)
-        )`, course, (err, rows) => {
+        )`;
+        db.all(sql, course, (err, rows) => {
           if(err){
             reject({code: 500, msg: err.message});
           } else {
@@ -94,7 +99,8 @@ module.exports = {
 
     toggleStickyPost: function(postid){
       return new Promise((resolve, reject) => {
-        db.run(`UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`, postid, err => {
+        let sql = `UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`;
+        db.run(sql, postid, function(err) {
           if(err){
             reject({code: 500, msg: err.message});
           }

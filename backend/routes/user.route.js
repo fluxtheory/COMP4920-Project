@@ -189,7 +189,7 @@ router.put('/:username/update', (req, res) => {
 // @access Private
 router.get('/:username/courses', (req, res) => {
   user.userCourses(req.params.username).then(reply => {
-    if(reply.success){
+    if(reply.code == 200){
       return res.status(reply.code).json(reply.data);
     } else {
       return res.status(reply.code).json(reply.msg);
@@ -200,7 +200,7 @@ router.get('/:username/courses', (req, res) => {
   });
 });
 
-// @route POST /user/add-friend 
+// @route POST /:username/add-friend 
 // @desc Adds friend to friendlist
 // @body { username, friendname }
 // @access Private
@@ -214,14 +214,30 @@ router.post('/:username/add-friend', (req, res) => {
   });
 });
 
+// @route GET /:username/friends
+// @desc Retrieves the user's friend list
+// @body { username }
+// @access Private
+router.get('/:username/friends', (req, res) => {
+  user.getFriendList(req.params.username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    if(err){
+      return res.status(err.code).json(err);
+    }
+  })
+})
+
 // @route GET /user
 // @desc Retrieves user information from the db.
-// @body { user1, user2 ... }
+// @body { usernames = [ {username: ""}, {username: ""} ... etc] }
 // @access Private
 router.get('/user', (req, res) => {
-  user.getUserInfo(req.body)
+  user.getUserInfo(req.body.users)
   .then(reply => {
-    if(reply.success){
+    if(reply.code == 200){
       return res.status(reply.code).json(reply.data);
     } else {
       return res.status(reply.code).json(reply.msg);
@@ -237,7 +253,7 @@ router.get('/user', (req, res) => {
 // @body { username }
 // @access Private
 router.post('/user/promote', (req, res) =>{
-  user.promoteUser(req.body.username)
+  user.promoteUser(req.body.username, 1)
   .then(reply => {
     return res.status(reply.code).json(reply);
   })
