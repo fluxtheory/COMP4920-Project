@@ -51,7 +51,7 @@ function MakePost() {
   };
 
   if (postMade === true) {
-    return <Redirect to={'/' + course + '/feed'} />;
+    return <Redirect to={'/kudo/' + course + '/feed'} />;
   }
 
   return (
