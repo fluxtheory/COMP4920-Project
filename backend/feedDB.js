@@ -58,7 +58,7 @@ module.exports = {
     // upboat
     upvotePost: function(postid){
       return new Promise((resolve, reject) => {
-        let sql = `UPDATE forumPosts SET kudoes = kudoes + 1 WHERE id = ?`;
+        let sql = `UPDATE forumPosts SET kudos = kudos + 1 WHERE id = ?`;
         db.run(sql, postid, function(err) {
           if(err){
             reject({code: 500, msg: err.message});
