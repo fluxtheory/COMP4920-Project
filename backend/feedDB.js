@@ -6,15 +6,15 @@ module.exports = {
   // add/reply comment
   addPost: function(user, course, content, rootId, branchId, title) {
     return new Promise((resolve, reject) => {
-      db.run(
-        `INSERT INTO forumPosts 
-        (courseInstanceId, rootId, branchId, userId, datetime, postContent, title) 
-        VALUES ( (SELECT courseInstance.id FROM courseInstance 
-                  WHERE term = (SELECT term from term where active) 
-                  AND code = ?),
-        ?, ?, ?, ?, ?, ?)`,
+      let sql = `INSERT INTO forumPosts 
+      (courseInstanceId, rootId, branchId, userId, datetime, postContent, title) 
+      VALUES ( (SELECT courseInstance.id FROM courseInstance 
+                WHERE term = (SELECT term from term where active) 
+                AND code = ?),
+      ?, ?, ?, ?, ?, ?)`;
+      db.run(sql,
         [course, rootId, branchId, user, new Date(), content, title],
-        err => {
+        function(err) {
           if (err) {
             console.log(err);
             reject({ code: 500, msg: err.message });
@@ -34,7 +34,8 @@ module.exports = {
   // delete post
   deletePost: function(postid) {
     return new Promise((resolve, reject) => {
-      db.run(`DELETE FROM forumPosts where id = ?`, postid, err => {
+      let sql = `DELETE FROM forumPosts where id = ?`;
+      db.run(sql, postid, function(err){
         if (err) {
           reject({ code: 500, msg: err.message });
         }
@@ -48,10 +49,11 @@ module.exports = {
 
   editPost: function(postid, content) {
     return new Promise((resolve, reject) => {
+      let sql = `UPDATE forumPosts SET postContent = ? WHERE id = ?`;
       db.run(
-        `UPDATE forumPosts SET postContent = ? WHERE id = ?`,
+        sql,
         [content, postid],
-        err => {
+        function(err) {
           if (err) {
             reject({ code: 500, msg: err.message });
           }
@@ -65,10 +67,10 @@ module.exports = {
   // upboat
   upvotePost: function(postid) {
     return new Promise((resolve, reject) => {
-      db.run(
-        `UPDATE forumPosts SET kudoes = kudoes + 1 WHERE id = ?`,
+      let sql = `UPDATE forumPosts SET kudoes = kudoes + 1 WHERE id = ?`;
+      db.run(sql,
         postid,
-        err => {
+        function(err) {
           if (err) {
             reject({ code: 500, msg: err.message });
           }
@@ -83,12 +85,12 @@ module.exports = {
   // get course posts
   getCourseFeed: function(course) {
     return new Promise((resolve, reject) => {
-      db.all(
-        `SELECT * FROM forumPosts 
-        WHERE courseInstanceId = 
-            (SELECT id FROM courseInstance 
-            WHERE term = (SELECT term FROM term WHERE active)
-            AND code = ?)`,
+      let sql = `SELECT * FROM forumPosts
+      WHERE courseInstanceId = 
+          (SELECT id FROM courseInstance 
+          WHERE term = (SELECT term FROM term WHERE active)
+          AND code = ?)`;
+      db.all(sql,
         course,
         (err, rows) => {
           if (err) {
