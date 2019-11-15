@@ -70,22 +70,26 @@ router.get("/course", (req, res) => {
     username - e.g. "johnwickfortnite"
         }*/
 // @access Private
-router.post("/:course/enrol", (req, res) => {
-  const username = req.body.username;
-  const course = req.params.course;
-
-  // make sure user exists?
-  coursedb
-    .addUsertoCourseInstance(username, course)
-    .then(success => {
-      if (success) {
-        return res.status(200).json({ success: true });
-      } else {
-        return res.status(404).json({ success: false });
-      }
-    })
-    .catch(err => {
-      return res.status(500).json(err);
+router.post('/:course/enrol', (req, res) => {
+    const username  = req.body.username;
+    const course = req.params.course;
+    console.log(username, course);
+    // make sure user exists?
+    coursedb.addUsertoCourseInstance(username, course).then(success => {
+        if(success){
+          chatkit
+          .addUsersToRoom({
+            roomId: course + "_public",
+            userIds: [username]
+          })
+          .then(() => console.log("added"))
+          .catch(err => console.error(err));
+            return res.status(200).json({ success: true });
+        } else {
+            return res.status(400).json({ success: false });
+        }
+    }).catch(err => {
+        return res.status(500).json(err);
     });
 });
 
