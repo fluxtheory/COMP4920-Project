@@ -53,75 +53,82 @@ db = new sqlite3.Database("test.db", err => {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     code VARCHAR(10) NOT NULL,
     term VARCHAR(6) NOT NULL,
-      FOREIGN KEY (term) REFERENCES term(term),
-      unique (code, term)
+    FOREIGN KEY (term) REFERENCES term(term) ON DELETE CASCADE,
+    unique (code, term)
   );
 
   CREATE TABLE IF NOT EXISTS courseInstanceDeadlines (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cInstanceid INETGER REFERENCES courseInstance,
+    cInstanceid INTEGER REFERENCES courseInstance,
     title TEXT NOT NULL,
     desc TEXT,
     startdate TIMESTAMP NOT NULL,
     deadline TIMESTAMP NOT NULL,
+    FOREIGN KEY(cInstanceid) REFERENCES courseInstance(id) ON DELETE CASCADE,
     unique (cInstanceid, startdate, deadline)
   );
 
   CREATE TABLE IF NOT EXISTS term (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  term VARCHAR(6) NOT NULL UNIQUE,
-  active BOOLEAN NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    term VARCHAR(6) NOT NULL UNIQUE,
+    active BOOLEAN NOT NULL
   );
 
   CREATE UNIQUE INDEX IF NOT EXISTS active_term ON term(term) WHERE active;
 
   CREATE TABLE IF NOT EXISTS userCourses (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT NOT NULL,
-  courseInstance INTEGER NOT NULL REFERENCES courseInstance,
-    FOREIGN KEY (username) REFERENCES users(username),
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    courseInstance INTEGER NOT NULL REFERENCES courseInstance,
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE,
     unique (username, courseInstance)
   );
 
   CREATE TABLE IF NOT EXISTS groups (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  courseInstance INTEGER REFERENCES courseInstance,
-  owner TEXT NOT NULL,
-  FOREIGN KEY (owner) REFERENCES users(username),
-  unique (name, courseInstance)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    courseInstance INTEGER REFERENCES courseInstance,
+    owner TEXT NOT NULL,
+    FOREIGN KEY (owner) REFERENCES users(username),
+    FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE,
+    unique (name, courseInstance)
   );
 
   CREATE TABLE IF NOT EXISTS groupUsers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  groupid INTEGER NOT NULL REFERENCES groups,
-  username TEXT NOT NULL,
-  unique(groupid, username)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    groupid INTEGER NOT NULL REFERENCES groups ON DELETE CASCADE,
+    username TEXT NOT NULL,
+    unique(groupid, username)
   );
 
   CREATE TABLE IF NOT EXISTS forumPosts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
-  parentId INTEGER REFERENCES forumPosts,
-  userId INTEGER REFERENCES users,
-  kudos INTEGER DEFAULT 0,
-  datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  postContent TEXT NOT NULL,
-  sticky BOOLEAN DEFAULT 0 NOT NULL 
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    courseInstance INTEGER NOT NULL REFERENCES courseInstance,
+    parentId INTEGER REFERENCES forumPosts ON DELETE CASCADE,
+    userId INTEGER REFERENCES users,
+    kudos INTEGER DEFAULT 0,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    postContent TEXT NOT NULL,
+    sticky BOOLEAN DEFAULT 0 NOT NULL, 
+    FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS userUpvotedPosts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userid TEXT REFERENCES users NOT NULL,
     postid INTEGER REFERENCES forumPosts NOT NULL,
-    unique(userid, postid)
+    unique(userid, postid),
+    FOREIGN KEY (postid) REFERENCES forumPosts(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS userFriends (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userid TEXT REFERENCES users NOT NULL,
     friendid TEXT REFERENCES users NOT NULL,
-    unique(userid, friendid)
+    unique(userid, friendid),
+    FOREIGN KEY (userid) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (friendid) REFERENCES users(username) ON DELETE CASCADE
   );`;
 
   // do we need both topicId and parentId??

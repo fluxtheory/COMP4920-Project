@@ -227,7 +227,8 @@ test().then( (a,b,c) => {
 })*/
 
 let test = [];
-console.log(isEmpty(test));
-
+let y = [];
+//console.log(isEmpty(test));
+console.log(test.length);
 
 

@@ -114,7 +114,7 @@ router.post("/login",
             });
           }
         );
-        user.updateUser({username: reply.data.username, last_login : new Date().toString()}).catch(err => {
+        user.updateUser(reply.data.username, {last_login : new Date().toString()}).catch(err => {
           console.log(err);
         });
       } else {

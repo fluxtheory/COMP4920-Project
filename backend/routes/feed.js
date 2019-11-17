@@ -10,7 +10,7 @@ const feeddb = require("../feedDB");
 router.post('/:course/feed/post', (req, res) => {
     const { parentId, username, content } = req.body;
 
-    feeddb.addPost(parentId, username, req.params.course, content)
+    feeddb.addPost(username, req.params.course, content, parentId,)
     .then(reply => {
         return res.status(reply.code).json(reply);
     })
@@ -38,7 +38,7 @@ router.post('/:course/feed/:id/delete', (req, res) => {
 // @desc Attaches a like to a post. Clicking again removes the like.
 // @access private
 router.post('/:course/feed/:id/upvote', (req, res) => {
-    feeddb.upvotePost(req.params.id)
+    feeddb.upvotePost(req.params.id, req.body.username)
     .then(reply => {
         return res.status(reply.code).json(reply);
     })
@@ -57,6 +57,7 @@ router.get('/:course/feed', (req, res) => {
         return res.status(200).json(posts);
     })
     .catch(err => {
+        console.log(err.msg);
         return res.status(err.code).json(err);
     });
 });
@@ -79,6 +80,19 @@ router.put('/:course/feed/:id', (req, res) => {
         return res.status(err.code).json(err);
     })
 
+});
+
+// getPost
+// @route GET /:course/feed/:id
+// @desc Retrieves a post based on id, useful for testing.
+// @access private
+router.get('/:course/feed/:id', (req, res) => {
+    feeddb.getPost(req.params.id)
+    .then(reply => {
+        return res.status(reply.code).json(reply);
+    }).catch(err => {
+        return res.status(err.code).json(err);
+    })
 });
 
 

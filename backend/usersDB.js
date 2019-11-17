@@ -51,31 +51,6 @@ module.exports = {
         }
 
         if(this.changes){ 
-          // unenrol users from courses
-          db.run(`DELETE FROM userCourses WHERE username = ?`, user, err => {
-            if(err){
-              console.log(err.message)
-            }
-          })
-          // remove friend listings
-          db.run(`DELETE FROM userFriends WHERE userid = ? OR friendid = ?`, [user, user], err => {
-            if(err){
-              console.log(err.message)
-            }
-          })
-          // remove user from any existing groups
-          db.run(`DELETE FROM groupUsers WHERE username = ?`, user, err => {
-            if(err){
-              console.log(err.message)
-            }
-          })
-          // remove post identification but keeping post content.
-          db.run(`UPDATE forumPosts SET userId = ? WHERE userId = ?`, [null, user], err => {
-            if(err){
-              console.log(err.message)
-            }
-          })
-          
           resolve({code: 200, msg: "OK"});
         } else {
           resolve({code: 404, msg: "User not found"});
@@ -86,8 +61,8 @@ module.exports = {
 
   updateUser: function(user, updates){
     return new Promise((resolve, reject) => {
-      console.log("User is ", user);
-      console.log("Updates is ",updates);
+      //console.log("User is ",user);
+      //console.log("Updates is ",updates);
       if(updates.last_login){
         db.run(`UPDATE users SET last_login=? WHERE username=?`, [updates.last_login, updates.username], err => {
           if(err){
