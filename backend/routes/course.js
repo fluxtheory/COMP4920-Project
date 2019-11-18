@@ -70,48 +70,40 @@ router.get("/course", (req, res) => {
     username - e.g. "johnwickfortnite"
         }*/
 // @access Private
-router.post("/:course/enrol", (req, res) => {
-  const username = req.body.username;
-  const course = req.params.course;
-  console.log(username, course);
-  // TODO: promise chaining
-  chatkit
-    .addUsersToRoom({
-      roomId: course + "_public",
-      userIds: [username]
-    })
-    .then(() => {
-      console.log("added");
-    })
-    .catch(err => {
-      console.error(err);
-    });
-  // make sure user exists?
-  coursedb
-    .addUsertoCourseInstance(username, course)
-    .then(success => {
-      if (success) {
-        return res.status(200).json({ success: true });
-      } else {
-        return res.status(400).json({ success: false });
-      }
-    })
-    .catch(err => {
-      return res.status(500).json(err);
+router.post('/:course/enrol', (req, res) => {
+    const username  = req.body.username;
+    const course = req.params.course;
+    console.log(username, course);
+    // make sure user exists?
+    coursedb.addUsertoCourseInstance(username, course).then(success => {
+        if(success){
+          chatkit
+          .addUsersToRoom({
+            roomId: course + "_public",
+            userIds: [username]
+          })
+          .then(() => console.log("added"))
+          .catch(err => console.error(err));
+            return res.status(200).json({ success: true });
+        } else {
+            return res.status(400).json({ success: false });
+        }
+    }).catch(err => {
+        return res.status(500).json(err);
     });
 });
 
-// @route GET
-// @desc returns all the users enrolled in a courseInstance
+// @route GET /:course/users
+// @desc returns all the users enrolled in the current course instance
 // @access Private
 router.get("/:course/users", (req, res) => {
   coursedb
     .courseUsers(req.params.course)
-    .then(rows => {
-      return res.status(200).json(rows);
+    .then(reply => {
+      return res.status(reply.code).json(reply.data);
     })
     .catch(err => {
-      return res.status(500).json(err);
+      return res.status(err.code).json(err);
     });
 });
 
@@ -126,6 +118,37 @@ router.get("/users", (req, res) => {
     })
     .catch(err => {
       return res.status(500).json(err);
+    });
+});
+
+// @route GET /:course/assignment
+// @desc returns all the assignment deadlines of a particular course instance
+// @access Private
+router.get("/:course/assignment", (req, res) => {
+  coursedb
+    .getCourseDeadlines(req.params.course)
+    .then(reply => {
+      if (reply.success) {
+        return res.status(reply.code).json(reply.data);
+      }
+      return res.status(reply.code).json(reply.msg);
+    })
+    .catch(err => {
+      return res.status(err.code).json(err.msg);
+    });
+});
+
+// @route POST /:course/assignment
+// @desc Adds an assignment deadline to a course instance.
+// @access Private
+router.post("/:course/assignment", (req, res) => {
+  coursedb
+    .addCourseDeadline()
+    .then(reply => {
+      return res.status(reply.code).json(reply);
+    })
+    .catch(err => {
+      return res.status(err.code).json(err);
     });
 });
 

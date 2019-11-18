@@ -4,17 +4,22 @@ import { Message } from './Message';
 import { MessageInput } from './MessageInput';
 import { useParams } from 'react-router-dom';
 import { Session } from '../App';
+import loadingCircle from '../img/circle128x128.gif';
 
 const useStyles = makeStyles(theme => ({
   messages: {
-    height: '500px',
+    maxHeight: '55vh',
     overflow: 'auto',
   },
 }));
 
 const Messages = ({ messages }) =>
   !messages.length ? (
-    'Loading messages'
+    <img
+      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+      src={loadingCircle}
+      alt="Loading Messages..."
+    />
   ) : (
     <ul>
       {messages.map(m => {
@@ -68,7 +73,7 @@ function PublicChat() {
   // subscribe to all chat
   // send message to all chat
   return (
-    <div className={classes.yourClassname}>
+    <div>
       <div className={classes.messages}>
         <Messages messages={chatMessages} />
       </div>

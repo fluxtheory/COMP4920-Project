@@ -1,29 +1,39 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import { Session } from '../App';
+import { Message } from '../components/Message';
+import { MessageInput } from '../components/MessageInput';
+import { useParams } from 'react-router-dom';
+import loadingCircle from '../img/circle128x128.gif';
 
 const useStyles = makeStyles({
-  yourClassname: {
-    color: 'blue',
+  messages: {
+    height: '55vh',
+    overflow: 'auto',
   },
 });
 
 const Messages = ({ messages }) =>
   !messages.length ? (
-    'Loading messages'
+    <img
+      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+      src={loadingCircle}
+      alt="Loading Messages..."
+    />
   ) : (
     <ul>
       {messages.map(m => {
-        return <li key={m.id}>{m.parts[0].payload.content}</li>;
+        return <Message key={m.id} msg={m} />;
       })}
     </ul>
   );
 
-const PrivateChat = ({ otherUserId }) => {
+const PrivateChat = () => {
   const classes = useStyles();
   const [message, setMessage] = useState('');
   const session = React.useContext(Session);
   const [roomId, setRoomId] = React.useState(null);
+  const otherUserId = useParams().user;
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
@@ -58,7 +68,7 @@ const PrivateChat = ({ otherUserId }) => {
           customData: {},
         })
         .then(room => {
-          console.log(`Created room called ${room.name}`);
+          console.log(`Created room called ${room.name} (id ${room.id})`);
         })
         .catch(err => {
           console.log(`Error creating room ${err}`);
@@ -66,7 +76,7 @@ const PrivateChat = ({ otherUserId }) => {
     }
 
     setRoomId(roomName);
-  }, [session]);
+  }, [session, useParams().user]);
 
   const handleOnMessage = message => {
     setIncomingMessage(message);
@@ -116,10 +126,11 @@ const PrivateChat = ({ otherUserId }) => {
   };
 
   return (
-    <div className={classes.yourClassname}>
-      <Messages messages={chatMessages} />
-      <input type="text" onChange={handleChange} value={message} />
-      <button onClick={handleClick}>Send a message!</button>
+    <div>
+      <div className={classes.messages}>
+        <Messages messages={chatMessages} />
+      </div>
+      <MessageInput roomId={roomId} />
     </div>
   );
 };

@@ -10,9 +10,12 @@ const useStyles = makeStyles(theme => ({
     maxWidth: '1000px',
     margin: '0 auto',
   },
-  inputField: {
-    width: '30%',
+  inputContainer: {
+    width: '100%',
     left: '2%',
+  },
+  inputField: {
+    width: '100%',
   },
   inputSubmit: {
     left: '34%',
@@ -29,8 +32,8 @@ function MessageInput(props) {
   const [message, setMessage] = React.useState('');
 
   const handleClick = async event => {
+    if (message === '') return;
     try {
-      setMessage('');
       await session.user.sendSimpleMessage({
         text: message,
         roomId: roomId,
@@ -38,6 +41,7 @@ function MessageInput(props) {
     } catch (err) {
       throw Error(`Sending message via Chatkit fucked up: ${err}`);
     } finally {
+      setMessage('');
     }
   };
 
@@ -53,8 +57,9 @@ function MessageInput(props) {
     <div className={classes.MessageInputContainer}>
       <Paper className={classes.root}>
         <form onSubmit={handleSubmit}>
-          <div className={classes.inputField}>
+          <div className={classes.inputContainer}>
             <TextField
+              className={classes.inputField}
               type="text"
               margin="normal"
               variant="outlined"

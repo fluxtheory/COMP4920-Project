@@ -12,6 +12,7 @@ import { ChatPane } from '../components/ChatPane';
 import { CreateGroup } from './CreateGroup';
 import { GroupSettings } from './GroupSettings';
 import { GroupChat } from './GroupChat';
+import { PrivateChat } from '../components/PrivateChat';
 
 export const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -137,8 +138,8 @@ const PlebbyChangingContent = () => {
           <Route exact path={makePath('/:course/group/:group/settings')}>
             <GroupSettings />
           </Route>
-          <Route exact path={makePath('/:course/dm')}>
-            <h1>I'm the the private chat</h1>
+          <Route exact path={makePath('/:user/dm')}>
+            <PrivateChat />
           </Route>
         </Switch>
       </div>

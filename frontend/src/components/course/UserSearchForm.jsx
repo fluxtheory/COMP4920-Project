@@ -5,7 +5,8 @@ import { api } from '../../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link } from 'react-router-dom';
+import { Session } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -45,12 +46,15 @@ function UserSearchForm(props) {
   const classes = useStyles();
 
   const { params } = useRouteMatch('/kudo/:course');
+  const session = React.useContext(Session);
   const course = params.course;
   const [users, setUsers] = React.useState([]);
+  const [userSearch, setUserSearch] = React.useState([]);
 
   React.useEffect(() => {
     const prom = getAllUsers(course).then(resp => {
       setUsers(resp);
+      setUserSearch(resp);
     });
   }, [course]);
   const [userInput, setUserInput] = React.useState('');
@@ -59,14 +63,32 @@ function UserSearchForm(props) {
     e.preventDefault();
   };
 
-  const handleChange = (event, value) => {
-    if (!value) return setUserInput('');
-    setUserInput(value);
+  const handleChange = event => {
+    if (!event.target.value) {
+      setUserInput('');
+      setUserSearch(users);
+    }
+    let searchFilter = [];
+    users.forEach(user => {
+      if (user.username.indexOf(event.target.value) !== -1)
+        searchFilter.push(user);
+    });
+    setUserSearch(searchFilter);
+    setUserInput(event.target.value);
   };
 
   return (
     <div className={classes.courseUsersChatContainer}>
       <form onSubmit={handleSubmit}>
+        <TextField
+          value={userInput}
+          onChange={handleChange}
+          margin="normal"
+          type="text"
+          placeholder="Search for user..."
+          autoComplete="off"
+        />
+        {/*}
         <Autocomplete
           options={users}
           getOptionLabel={option => option.username}
@@ -81,13 +103,21 @@ function UserSearchForm(props) {
             />
           )}
         />
+          */}
       </form>
       <div className={classes.userListContainer}>
-        {users.map(u => {
+        {userSearch.map(u => {
           return (
-            <Button classes={{ root: classes.userButton }} key={u.username}>
+            <Button
+              classes={{ root: classes.userButton }}
+              key={u.username}
+              component={Link}
+              to={'/kudo/' + u.username + '/dm'}
+            >
               <ChildCareIcon />
-              <Box mx={1}>{u.username}</Box>
+              <Box mx={1}>
+                {u.username} {u.username === session.user.id ? ' (You)' : ''}
+              </Box>
             </Button>
           );
         })}
