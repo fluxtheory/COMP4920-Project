@@ -174,12 +174,8 @@ const GroupsSubpanel = () => {
   const [groups, setGroups] = useState([]);
   const username = useUsername();
 
-  // MRTODO: update on group creation
-  // router.get('/:course/group', (req, res) => {
-
-  //     let user = req.query.user;
-  //     let course = req.params.course;
   useEffect(() => {
+    // below gets groups from chatkit instead of backend
     // console.log(session.user.rooms);
     // const courseGroups = session.user.rooms
     //   .map(room => room.id)
@@ -187,7 +183,7 @@ const GroupsSubpanel = () => {
     //   .map(room => room.split('__group__')[1])
     //   .map(room => room.split('|'))
     //   .map(([_, a, b]) => {
-    //     // MRTODO: remove malformed group manes -> no ened to check for 'b'
+    // MRTODO: remove malformed group manes -> no ened to check for 'b'
     //     if (a === params.course && b) return b;
     //   });
     api

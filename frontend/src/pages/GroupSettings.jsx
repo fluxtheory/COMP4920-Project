@@ -7,7 +7,6 @@ import ChildCareIcon from '@material-ui/icons/ChildCare';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
 import { useUsername } from './CreateGroup';
-import { classes } from 'istanbul-lib-coverage';
 
 const useStyles = makeStyles(theme => ({
   addUserContainer: {
@@ -43,7 +42,6 @@ export const GroupSettings = () => {
   const { params } = useRouteMatch('/kudo/:course/group/:group/settings');
   const handleUserAdd = username => {
     api
-      // MRTODO: remove hard coded group
       .post(`/${params.course}/group/add`, {
         group_name: params.group,
         username,
