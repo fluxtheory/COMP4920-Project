@@ -52,7 +52,7 @@ router.post("/:course/group", (req, res) => {
       if (success) {
         chatkit
           .createRoom({
-            id: chatkitGroupId, 
+            id: chatkitGroupId,
             creatorId: username,
             name: group_name
           })
@@ -62,10 +62,16 @@ router.post("/:course/group", (req, res) => {
               roomId: chatkitGroupId,
               userIds: [username]
             });
-          }).then(somethingProbablyNotImportant => {
+          })
+          .then(somethingProbablyNotImportant => {
             return res.status(200).json({ success: true });
           })
           .catch(err => {
+            if (
+              err.error === "services/chatkit/bad_request/duplicate_room_id"
+            ) {
+              return res.status(200).json({ success: true });
+            }
             console.log(err);
             // TODO: better error message
             return res.status(500).json(err);
@@ -118,7 +124,7 @@ router.post("/:course/group/add", (req, res) => {
         return res.status(400).json({ success: false });
       }
     })
-    .then(() => {
+    .then(()=> {
       return res.status(200).json({ success: true });
     })
     .catch(err => {

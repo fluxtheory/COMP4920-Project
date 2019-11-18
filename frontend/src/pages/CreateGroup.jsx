@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import { useRouteMatch, Redirect } from 'react-router-dom';
 import { api } from '../utils';
-import { Session } from '../App';
+import { Session, NewGroupTrigger } from '../App';
 import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +55,6 @@ export const useUsername = () => {
   return username;
 };
 
-
 const TitleForm = ({
   onSuccess: handleSuccess,
   onTitleChange: handleChange,
@@ -65,6 +64,7 @@ const TitleForm = ({
   const classes = useStyles();
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
+  const groupTrigger = useContext(NewGroupTrigger);
   // const [titleInput, setTitleInput] = useState('');
   const username = useUsername();
 
@@ -78,9 +78,9 @@ const TitleForm = ({
         group_name: titleInput,
       })
       .then(res => {
-        console.log('Absolute something');
         handleSuccess();
         setSuccess(true);
+        groupTrigger.trigger();
       })
       .catch(err => {
         console.log(`Error creating group: ${err.message}`);

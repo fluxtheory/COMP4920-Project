@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { UserSearchForm } from './course/UserSearchForm';
 import { Fab, Button, Box } from '@material-ui/core';
-import { Session } from '../App';
+import { Session, NewGroupTrigger } from '../App';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { flexbox } from '@material-ui/system';
 import { api } from '../utils';
@@ -170,11 +170,10 @@ const GroupsSubpanel = () => {
   const [addRequest, setAddRequest] = React.useState(false);
   const { params } = useRouteMatch('/kudo/:course');
   const session = useContext(Session);
+  const groupTrigger = useContext(NewGroupTrigger);
   const [groups, setGroups] = useState([]);
   const username = useUsername();
 
-  console.log('Groups subpanel:');
-  console.log(groups);
   // MRTODO: update on group creation
   // router.get('/:course/group', (req, res) => {
 
@@ -199,7 +198,7 @@ const GroupsSubpanel = () => {
       .catch(err => {
         console.log('GroupsSunpanel: error fetching groups', err.message);
       });
-  }, [params.course]);
+  }, [params.course, groupTrigger.subscription]);
   // MRTODO: find a way to update group list on new group
 
   useEffect(() => {
