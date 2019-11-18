@@ -72,27 +72,27 @@ const GroupMember = props => {
   const { params } = useRouteMatch('/kudo/:course/group/:group');
   const username = useUsername();
 
-  const handleRemove = () => {
-    api
-      .post(
-        `/${params.course}/group/remove`,
-        { username, group_name: params.group },
-        { params: { course: params.course } }
-      )
-      .then(res => {
-        console.log('GroupMember: remove success', res);
-      })
-      .catch(err => {
-        console.log('GroupMember: remove fail', err.message);
-      });
-  };
+  // const handleRemove = () => {
+  //   api
+  //     .post(
+  //       `/${params.course}/group/remove`,
+  //       { username, group_name: params.group },
+  //       { params: { course: params.course } }
+  //     )
+  //     .then(res => {
+  //       console.log('GroupMember: remove success', res);
+  //     })
+  //     .catch(err => {
+  //       console.log('GroupMember: remove fail', err.message);
+  //     });
+  // };
+
   return (
     <div className={classes.groupMemberContainer}>
       <Button classes={{ root: classes.userButton }} key={props.user}>
         <ChildCareIcon />
         <Box mx={1}>{props.user}</Box>
       </Button>
-      <CloseIcon onClick={handleRemove} />
     </div>
   );
 };
