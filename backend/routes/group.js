@@ -118,7 +118,7 @@ router.post("/:course/group/add", (req, res) => {
         return res.status(400).json({ success: false });
       }
     })
-    .then(somethingProbablyNotImportant => {
+    .then(() => {
       return res.status(200).json({ success: true });
     })
     .catch(err => {
@@ -129,9 +129,32 @@ router.post("/:course/group/add", (req, res) => {
 
 //@route POST /:course/:group-name/remove
 //@desc Remove or Leave from a group
+//@body group_name, username
 //@access Private
 router.post("/:course/group/remove", (req, res) => {
-
+  groupdb
+    .removeUserfromGroup(
+      req.body.username,
+      req.body.group_name,
+      req.params.course
+    )
+    // MRTODO: chatkit scaffold test after master merge
+    .then(success => {
+      if (success) {
+        return chatkit.removeUsersFromRoom({
+          roomId: makeGroupId(req.body.group_name, req.params.course),
+          userIds: req.body.username,
+        });
+      } else {
+        return res.status(404).json({ success: success });
+      }
+    })
+    .then(MRTODO => {
+      return res.status(200).json({ success: success });
+    })
+    .catch(err => {
+      return res.status(500).json(err);
+    });
 });
 
 

@@ -3,15 +3,19 @@ import { withStyles } from '@material-ui/core/styles';
 import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
 import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import { Redirect, useParams, useRouteMatch, Link } from 'react-router-dom';
+import { Redirect, useRouteMatch, Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
 import { UserSearchForm } from './course/UserSearchForm';
 import { Fab, Button, Box } from '@material-ui/core';
 import { Session } from '../App';
+import SettingsIcon from '@material-ui/icons/Settings';
+import { flexbox } from '@material-ui/system';
+import { api } from '../utils';
+import { useUsername } from '../pages/CreateGroup';
 
 // MRTODO: this file needs to be better named
-// MRTODO: even it's own folder with each supanel as a component
+// MRTODO: even it's own folder with each subpanel as a component
 
 const ExpansionPanel = withStyles({
   root: {
@@ -88,6 +92,10 @@ const useStyles = makeStyles(theme => ({
   userButton: {
     justifyContent: 'start',
   },
+  groupListingContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
 }));
 
 function CustomizedExpansionPanels() {
@@ -163,22 +171,34 @@ const GroupsSubpanel = () => {
   const { params } = useRouteMatch('/kudo/:course');
   const session = useContext(Session);
   const [groups, setGroups] = useState([]);
+  const username = useUsername();
 
   console.log('Groups subpanel:');
   console.log(groups);
   // MRTODO: update on group creation
+  // router.get('/:course/group', (req, res) => {
+
+  //     let user = req.query.user;
+  //     let course = req.params.course;
   useEffect(() => {
-    console.log(session.user.rooms);
-    const courseGroups = session.user.rooms
-      .map(room => room.id)
-      .filter(room => room.startsWith('__'))
-      .map(room => room.split('__group__')[1])
-      .map(room => room.split('|'))
-      .map(([_, a, b]) => {
-        // MRTODO: remove malformed group manes -> no ened to check for 'b'
-        if (a === params.course && b) return b;
+    // console.log(session.user.rooms);
+    // const courseGroups = session.user.rooms
+    //   .map(room => room.id)
+    //   .filter(room => room.startsWith('__'))
+    //   .map(room => room.split('__group__')[1])
+    //   .map(room => room.split('|'))
+    //   .map(([_, a, b]) => {
+    //     // MRTODO: remove malformed group manes -> no ened to check for 'b'
+    //     if (a === params.course && b) return b;
+    //   });
+    api
+      .get(`/${params.course}/group`, { params: { user: username } })
+      .then(res => {
+        setGroups(res.data.map(group => group.name));
+      })
+      .catch(err => {
+        console.log('GroupsSunpanel: error fetching groups', err.message);
       });
-    setGroups(courseGroups);
   }, [params.course]);
   // MRTODO: find a way to update group list on new group
 
@@ -199,17 +219,8 @@ const GroupsSubpanel = () => {
   return (
     <div className={classes.groupSubpanelContainer}>
       <div className={classes.groupListContainer}>
-        {groups.map(u => {
-          return (
-            <Button
-              component={Link}
-              to={`/kudo/${params.course}/group/${u}`}
-              classes={{ root: classes.userButton }}
-              key={u}
-            >
-              <Box mx={1}>{u}</Box>
-            </Button>
-          );
+        {groups.map((u, idx) => {
+          return <GroupListing key={idx} group={u} />;
         })}
       </div>
       <Fab
@@ -221,6 +232,37 @@ const GroupsSubpanel = () => {
       >
         +
       </Fab>
+    </div>
+  );
+};
+
+const GroupListing = ({ group }) => {
+  const classes = useStyles();
+  const { params } = useRouteMatch('/kudo/:course');
+  const [settingsClicked, setSettingClicked] = useState(false);
+
+  return (
+    <div className={classes.groupListingContainer}>
+      <Button
+        component={Link}
+        // MRTODO:  redirect to chat
+        to={`/kudo/${params.course}/group/${group}`}
+        classes={{ root: classes.userButton }}
+        key={group}
+      >
+        <Box mx={1}>{group}</Box>
+      </Button>
+      <Button
+        component={Link}
+        // MRTODO:  redirect to chat
+        to={`/kudo/${params.course}/group/${group}/settings`}
+        // classes={{ root: classes.userButton }}
+      >
+        <SettingsIcon
+          color="disabled"
+          onClick={() => console.log('settings clicked!')}
+        />
+      </Button>
     </div>
   );
 };
