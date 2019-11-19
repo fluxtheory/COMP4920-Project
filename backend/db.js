@@ -104,8 +104,6 @@ db = new sqlite3.Database("test.db", err => {
     unique(groupid, username)
   );
 
-  
-
   CREATE TABLE IF NOT EXISTS forumPosts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
