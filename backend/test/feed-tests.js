@@ -8,7 +8,7 @@ let should = chai.should();
 chai.use(chaiHttp);
 const server = "http://localhost:3001";
 
-
+/*
 describe('/POST feed', () => {
     
     it('should create a thread in the COMP4920 course feed', (done) => {
@@ -173,3 +173,4 @@ describe('/POST delete feed post', () => {
     });
 
 });
+*/

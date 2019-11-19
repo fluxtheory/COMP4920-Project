@@ -140,10 +140,18 @@ router.get("/:course/assignment", (req, res) => {
 
 // @route POST /:course/assignment
 // @desc Adds an assignment deadline to a course instance.
+/* @body { 
+            user: string,
+            title: string,
+            desc: string,
+            dateFrom: date,
+            dateTo: date
+        }
+*/
 // @access Private
 router.post("/:course/assignment", (req, res) => {
   coursedb
-    .addCourseDeadline()
+    .addCourseDeadline(req.params.course, req.body, req.body.user)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })

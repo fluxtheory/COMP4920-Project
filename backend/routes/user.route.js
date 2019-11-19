@@ -245,6 +245,22 @@ router.get('/:username/friends', (req, res) => {
   })
 })
 
+// @route GET /:username/groups
+// @desc Retrieves the user's affiliated groups
+// @access Private
+
+router.get('/:username/groups', (req, res) => {
+  user.userGroups(req.params.username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    if(err){
+      return res.status(err.code).json(err);
+    }
+  })
+})
+
 // @route GET /user
 // @desc Retrieves user information from the db.
 // @body { usernames = [ "user1", "user2" ... etc] }
