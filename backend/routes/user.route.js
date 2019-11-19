@@ -185,6 +185,20 @@ router.put('/:username/update', (req, res) => {
   });
 });
 
+
+// @route POST /:username/karma
+// @desc Directly give a user karma.
+// @body { giver_username }
+// @access Private
+router.post('/:username/karma', (req, res) => {
+  user.giveKarma(req.params.username, req.body.giver_username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  }).catch(err => {
+    return res.status(err.code).json(err);
+  })
+})
+
 // @route GET /:username/courses
 // @desc returns all the courses enrolled by a user during the current term
 // @access Private

@@ -15,7 +15,7 @@ describe('/POST feed', () => {
         chai.request(server)
         .post('/COMP4920/feed/post')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ parentId: null, username: 'fluxtheory', content: "Hello, I am the start of the thread"})
+        .send({ parentId: null, username: 'fluxtheory', title: "Hello World", content: "Hello, I am the start of the thread"})
         .end((err, res) => {
             res.should.have.status(200);
             

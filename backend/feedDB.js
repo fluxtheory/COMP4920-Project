@@ -203,9 +203,14 @@ module.exports = {
   toggleStickyPost: function(postid, user) {
     return new Promise((resolve, reject) => {
       db.get(`SELECT rank from USERS WHERE username = ?`, user, (err, row) => {
-        if (err || !row) {
+        if (err) {
           reject({ code: 500, msg: err.message });
         }
+
+        if(!row){
+          resolve({ code: 404, msg: "User not found" });
+        }
+
         if (row.rank == 1) {
           let sql = `UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`;
           db.run(sql, postid, function(err) {
