@@ -15,7 +15,7 @@ describe('/POST Group Creation', () => {
         chai.request(server)
         .post('/COMP4920/group')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ username: 'fluxtheory', group_name: "Three Musketeers"})
+        .send({ username: 'regent', group_name: "Three Musketeers"})
         .end((err, res) => {
             res.should.have.status(200);
 
@@ -29,7 +29,7 @@ describe('/POST Group Creation', () => {
                 .get('/COMP4920/group-users?group=Three Musketeers')
                 .end((err, res) => {
                     res.should.have.status(200);
-                    res.body.should.include({username: "fluxtheory"});
+                    res.body.should.include({username: "regent"});
                 })
             })
         })
@@ -37,7 +37,7 @@ describe('/POST Group Creation', () => {
         chai.request(server)
         .post('/COMP4920/group')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ username: 'fluxtheory', group_name: "OwnerLeaveGroupTest"})
+        .send({ username: 'regent', group_name: "OwnerLeaveGroupTest"})
         .end((err, res) => {
             res.should.have.status(200);
 
@@ -51,7 +51,7 @@ describe('/POST Group Creation', () => {
                 .get('/COMP4920/group-users?group=OwnerLeaveGroupTest')
                 .end((err, res) => {
                     res.should.have.status(200);
-                    res.body.should.include({username: "fluxtheory"});
+                    res.body.should.include({username: "regent"});
                     done();
                 })
             })  
@@ -60,9 +60,9 @@ describe('/POST Group Creation', () => {
 })
 
 describe('/GET User affiliated groups', () => {
-    it('should return the groups that "fluxtheory" is a part of', (done) => {
+    it('should return the groups that "regent" is a part of', (done) => {
         chai.request(server)
-        .get('/COMP4920/group?user=fluxtheory')
+        .get('/COMP4920/group?user=regent')
         .end((err, res) => {
             res.should.have.status(200);
             res.body.should.include({name: 'Three Musketeers'});
@@ -77,32 +77,42 @@ describe('/POST Group Add Members', () => {
         chai.request(server)
         .post('/COMP4920/group/add')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ username: 'bbbbb', group_name: "OwnerLeaveGroupTest"})
+        .send({ username: 'sanction', group_name: "OwnerLeaveGroupTest"})
         .end((err, res) => {
-            
+            if(err){
+                console.log("First", err.message);
+            }
             res.should.have.status(200);
 
             chai.request(server)
             .get('/COMP4920/group-users?group=OwnerLeaveGroupTest')
             .end((err, res) => {
+                if(err){
+                    console.log("scnd", err.message);
+                }
                 res.should.have.status(200);
-                res.body.should.include({username: 'bbbbb'})
+                res.body.should.include({username: 'sanction'})
             })
         })
 
         chai.request(server)
         .post('/COMP4920/group/add')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ username: 'zerohedge', group_name: "OwnerLeaveGroupTest"})
+        .send({ username: 'blue', group_name: "OwnerLeaveGroupTest"})
         .end((err, res) => {
-            
+            if(err){
+                console.log("First", err.message);
+            }
             res.should.have.status(200);
-
+            
             chai.request(server)
             .get('/COMP4920/group-users?group=OwnerLeaveGroupTest')
             .end((err, res) => {
+                if(err){
+                    console.log("scnd", err.message);
+                }
                 res.should.have.status(200);
-                res.body.should.include({username: 'zerohedge'})
+                res.body.should.include({username: 'blue'})
                 done();
             })
         })
@@ -131,11 +141,11 @@ describe('/POST Group Remove Members', () => {
         })
     })
     
-    it('should promote "zerohedge" to owner after "fluxtheory" leaves OwnerLeavesGroupTest', (done) => {
+    it('should promote "zerohedge" to owner after "regent" leaves OwnerLeavesGroupTest', (done) => {
         chai.request(server)
         .post('/COMP4920/group/remove')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ username: 'fluxtheory', group_name: "OwnerLeaveGroupTest"})
+        .send({ username: 'regent', group_name: "OwnerLeaveGroupTest"})
         .end((err, res) => {
             res.should.have.status(200);
             
