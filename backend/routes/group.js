@@ -12,6 +12,7 @@ const chatkit = new Chatkit.default({
 
 
 
+
 // @route GET /:course/group?user=fluxtheory
 // @desc Show list of groups in course, option for user-joined groups
 // @query user  if not empty, then returns only that user's joined groups
@@ -133,7 +134,7 @@ router.post("/:course/group/add", (req, res) => {
 });
 
 
-//@route POST /:course/:group-name/remove
+//@route POST /:course/group/remove
 //@desc Remove or Leave from a group
 //@body group_name, username
 //@access Private
@@ -163,8 +164,26 @@ router.post("/:course/group/remove", (req, res) => {
     });
 });
 
+//@route POST /:course/group/transfer-ownership
+//@desc Transfers group ownership to another user
+//@body { group_name, username }
+//@access Private
 
-// @route GET /:course/:group-users
+router.post("/:course/group/transfer-ownership", (req, res) => {
+    groupdb.transferGroupOwnership(req.body.username, req.body.group_name, req.params.course)
+    .then(success => {
+        if(success){
+            return res.status(200).json({"success": success});
+        } else {
+            return res.status(404).json({"success": success});
+        }
+    })
+    .catch(err => {
+        return res.status(500).json(err);
+    })
+})
+
+// @route GET /:course/group-users
 // @desc Get group users
 // @params group
 // @access Private

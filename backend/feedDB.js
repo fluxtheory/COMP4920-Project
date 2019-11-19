@@ -200,16 +200,25 @@ module.exports = {
     return posts;
   },
 
-  toggleStickyPost: function(postid) {
+  toggleStickyPost: function(postid, user) {
     return new Promise((resolve, reject) => {
-      let sql = `UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`;
-      db.run(sql, postid, function(err) {
-        if (err) {
+      db.get(`SELECT rank from USERS WHERE username = ?`, user, (err, row) => {
+        if (err || !row) {
           reject({ code: 500, msg: err.message });
         }
-        this.changes
-          ? resolve({ code: 200, msg: "OK" })
-          : resolve({ code: 404, msg: "Post not found" });
+        if (row.rank == 1) {
+          let sql = `UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`;
+          db.run(sql, postid, function(err) {
+            if (err) {
+              reject({ code: 500, msg: err.message });
+            }
+            this.changes
+              ? resolve({ code: 200, msg: "OK" })
+              : resolve({ code: 404, msg: "Post not found" });
+          });
+        } else {
+          reject({ code: 403, msg: "Not authorized, rank too low" });
+        }
       });
     });
   }

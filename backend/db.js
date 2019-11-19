@@ -90,10 +90,12 @@ db = new sqlite3.Database("test.db", err => {
     name TEXT NOT NULL,
     courseInstance INTEGER REFERENCES courseInstance,
     owner TEXT NOT NULL,
+    member_count INTEGER DEFAULT 0,
     FOREIGN KEY (owner) REFERENCES users(username),
     FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE,
     unique (name, courseInstance)
   );
+
 
   CREATE TABLE IF NOT EXISTS groupUsers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -101,6 +103,8 @@ db = new sqlite3.Database("test.db", err => {
     username TEXT NOT NULL,
     unique(groupid, username)
   );
+
+  
 
   CREATE TABLE IF NOT EXISTS forumPosts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -141,7 +145,14 @@ db = new sqlite3.Database("test.db", err => {
     
     desc
     wantGroup BOOLEAN NOT NULL,
-  );*/
+  );
+  
+  CREATE TRIGGER update_group_member_count
+    AFTER INSERT ON groupUsers
+    BEGIN
+      UPDATE groups SET member_count = 
+    END;
+    */
 
   let ranks = ["Course Moderator", "Course Helper", "Member"];
   let placeholders = ranks.map(ranks => "(?)").join(",");

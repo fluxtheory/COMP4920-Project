@@ -63,7 +63,12 @@ module.exports = {
     });
   },
 
-  // enrolls a user to the CURRENT INSTANCE of a course
+  // possibly through a list, with zids most likely.
+  addUsersFromList: function (userArray){
+
+  },
+
+  // enrolls a single existing user to the CURRENT INSTANCE of a course
   // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester? Yes
   addUsertoCourseInstance: function(user, code) {
     return new Promise((resolve, reject) => {
@@ -133,24 +138,36 @@ module.exports = {
 
   addCourseDeadline: function(code, assignment) {
     return new Promise((resolve, reject) => {
-      const { title, desc, startdate, deadline } = assignment;
+      const { user, title, desc, dateFrom, dateTo } = assignment;
 
-      let sql = `INSERT INTO courseInstanceDeadlines (cInstanceid, title, desc, startdate, deadline)
-       VALUES ( 
-         (SELECT id FROM courseInstance WHERE code = ? AND term = (SELECT term FROM term WHERE active)),
-          ?, ?, ?, ?)`;
-      db.run(sql, [code, title, desc, startdate, deadline], function(err) {
-        if (err) {
-          reject({ code: 500, msg: err.message });
-        } else {
-          this.changes
-            ? resolve({ code: 200, msg: "OK" })
-            : resolve({
-                code: 400,
-                msg: "Failed to Insert, check your values again"
-              });
+      db.get(`SELECT rank from USERS WHERE username = ?`, user, (err, row) => {
+        if(err || !row){
+          reject({code: 500, msg: err.message});
         }
-      });
+
+        if(row.rank == 1){
+          
+          let sql = `INSERT INTO courseInstanceDeadlines (cInstanceid, title, desc, startdate, deadline)
+          VALUES ( 
+            (SELECT id FROM courseInstance WHERE code = ? AND term = (SELECT term FROM term WHERE active)),
+              ?, ?, ?, ?)`;
+          db.run(sql, [code, title, desc, dateFrom, dateTo], function(err) {
+            if (err) {
+              reject({ code: 500, msg: err.message });
+            } else {
+              this.changes
+                ? resolve({ code: 200, msg: "OK" })
+                : resolve({
+                    code: 400,
+                    msg: "Failed to Insert, check your values again"
+                  });
+            }
+          });    
+        } else {
+          reject({code: 403, msg: "Not authorized, rank too low"});
+        }
+      })
+      
     });
   },
 

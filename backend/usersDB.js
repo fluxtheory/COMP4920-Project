@@ -26,6 +26,11 @@ module.exports = {
     });
   },
 
+  // possibly through a list, with zids most likely.
+  addUsers: function (userArray){
+
+  },
+
   //gives user moderator privileges
   promoteUser: function (username, rank){
     return new Promise((resolve, reject) => {
@@ -41,7 +46,7 @@ module.exports = {
     });
   },
 
-
+  // dangerous, rather than delete user and make the db unstable, probably just mark them as inactive.
   deleteUser: function(user) {
     return new Promise((resolve, reject) => {
       let sql = `DELETE FROM users WHERE username = ?`;
@@ -178,6 +183,23 @@ module.exports = {
         );
       }
     });
+  },
+
+  //returns all the groups affiliated with the user
+  userGroups: function(user){
+    return new Promise((resolve, reject) => {
+      let sql = `select name from groupUsers 
+      LEFT JOIN groups ON groupUsers.groupid = groups.id
+      WHERE username = ?`;
+
+      db.all(sql, user, (err, rows) => {
+        if(err){
+          reject({code: 500, msg: err.message});
+        } else {
+          resolve({code: 200, data: rows});
+        }
+      })
+    })
   },
 
   // returns all the courses enrolled by a user during the current term

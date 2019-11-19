@@ -136,12 +136,13 @@ router.get("/:course/feed/:id", (req, res) => {
 // toggle sticky post
 // @route POST /:course/feed/id/sticky
 // @desc Toggle Sticky a post
+// @body { username }
 // @access private
 router.post("/:course/feed/:id/sticky", (req, res) => {
   const { course, id } = req.params;
 
   feeddb
-    .toggleStickyPost(id)
+    .toggleStickyPost(id, req.body.username)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })
