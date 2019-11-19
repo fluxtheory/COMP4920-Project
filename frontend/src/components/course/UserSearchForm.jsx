@@ -85,25 +85,10 @@ function UserSearchForm(props) {
           onChange={handleChange}
           margin="normal"
           type="text"
+          variant="outlined"
           placeholder="Search for user..."
           autoComplete="off"
         />
-        {/*}
-        <Autocomplete
-          options={users}
-          getOptionLabel={option => option.username}
-          onChange={handleChange}
-          renderInput={params => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder="Search for user..."
-              value={userInput}
-              fullWidth
-            />
-          )}
-        />
-          */}
       </form>
       <div className={classes.userListContainer}>
         {userSearch.map(u => {
