@@ -7,15 +7,15 @@ let db;
 // refactoring so we only have a single database access script.
 
 module.exports = {
-    getDb, //returns a connected database
-    initDb //initializes database and makes sure it is ready for use.
+  getDb, //returns a connected database
+  initDb //initializes database and makes sure it is ready for use.
 };
 
-function initDb(callback){
-    if(db){
-        console.warn("Attempting to init DB again!");
-        return callback(null, db);
-    }
+function initDb(callback) {
+  if (db) {
+    console.warn("Attempting to init DB again!");
+    return callback(null, db);
+  }
 }
 
 db = new sqlite3.Database("test.db", err => {
@@ -23,7 +23,7 @@ db = new sqlite3.Database("test.db", err => {
     return console.error(err.message);
   }
   //console.log("Connected to sqlite3 initdb database");
-      
+
   let schema_query = `CREATE TABLE IF NOT EXISTS userrank (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
@@ -103,15 +103,17 @@ db = new sqlite3.Database("test.db", err => {
   );
 
   CREATE TABLE IF NOT EXISTS forumPosts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    courseInstance INTEGER NOT NULL REFERENCES courseInstance,
-    parentId INTEGER REFERENCES forumPosts ON DELETE CASCADE,
-    userId INTEGER REFERENCES users,
-    kudos INTEGER DEFAULT 0,
-    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    postContent TEXT NOT NULL,
-    sticky BOOLEAN DEFAULT 0 NOT NULL, 
-    FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
+  rootId INTEGER REFERENCES forumPosts ON DELETE CASCADE,
+  branchId INTEGER REFERENCES forumPosts,
+  userId INTEGER REFERENCES users,
+  kudos INTEGER DEFAULT 0,
+  datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  postContent TEXT NOT NULL,
+  title TEXT NOT NULL,
+  sticky BOOLEAN DEFAULT 0 NOT NULL,
+  FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS userUpvotedPosts (
@@ -144,7 +146,7 @@ db = new sqlite3.Database("test.db", err => {
   let ranks = ["Course Moderator", "Course Helper", "Member"];
   let placeholders = ranks.map(ranks => "(?)").join(",");
   let insert_query =
-  `INSERT OR IGNORE INTO userrank (name) VALUES ` + placeholders;
+    `INSERT OR IGNORE INTO userrank (name) VALUES ` + placeholders;
 
   let year = new Date().getFullYear();
   let monthNow = new Date().getMonth();
@@ -160,13 +162,13 @@ db = new sqlite3.Database("test.db", err => {
         console.log(err.message);
       }
     });
-  
+
     db.run(insert_query, ranks, function(err) {
       if (err) {
         console.log(err.message);
       }
     });
-  
+
     terms.forEach(entry => {
       db.run(
         `INSERT OR IGNORE INTO term (term, active) VALUES (?, ?)`,
@@ -215,18 +217,16 @@ db = new sqlite3.Database("test.db", err => {
   });
 });
 
-
-
-function connected(err, _db){
-    if(err){
-        return callback(err);
-    }
-    console.log("DB initialized");
-    db = _db;
-    return callback(null, db);
+function connected(err, _db) {
+  if (err) {
+    return callback(err);
+  }
+  console.log("DB initialized");
+  db = _db;
+  return callback(null, db);
 }
 
-function getDb(){
-    assert.ok(db, "Db has not been initialized.");
-    return db;
+function getDb() {
+  assert.ok(db, "Db has not been initialized.");
+  return db;
 }

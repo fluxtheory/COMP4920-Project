@@ -22,7 +22,7 @@ function Amazing() {
         <Typography variant="h5" component="h3">
           Welcome to Kudo!
         </Typography>
-        <Typography component="p">jonsnow420blazeit</Typography>
+        <Typography component="p">This will be a home screen</Typography>
       </Paper>
     </div>
   );
