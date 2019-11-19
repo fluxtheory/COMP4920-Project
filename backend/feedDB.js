@@ -125,6 +125,21 @@ module.exports = {
     });
   },
 
+  upvoteStatus: function(postId, username) {
+    return new Promise((resolve, reject) => {
+      let sql = `SELECT * FROM userUpvotedPosts WHERE 
+      postid=? AND userid=?`;
+      db.get(sql, [postId, username], function(err, row) {
+        if (err) {
+          console.log(err);
+          reject({ code: 500, msg: err.message });
+        }
+        let empty = isEmpty(row);
+        resolve({ code: 200, data: !empty });
+      });
+    });
+  },
+
   getPost: function(postid) {
     return new Promise((resolve, reject) => {
       let sql = `SELECT * FROM forumPosts where id = ?`;

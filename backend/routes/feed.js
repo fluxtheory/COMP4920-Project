@@ -37,10 +37,27 @@ router.post("/:course/feed/:id/delete", (req, res) => {
 // toggle upboat poast
 // @route POST /:course/feed/:id/upvote
 // @desc Attaches a like to a post. Clicking again removes the like.
+// @body username
 // @access private
 router.post("/:course/feed/:id/upvote", (req, res) => {
   feeddb
     .upvotePost(req.params.id, req.body.username)
+    .then(reply => {
+      return res.status(reply.code).json(reply);
+    })
+    .catch(err => {
+      return res.status(err.code).json(err);
+    });
+});
+
+// check upvote state
+// @route POST /:course/feed/:id/upvoteStatus
+// @desc checks whether a post has been upvoted by the given user
+// @body username
+// @access private
+router.post("/:course/feed/:id/upvoteStatus", (req, res) => {
+  feeddb
+    .upvoteStatus(req.params.id, req.body.username)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })

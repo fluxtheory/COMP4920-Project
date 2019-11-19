@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
 function PostCompact(props) {
   const classes = useStyles();
   const post = props.post;
+  const [kudos, setKudos] = React.useState(post.kudos);
 
   return (
     <div className={classes.PostContainer}>
@@ -61,13 +62,13 @@ function PostCompact(props) {
         <Paper className={classes.upvoteSection}>
           <div className={classes.upvoteButton}>
             {post ? (
-              <UpvoteButton thisPost={post} initialUpvoteState={false} />
+              <UpvoteButton thisPost={post} kudos={kudos} setKudos={setKudos} />
             ) : (
               <div></div>
             )}
           </div>
           <Typography className={classes.upvoteButton} component="p">
-            {post.kudos}
+            {kudos}
           </Typography>
         </Paper>
       </Paper>

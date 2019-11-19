@@ -14,20 +14,48 @@ const useStyles = makeStyles(theme => ({
   root: {},
 }));
 
+const getUpvoteStatus = function(course, postId, userId) {
+  return new Promise((resolve, reject) => {
+    api
+      .post('/' + course + '/feed/' + postId + '/upvoteStatus', {
+        username: userId,
+      })
+      .then(resp => {
+        resolve(resp.data);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(false);
+      });
+  });
+};
+
 function UpvoteButton(props) {
   const classes = useStyles();
   const [upvoted, setUpvoted] = React.useState(props.initialUpvoteState);
   const thisPost = props.thisPost;
-  console.log(thisPost);
+  const session = React.useContext(Session);
   const postId = thisPost.id;
   const course = useParams().course;
+  let kudos = props.kudos;
+  const setKudos = props.setKudos;
+
+  React.useEffect(() => {
+    const prom = getUpvoteStatus(course, postId, session.user.id).then(resp => {
+      setUpvoted(resp.data);
+    });
+  }, [thisPost]);
 
   const onVote = e => {
-    api.post('/' + course + '/feed/' + postId + '/upvote', {}).then(resp => {
-      if (upvoted) thisPost.kudos--;
-      else thisPost.kudos++;
-      setUpvoted(!upvoted);
-    });
+    api
+      .post('/' + course + '/feed/' + postId + '/upvote', {
+        username: session.user.id,
+      })
+      .then(resp => {
+        if (upvoted) setKudos(kudos - 1);
+        else setKudos(kudos + 1);
+        setUpvoted(!upvoted);
+      });
   };
 
   return (
