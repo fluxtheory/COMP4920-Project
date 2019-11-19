@@ -179,15 +179,13 @@ module.exports = {
     return new Promise((resolve, reject) => {
       db.all(
         `SELECT * FROM forumPosts 
-          WHERE courseInstanceId = 
-              (SELECT id FROM courseInstance 
-              WHERE term = (SELECT term FROM term WHERE active)
-              AND (rootId = ? OR id = ?))`,
+          WHERE rootId = ? OR id = ?`,
         [postId, postId],
         (err, rows) => {
           if (err) {
             reject({ code: 500, msg: err.message });
           } else {
+            sorted = this.sortCourseFeed(rows);
             resolve(sorted);
           }
         }

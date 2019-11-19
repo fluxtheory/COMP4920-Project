@@ -70,15 +70,18 @@ function PostExpanded() {
   const classes = useStyles();
   const postId = useParams().postId;
   const session = React.useContext(Session);
-  const [posts, setPosts] = React.useState([]);
+  const [comments, setComments] = React.useState([]);
   const [thisPost, setThisPost] = React.useState(null);
+  const [kudos, setKudos] = React.useState(0);
 
   React.useEffect(() => {
     const prom = getPostAndChildren(postId).then(resp => {
       console.log(resp);
       console.log(postId);
-      setThisPost(resp.find(i => i.id.toString() === postId));
-      //setPosts(resp);
+      const post = resp.find(i => i.id.toString() === postId);
+      setThisPost(post);
+      setKudos(post.kudos);
+      //setComments(resp);
       console.log(thisPost);
     });
   }, [postId]);
@@ -107,13 +110,17 @@ function PostExpanded() {
         <Paper className={classes.upvoteSection}>
           <div className={classes.upvoteButton}>
             {thisPost ? (
-              <UpvoteButton thisPost={thisPost} initialUpvoteState={false} />
+              <UpvoteButton
+                thisPost={thisPost}
+                kudos={kudos}
+                setKudos={setKudos}
+              />
             ) : (
               <div></div>
             )}
           </div>
           <Typography className={classes.upvoteButton} component="p">
-            {thisPost ? thisPost.kudos : 'loading...'}
+            {thisPost ? kudos : 'loading...'}
           </Typography>
         </Paper>
       </Paper>
