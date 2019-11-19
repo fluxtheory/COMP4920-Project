@@ -3,10 +3,10 @@ const getdb = require("./db").getDb;
 let db = getdb();
 
 module.exports = {
-    startGroup: function(user, group_name, course){
-        
-        return new Promise((resolve, reject) => {
-            db.run(`INSERT INTO groups (name, courseInstance, owner) 
+  startGroup: function(user, group_name, course) {
+    return new Promise((resolve, reject) => {
+      db.run(
+        `INSERT INTO groups (name, courseInstance, owner) 
                 VALUES (?, (SELECT id FROM courseInstance where 
                 term = (SELECT term from term where active) AND code = ?), ?)`, [group_name, course, user], err => {
                 if(err){
@@ -186,10 +186,11 @@ module.exports = {
         });
     },
 
-    // returns all the users in a group
-    getGroupUsers : function(group_name, course){
-        return new Promise((resolve, reject) => {
-            db.all(`select username from groupUsers
+  // returns all the users in a group
+  getGroupUsers: function(group_name, course) {
+    return new Promise((resolve, reject) => {
+      db.all(
+        `select username from groupUsers
             LEFT JOIN groups on groupUsers.groupid = groups.id
             LEFT JOIN courseInstance on groups.courseInstance = courseInstance.id
             WHERE term = (SELECT term from term WHERE active)

@@ -9,9 +9,12 @@ import { TabBar } from '../components/TabBar';
 import { PublicChat } from '../components/PublicChat';
 import { Box } from '@material-ui/core';
 import { ChatPane } from '../components/ChatPane';
+import { CreateGroup } from './CreateGroup';
+import { GroupSettings } from './GroupSettings';
+import { GroupChat } from './GroupChat';
 import { PrivateChat } from '../components/PrivateChat';
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(theme => ({
   kudoApp: {
     display: 'grid',
     // gridGap: '1rem',
@@ -108,7 +111,6 @@ const PlebbyChangingContent = () => {
   return (
     <React.Fragment>
       <div className={classes.contentArea}>
-        <h3>Changing Content</h3>
         <Switch>
           <Route path={makePath('/dashboard')}>
             {/* TODO: this is be be deprecated */}
@@ -127,11 +129,14 @@ const PlebbyChangingContent = () => {
           <Route exact path={makePath('/:course/feed')}>
             <h1>I'm the course feed</h1>
           </Route>
-          <Route exact path={makePath('/:course/group')}>
-            <h1>I'm the course group chat</h1>
+          <Route exact path={makePath('/:course/group/create')}>
+            <CreateGroup />
           </Route>
-          <Route exact path={makePath('/:course/group/settings')}>
-            <h1>I'm the course group chat management</h1>
+          <Route exact path={makePath('/:course/group/:group')}>
+            <GroupChat />
+          </Route>
+          <Route exact path={makePath('/:course/group/:group/settings')}>
+            <GroupSettings />
           </Route>
           <Route exact path={makePath('/:user/dm')}>
             <PrivateChat />

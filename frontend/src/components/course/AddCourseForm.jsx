@@ -28,6 +28,7 @@ function AddCourseForm(props) {
   const [searchbarVisible, setSearchbarVisible] = React.useState(false);
   const [error, setError] = React.useState('');
 
+  // MRTODO: clean
   const handleChange = (event, value) => {
     console.log('course handle chnage');
     console.log(event);

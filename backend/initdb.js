@@ -150,48 +150,10 @@ const seedData = new Promise(resolve => {
       db.serialize(() => {
         // BATCH INSERT THIS!
         courseEntry.run(entry.code, entry.name); // replace with a `foreach` around your data
-        courseInstanceEntry.run(terms[0][0]);
-        courseInstanceEntry.run(terms[1][0]);
-        courseInstanceEntry.run(terms[2][0]);
+        courseInstanceEntry.run(entry.code, terms[0][0]);
+        courseInstanceEntry.run(entry.code, terms[1][0]);
+        courseInstanceEntry.run(entry.code, terms[2][0]);
         console.log("Success, course: ", entry.code);
-
-        /*       db.run(
-        `INSERT OR IGNORE INTO courses (code, name) VALUES (?,?)`,
-        [entry.code, entry.name],
-        err => {
-          if (err) {
-            console.log(err);
-          }
-        }
-      ); */
-
-        /*       db.run(
-        `INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`,
-        [entry.code, terms[0][0]],
-        err => {
-          if (err) {
-            console.log(err);
-          }
-        }
-      );
-      db.run(
-        `INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`,
-        [entry.code, terms[1][0]],
-        err => {
-          if (err) {
-            console.log(err);
-          }
-        }
-      );
-      db.run(
-        `INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`,
-        [entry.code, terms[2][0]],
-        err => {
-          if (err) {
-            console.log(err);
-          }
-        }
-      ); */
       });
     });
     db.run("commit");

@@ -63,7 +63,12 @@ module.exports = {
     });
   },
 
-  // enrolls a user to the CURRENT INSTANCE of a course
+  // possibly through a list, with zids most likely.
+  addUsersFromList: function (userArray){
+
+  },
+
+  // enrolls a single existing user to the CURRENT INSTANCE of a course
   // SHOULD WE IMPLEMENT A LIMIT to how many courses a user can sign up for per semester? Yes
   addUsertoCourseInstance: function(user, code) {
     return new Promise((resolve, reject) => {
