@@ -1,5 +1,6 @@
 const userdb = require("./usersDB");
 const getdb = require("./db").getDb;
+const crypto = require('crypto');
 
 let db = getdb();
 
@@ -64,8 +65,36 @@ module.exports = {
   },
 
   // possibly through a list, with zids most likely.
-  addUsersFromList: function (userArray){
-
+  addUsersFromList: function (userArray, username){
+    return new Promise((resolve, reject) => {
+      db.get(`SELECT rank FROM users where username = ?`, username, (err, row) => {
+        if(row.rank != 1){
+          reject({code: 403, msg: "Not authorized to submit userlist."});
+        } else {
+          // batch entry
+          db.serialize(() => {
+            db.run("begin transaction");
+            const userEntry = db.prepare(
+              `INSERT INTO users (username, password, email, zid, rank) VALUES (?,?,?,?,?)`,
+              err => {
+                if (err) {
+                  console.log(err);
+                }
+              }
+            );
+            var id;
+            userArray.forEach(entry => {
+              id = crypto.randomBytes(6).toString('hex');
+              id_email = id+"@unsw.edu.au";
+              userEntry.run(id, id, id_email, entry, 3);
+            })
+            db.run("commit");
+            userEntry.finalize();
+            resolve({code: 200, msg: "OK"});
+          })
+        }
+      })
+    })
   },
 
   // enrolls a single existing user to the CURRENT INSTANCE of a course
