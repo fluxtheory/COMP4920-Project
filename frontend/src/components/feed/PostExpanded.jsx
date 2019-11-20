@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto',
   },
   postContentSection: {
-    width: '99%%',
+    width: '99%',
     height: '50vh',
     margin: '0.5rem',
     float: 'left',
@@ -104,7 +104,11 @@ function PostExpanded() {
             variant="h5"
             component="h3"
           >
-            {thisPost ? thisPost.postContent : 'loading...'}
+            {thisPost
+              ? thisPost.postContent
+                  .split('\n')
+                  .map((item, i) => <p key={i}>{item}</p>)
+              : 'loading...'}
           </Typography>
         </Paper>
         <Paper className={classes.upvoteSection}>

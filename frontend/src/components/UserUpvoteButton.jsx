@@ -5,12 +5,12 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { api } from '../../utils';
-import { Session } from '../../App';
+import { api } from './../utils';
+import { Session } from './../App';
 import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
-  UpvoteButtonContainer: {},
+  UserUpvoteButtonContainer: {},
   root: {},
 }));
 
@@ -30,7 +30,7 @@ const getUpvoteStatus = function(course, postId, userId) {
   });
 };
 
-function UpvoteButton(props) {
+function UserUpvoteButton(props) {
   const classes = useStyles();
   const [upvoted, setUpvoted] = React.useState(props.initialUpvoteState);
   const thisPost = props.thisPost;
@@ -59,12 +59,12 @@ function UpvoteButton(props) {
   };
 
   return (
-    <div className={classes.UpvoteButtonContainer}>
+    <div className={classes.UserUpvoteButtonContainer}>
       <Button
         onClick={() => {
           onVote();
         }}
-        className={classes.upvoteButton}
+        className={classes.UserUpvoteButton}
       >
         {upvoted ? (
           <StarRoundedIcon color="secondary" />
@@ -76,4 +76,4 @@ function UpvoteButton(props) {
   );
 }
 
-export { UpvoteButton };
+export { UserUpvoteButton };

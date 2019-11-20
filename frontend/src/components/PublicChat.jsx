@@ -13,13 +13,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Messages = ({ messages }) =>
-  !messages.length ? (
-    <img
-      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
-      src={loadingCircle}
-      alt="Loading Messages..."
-    />
+const Messages = props => {
+  const messages = props.messages;
+  let messagesReceived = props.messagesReceived;
+  return !messages.length ? (
+    messagesReceived ? (
+      <p>No messages yet. Send one!</p>
+    ) : (
+      <img
+        style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+        src={loadingCircle}
+        alt="Loading Messages..."
+      />
+    )
   ) : (
     <ul>
       {messages.map(m => {
@@ -27,12 +33,14 @@ const Messages = ({ messages }) =>
       })}
     </ul>
   );
+};
 
 function PublicChat() {
   const classes = useStyles();
   const session = React.useContext(Session);
   const [chatMessages, setChatMessages] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
+  const [messagesReceived, setMessagesReceived] = React.useState(false);
 
   const roomId = useParams().course + '_public';
 
@@ -50,6 +58,7 @@ function PublicChat() {
       .fetchMultipartMessages({ roomId })
       .then(messages => {
         setChatMessages([...messages]);
+        setMessagesReceived(true);
         return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
@@ -75,7 +84,7 @@ function PublicChat() {
   return (
     <div>
       <div className={classes.messages}>
-        <Messages messages={chatMessages} />
+        <Messages messages={chatMessages} messagesReceived={messagesReceived} />
       </div>
       <MessageInput roomId={roomId} />
     </div>

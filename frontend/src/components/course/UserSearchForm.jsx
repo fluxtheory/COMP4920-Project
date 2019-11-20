@@ -7,6 +7,8 @@ import { Typography, Box } from '@material-ui/core';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
 import { useRouteMatch, Link } from 'react-router-dom';
 import { Session } from '../../App';
+import Popup from 'reactjs-popup';
+import { UserInfoSheet } from '../UserInfoSheet';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -14,14 +16,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'stretch',
   },
-
-  userListContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    marginTop: '0.2rem',
-  },
-
   userButton: {
     justifyContent: 'start',
   },
@@ -93,17 +87,22 @@ function UserSearchForm(props) {
       <div className={classes.userListContainer}>
         {userSearch.map(u => {
           return (
-            <Button
-              classes={{ root: classes.userButton }}
+            <Popup
               key={u.username}
-              component={Link}
-              to={'/kudo/' + u.username + '/dm'}
+              trigger={
+                <Button classes={{ root: classes.userButton }} key={u.username}>
+                  <ChildCareIcon />
+                  <Box mx={1}>
+                    {u.username}{' '}
+                    {u.username === session.user.id ? ' (You)' : ''}
+                  </Box>
+                </Button>
+              }
+              position="bottom center"
+              closeOnDocumentClick
             >
-              <ChildCareIcon />
-              <Box mx={1}>
-                {u.username} {u.username === session.user.id ? ' (You)' : ''}
-              </Box>
-            </Button>
+              <UserInfoSheet key={u.username} user={u} />
+            </Popup>
           );
         })}
       </div>

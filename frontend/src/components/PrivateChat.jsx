@@ -13,13 +13,19 @@ const useStyles = makeStyles({
   },
 });
 
-const Messages = ({ messages }) =>
-  !messages.length ? (
-    <img
-      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
-      src={loadingCircle}
-      alt="Loading Messages..."
-    />
+const Messages = props => {
+  const messages = props.messages;
+  let messagesReceived = props.messagesReceived;
+  return !messages.length ? (
+    messagesReceived ? (
+      <p>No messages yet. Send one!</p>
+    ) : (
+      <img
+        style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+        src={loadingCircle}
+        alt="Loading Messages..."
+      />
+    )
   ) : (
     <ul>
       {messages.map(m => {
@@ -27,6 +33,7 @@ const Messages = ({ messages }) =>
       })}
     </ul>
   );
+};
 
 const PrivateChat = () => {
   const classes = useStyles();
@@ -35,6 +42,7 @@ const PrivateChat = () => {
   const [roomId, setRoomId] = React.useState(null);
   const otherUserId = useParams().user;
   const [chatMessages, setChatMessages] = React.useState([]);
+  const [messagesReceived, setMessagesReceived] = React.useState(false);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
 
   React.useEffect(() => {
@@ -89,6 +97,7 @@ const PrivateChat = () => {
       .fetchMultipartMessages({ roomId })
       .then(messages => {
         setChatMessages([...messages]);
+        setMessagesReceived(true);
         return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
@@ -128,7 +137,7 @@ const PrivateChat = () => {
   return (
     <div>
       <div className={classes.messages}>
-        <Messages messages={chatMessages} />
+        <Messages messages={chatMessages} messagesReceived={messagesReceived} />
       </div>
       <MessageInput roomId={roomId} />
     </div>

@@ -11,8 +11,14 @@ const useStyles = makeStyles(theme => ({
   PostListContainer: {
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'auto',
   },
-
+  userListContainer: {
+    display: 'flex',
+    maxHeight: '80vh',
+    flexDirection: 'column',
+    overflow: 'auto',
+  },
   root: {},
 }));
 

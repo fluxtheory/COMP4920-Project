@@ -7,6 +7,7 @@ import { Typography, Box } from '@material-ui/core';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
 import { useRouteMatch, Link } from 'react-router-dom';
 import { Session } from '../App';
+import ChatBubbleTwoToneIcon from '@material-ui/icons/ChatBubbleTwoTone';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -105,7 +106,7 @@ function ActiveChats(props) {
               component={Link}
               to={'/kudo/' + u + '/dm'}
             >
-              <ChildCareIcon />
+              <ChatBubbleTwoToneIcon />
               <Box mx={1}>{u}</Box>
             </Button>
           );
