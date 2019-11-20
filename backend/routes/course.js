@@ -11,7 +11,21 @@ const chatkit = new Chatkit.default({
     "9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=" // This is bad, use .env vars
 });
 
-// @route POST courses
+// @route POST /:course/student-list
+// @desc Uploads the quick-verification user list to a particular course
+// @body { username, data : [<zid1>, <zid2>, ... ] } - for verification purposes only
+router.post("/:course/student-list", (req, res) => {
+  console.log(req.body);
+  coursedb.addUsersFromList(req.body.data, req.body.username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  });
+})
+
+// @route POST /course
 // @desc add a course to courselist
 /* @param {
             code - e.g. "COMP1917"    
@@ -45,7 +59,7 @@ router.post("/course", (req, res) => {
     });
 });
 
-// @route GET courses
+// @route GET /course
 // @desc GET list of courses
 /* @param {
         prefix (optional) - e.g. "COMP"
@@ -110,7 +124,7 @@ router.get("/:course/users", (req, res) => {
     });
 });
 
-// @route GET
+// @route GET /users
 // @desc returns all users using Kudo this term
 // @access Private
 router.get("/users", (req, res) => {

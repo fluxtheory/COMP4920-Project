@@ -225,10 +225,13 @@ test().then( (a,b,c) => {
 }).catch((err, a, b) => {
     console.log(err,a,b);
 })*/
+const crypto = require('crypto');
+var id = crypto.randomBytes(6).toString('hex');
 
-let test = [];
-let y = [];
+//let y = [];
 //console.log(isEmpty(test));
-console.log(test.length);
+console.log(id);
+
+
 
 

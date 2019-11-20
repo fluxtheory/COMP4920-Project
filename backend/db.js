@@ -35,7 +35,7 @@ db = new sqlite3.Database("test.db", err => {
     email TEXT NOT NULL UNIQUE, 
     zid TEXT UNIQUE, 
     chatkitid TEXT UNIQUE,
-    rank INTEGER REFERENCES userrank,
+    rank INTEGER DEFAULT 3 REFERENCES userrank,
     date_joined TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_login TEXT DEFAULT NULL,
     karma INTEGER DEFAULT 0,
@@ -104,8 +104,6 @@ db = new sqlite3.Database("test.db", err => {
     unique(groupid, username)
   );
 
-  
-
   CREATE TABLE IF NOT EXISTS forumPosts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
@@ -166,8 +164,6 @@ db = new sqlite3.Database("test.db", err => {
     desc
     wantGroup BOOLEAN NOT NULL,
   );
-  
-  
   */
 
   let ranks = ["Course Moderator", "Course Helper", "Member"];
