@@ -40,7 +40,7 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         password: undefined
       };
-      /*
+      
       chatkit.createUser({
         id: req.body.name,
         name: req.body.name,
@@ -49,7 +49,7 @@ router.post("/register", (req, res) => {
           console.log('Chatkit user created successfully');
         }).catch((err) => {
           console.error('Chatkit error on user creation', err);
-        });*/
+        });
       //hash password
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
@@ -184,6 +184,20 @@ router.put('/:username/update', (req, res) => {
     return res.status(err.code).json(err);
   });
 });
+
+
+// @route POST /:username/karma
+// @desc Directly give a user karma.
+// @body { giver_username }
+// @access Private
+router.post('/:username/karma', (req, res) => {
+  user.giveKarma(req.params.username, req.body.giver_username)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  }).catch(err => {
+    return res.status(err.code).json(err);
+  })
+})
 
 // @route GET /:username/courses
 // @desc returns all the courses enrolled by a user during the current term

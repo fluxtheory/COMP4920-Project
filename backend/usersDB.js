@@ -31,6 +31,27 @@ module.exports = {
 
   },
 
+  giveKarma: function(user, giver_user){
+    return new Promise((resolve, reject) => {
+      db.run(`UPDATE users SET karma = karma + 1 WHERE username = ?`, user, function(err) {
+        if(err){
+          reject({code: 500, msg: err.message});
+        } else {
+          if(this.changes){
+            db.run(`INSERT INTO userUpvotedUsers (upvoterid, upvoteeid) VALUES (?, ?)`, [giver_user, user], err => {
+              if(err){
+                reject({code: 500, msg: "Something went wrong inserting into userUpvotedUsers!"})
+              }
+              resolve({code: 200, msg: "OK"})
+            })
+          } else {
+            resolve({code: 404, msg: "User not found"});
+          }
+        }
+      })
+    })
+  },
+
   //gives user moderator privileges
   promoteUser: function (username, rank){
     return new Promise((resolve, reject) => {

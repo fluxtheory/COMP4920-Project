@@ -84,7 +84,7 @@ router.post("/:course/enrol", (req, res) => {
             roomId: course + "_public",
             userIds: [username]
           })
-          .then(() => console.log("added"))
+          //.then(() => console.log("added"))
           .catch(err => console.error(err));
         return res.status(200).json({ success: true });
       } else {
@@ -154,7 +154,7 @@ router.get("/:course/assignment", (req, res) => {
 // @access Private
 router.post("/:course/assignment", (req, res) => {
   coursedb
-    .addCourseDeadline(req.params.course, req.body, req.body.user)
+    .addCourseDeadline(req.params.course, req.body)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })

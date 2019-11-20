@@ -107,17 +107,17 @@ db = new sqlite3.Database("test.db", err => {
   
 
   CREATE TABLE IF NOT EXISTS forumPosts (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
-  rootId INTEGER REFERENCES forumPosts ON DELETE CASCADE,
-  branchId INTEGER REFERENCES forumPosts,
-  userId INTEGER REFERENCES users,
-  kudos INTEGER DEFAULT 0,
-  datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  postContent TEXT NOT NULL,
-  title TEXT NOT NULL,
-  sticky BOOLEAN DEFAULT 0 NOT NULL,
-  FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    courseInstanceId INTEGER NOT NULL REFERENCES courseInstance,
+    rootId INTEGER REFERENCES forumPosts ON DELETE CASCADE,
+    branchId INTEGER REFERENCES forumPosts,
+    userId INTEGER REFERENCES users,
+    kudos INTEGER DEFAULT 0,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    postContent TEXT NOT NULL,
+    title TEXT NOT NULL,
+    sticky BOOLEAN DEFAULT 0 NOT NULL,
+    FOREIGN KEY (courseInstanceId) REFERENCES courseInstance(id) ON DELETE CASCADE
   );
 
   CREATE TABLE IF NOT EXISTS userUpvotedPosts (
@@ -128,6 +128,15 @@ db = new sqlite3.Database("test.db", err => {
     FOREIGN KEY (postid) REFERENCES forumPosts(id) ON DELETE CASCADE
   );
 
+  CREATE TABLE IF NOT EXISTS userUpvotedUsers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    upvoterid TEXT REFERENCES users NOT NULL,
+    upvoteeid TEXT REFERENCES users NOT NULL,
+    unique(upvoterid, upvoteeid),
+    FOREIGN KEY (upvoterid) REFERENCES users(username) ON DELETE CASCADE
+    FOREIGN KEY (upvoteeid) REFERENCES users(username) ON DELETE CASCADE
+  );
+
   CREATE TABLE IF NOT EXISTS userFriends (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userid TEXT REFERENCES users NOT NULL,
@@ -135,9 +144,20 @@ db = new sqlite3.Database("test.db", err => {
     unique(userid, friendid),
     FOREIGN KEY (userid) REFERENCES users(username) ON DELETE CASCADE,
     FOREIGN KEY (friendid) REFERENCES users(username) ON DELETE CASCADE
-  );`;
+  );
+  
+  CREATE TRIGGER IF NOT EXISTS update_group_member_count
+    AFTER INSERT ON groupUsers
+    BEGIN
+      UPDATE groups SET member_count = member_count + 1 WHERE id = new.groupid;
+    END;
+    
+    CREATE TRIGGER IF NOT EXISTS give_user_karma_when_post_upvoted
+    AFTER INSERT ON userUpvotedPosts
+    BEGIN
+      UPDATE users SET karma = karma + 1 WHERE username = (SELECT userId FROM forumposts WHERE id = new.postid);
+    END;`;
 
-  // do we need both topicId and parentId??
   /*
   CREATE TABLE IF NOT EXISTS groupFormation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -147,12 +167,8 @@ db = new sqlite3.Database("test.db", err => {
     wantGroup BOOLEAN NOT NULL,
   );
   
-  CREATE TRIGGER update_group_member_count
-    AFTER INSERT ON groupUsers
-    BEGIN
-      UPDATE groups SET member_count = 
-    END;
-    */
+  
+  */
 
   let ranks = ["Course Moderator", "Course Helper", "Member"];
   let placeholders = ranks.map(ranks => "(?)").join(",");

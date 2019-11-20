@@ -99,10 +99,12 @@ module.exports = {
                 )`;
             db.run(sql, [group_name, course, username], function(err) {
                 if(err){
+                    //console.log("Failed to add ", username);
                     console.log(err.message);
                     reject(err.message);
                 } else {
                     if(this.lastID){
+                        //console.log("Added ", username);
                         resolve(true);
                     } else {
                         resolve(false);
