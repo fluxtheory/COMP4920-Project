@@ -35,11 +35,10 @@ const getLastFiveChats = function(session) {
     // identify DM_ in id
     // get user id of other user whom isnt the current session holder
     try {
-      let ret = [];
-      console.log(session.user.rooms.length);
+      let active = [];
+      let inactive = [];
       for (let i = 0; i < 5 && i < session.user.rooms.length; i++) {
         let nextRoom = session.user.rooms[i];
-        console.log(nextRoom.id);
 
         let id_split = nextRoom.id.split('_');
         if (id_split[0] !== 'DM') continue;
@@ -60,13 +59,21 @@ const getLastFiveChats = function(session) {
             if (nextRoom.users[0].id === session.user.id)
               otherUser = nextRoom.users[1].id;
             else otherUser = nextRoom.users[0].id;
-            ret.push(otherUser);
+            if (nextRoom.lastMessageAt) {
+              if (
+                Date.now() - Date.parse(nextRoom.lastMessageAt) <
+                7 * 24 * 60 * 60 * 1000
+              )
+                // one week's worth of milliseconds
+                active.push(otherUser);
+              else inactive.push(otherUser);
+            }
           });
       }
-      resolve(ret);
+      resolve({ active: active, inactive: inactive });
     } catch (err) {
       console.log(err);
-      reject([]);
+      reject({ active: [], inactive: [] });
     }
   });
 };
@@ -78,10 +85,12 @@ function ActiveChats(props) {
   const course = params.course;
   const session = React.useContext(Session);
   const [activeChats, setActiveChats] = React.useState([]);
+  const [inactiveChats, setInactiveChats] = React.useState([]);
 
   React.useEffect(() => {
     const prom = getLastFiveChats(session).then(resp => {
-      setActiveChats(resp);
+      setActiveChats(resp['active']);
+      setInactiveChats(resp['inactive']);
     });
   }, []);
   const [userInput, setUserInput] = React.useState('');
@@ -98,7 +107,22 @@ function ActiveChats(props) {
   return (
     <div className={classes.courseUsersChatContainer}>
       <div className={classes.userListContainer}>
+        <p> Past week:</p>
         {activeChats.map(u => {
+          return (
+            <Button
+              classes={{ root: classes.userButton }}
+              key={u}
+              component={Link}
+              to={'/kudo/' + u + '/dm'}
+            >
+              <ChatBubbleTwoToneIcon />
+              <Box mx={1}>{u}</Box>
+            </Button>
+          );
+        })}
+        <p>Later than a week:</p>
+        {inactiveChats.map(u => {
           return (
             <Button
               classes={{ root: classes.userButton }}

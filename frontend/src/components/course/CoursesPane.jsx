@@ -30,7 +30,6 @@ const getEnrolledCourses = username =>
     api
       .get('/' + username + '/courses')
       .then(resp => {
-        console.log(resp);
         resolve(resp.data);
       })
       .catch(err => {

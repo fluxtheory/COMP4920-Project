@@ -26,7 +26,6 @@ const getAllUsers = function(course) {
     api
       .get('/' + course + '/users')
       .then(resp => {
-        console.log(resp.data);
         resolve(resp.data);
       })
       .catch(err => {

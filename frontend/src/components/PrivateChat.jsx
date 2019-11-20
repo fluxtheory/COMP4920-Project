@@ -52,7 +52,6 @@ const PrivateChat = () => {
 
   React.useEffect(() => {
     if (!session.user) return;
-    console.log(session.user.id);
     let users = [session.user.id, otherUserId];
     users.sort();
 
