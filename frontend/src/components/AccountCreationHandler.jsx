@@ -28,6 +28,7 @@ function AccountCreationHandler() {
   const [values, setValues] = React.useState({
     name: '',
     email: '',
+    zid: '',
     password: '',
     password2: '',
   });
@@ -111,6 +112,7 @@ function AccountCreationHandler() {
     var data = JSON.stringify({
       name: values.name,
       email: values.email,
+      zid: values.zid,
       password: values.password,
       password2: values.password2,
     });
@@ -159,6 +161,21 @@ function AccountCreationHandler() {
               required
             />
             <Typography variant="subtitle1">{emailHelpString}</Typography>
+          </div>
+          <div className={classes.textFieldContainer}>
+            <TextField
+              id="zid"
+              name="zid"
+              label="zid"
+              className={classes.textField}
+              value={values.zid}
+              onChange={handleChange('zid')}
+              margin="normal"
+              type="text"
+              placeholder="z1234567"
+              required
+            />
+            <Typography variant="subtitle1">{passwordHelpString}</Typography>
           </div>
           <div className={classes.textFieldContainer}>
             <TextField

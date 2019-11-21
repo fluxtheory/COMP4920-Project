@@ -7,7 +7,7 @@ let should = chai.should();
 
 
 chai.use(chaiHttp);
-
+/*
 describe('', () => {
     chai.request("http://localhost:3001")
         .post('/testacc/delete')
@@ -136,7 +136,7 @@ describe('/PUT User Profile Update', () => {
     it("should update testacc's details with correct input", (done) => {
         chai.request("http://localhost:3001")
         .put( ('/testacc/update'))
-        .set('content-type', 'application/x-www-form-urlencoded')
+        .set('content-type', 'application/json')
         .send({
             new_email: "testacc2@unsw.edu.au",
             new_password: "bbbbb2",
@@ -154,9 +154,6 @@ describe('/PUT User Profile Update', () => {
         done();
     })
 
-    it("should fail to update a non-existent user's details", (done) => {
-        done();
-    })
 });
 
 describe('/GET User Profile', () => {
@@ -169,7 +166,7 @@ describe('/GET User Profile', () => {
             res.should.have.status(200);
                 //res.body.should.be.a('object');
                 //res.body.length.should.be.eql(1);
-            res.body.email.should.equal("testacc@unsw.edu.au");
+            res.body.email.should.equal("testacc2@unsw.edu.au");
             res.body.rank.should.equal(1);
             res.body.karma.should.equal(0);
             done();
@@ -281,7 +278,7 @@ describe('/GET Course Retrieval Group', () => {
         });
     })
 });
-
+*/
 
 describe('/POST Delete User', () => {
     /*it("should delete user 'testacc'", (done) => {
