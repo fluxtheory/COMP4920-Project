@@ -3,4 +3,12 @@
     "eslint.enable": true,
     "autoimport.filesToScan": "**/*.{js,jsx}",
     "autoimport.showNotifications": true,
+    "sqltools.connections": [
+        {
+            "database": "/home/aashwin/uni/ethics/COMP4920-Project/backend/test.db",
+            "dialect": "SQLite",
+            "name": "Kudo DB"
+        }
+    ],
+    "sqltools.useNodeRuntime": true,
 }

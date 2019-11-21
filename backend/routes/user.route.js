@@ -38,6 +38,7 @@ router.post("/register", (req, res) => {
       let newUser = {
         username: req.body.name,
         email: req.body.email,
+        admin: req.body.admin,
         password: undefined
       };
       
@@ -102,7 +103,8 @@ router.post("/login",
         // JWT payload
         const payload = {
           email: reply.data.email,
-          username: reply.data.username
+          username: reply.data.username,
+          isAdmin: (reply.data.rank === 1)
         };
 
         //sign token
@@ -111,6 +113,7 @@ router.post("/login",
               success: true,
               token,
               username: reply.data.username,
+              isAdmin: payload.isAdmin
             });
           }
         );
@@ -311,7 +314,7 @@ router.post('/user/promote', (req, res) =>{
 router.get('/verify-token', (req, res) => {
   try {
     const decoded = jwt.verify(req.headers.authorization, keys.secret);
-    return res.send({success: true, username: decoded.username})
+    return res.send({success: true, username: decoded.username, isAdmin: decoded.isAdmin, inFactHereIsEverything: decoded})
   } catch (err) {
     return res.status(401).send({success:false, error: err})
   }

@@ -32,9 +32,10 @@ module.exports = {
           }
         })
       } 
+      let rank = user.admin ? 1 : 3; // 1 = moderator, 3 = member
       
       let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
-      db.run(query, [username, password, email, null, 3, date_joined], function(err) {
+      db.run(query, [username, password, email, null, rank, date_joined], function(err) {
         if(err) {
           reject({code: 400, msg: err.message});
         } else {

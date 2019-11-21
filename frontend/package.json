@@ -10,11 +10,14 @@
     "@pusher/chatkit-client": "^1.13.2",
     "axios": "^0.19.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "moment": "^2.24.0",
     "prettier": "^1.18.2",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-gantt-timeline": "^0.4.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "react-sizeme": "^2.6.10"
   },
   "scripts": {
     "start": "react-scripts start",
