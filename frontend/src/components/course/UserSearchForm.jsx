@@ -50,6 +50,7 @@ function UserSearchForm(props) {
       setUserSearch(resp);
     });
   }, [course]);
+
   const [userInput, setUserInput] = React.useState('');
 
   const handleSubmit = e => {

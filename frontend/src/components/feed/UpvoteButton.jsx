@@ -32,7 +32,7 @@ const getUpvoteStatus = function(course, postId, userId) {
 
 function UpvoteButton(props) {
   const classes = useStyles();
-  const [upvoted, setUpvoted] = React.useState(props.initialUpvoteState);
+  const [upvoted, setUpvoted] = React.useState(false);
   const thisPost = props.thisPost;
   const session = React.useContext(Session);
   const postId = thisPost.id;

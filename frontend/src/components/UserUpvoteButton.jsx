@@ -14,14 +14,14 @@ const useStyles = makeStyles(theme => ({
   root: {},
 }));
 
-const getUpvoteStatus = function(course, postId, userId) {
+const checkKarmaStatus = function(user, giver_username) {
   return new Promise((resolve, reject) => {
     api
-      .post('/' + course + '/feed/' + postId + '/upvoteStatus', {
-        username: userId,
+      .post('/' + user + '/checkKarma', {
+        giver_username,
       })
       .then(resp => {
-        resolve(resp.data);
+        resolve(resp.data.status);
       })
       .catch(err => {
         console.log(err);
@@ -32,29 +32,27 @@ const getUpvoteStatus = function(course, postId, userId) {
 
 function UserUpvoteButton(props) {
   const classes = useStyles();
-  const [upvoted, setUpvoted] = React.useState(props.initialUpvoteState);
-  const thisPost = props.thisPost;
+  const [karmaStatus, setKarmaStatus] = React.useState(false);
   const session = React.useContext(Session);
-  const postId = thisPost.id;
-  const course = useParams().course;
   let kudos = props.kudos;
+  const username = props.username;
   const setKudos = props.setKudos;
 
   React.useEffect(() => {
-    const prom = getUpvoteStatus(course, postId, session.user.id).then(resp => {
-      setUpvoted(resp.data);
+    const prom = checkKarmaStatus(username, session.user.id).then(resp => {
+      setKarmaStatus(resp);
     });
-  }, [thisPost]);
+  }, [username]);
 
   const onVote = e => {
     api
-      .post('/' + course + '/feed/' + postId + '/upvote', {
-        username: session.user.id,
+      .post('/' + username + '/karma', {
+        giver_username: session.user.id,
       })
       .then(resp => {
-        if (upvoted) setKudos(kudos - 1);
+        if (karmaStatus) setKudos(kudos - 1);
         else setKudos(kudos + 1);
-        setUpvoted(!upvoted);
+        setKarmaStatus(!karmaStatus);
       });
   };
 
@@ -66,7 +64,7 @@ function UserUpvoteButton(props) {
         }}
         className={classes.UserUpvoteButton}
       >
-        {upvoted ? (
+        {karmaStatus ? (
           <StarRoundedIcon color="secondary" />
         ) : (
           <StarBorderRoundedIcon color="primary" />
