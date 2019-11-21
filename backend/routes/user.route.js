@@ -211,7 +211,7 @@ router.put("/:username/update", (req, res) => {
 // @access Private
 router.post("/:username/karma", (req, res) => {
   user
-    .giveKarma(req.params.username, req.body.giver_username)
+    .toggleKarma(req.params.username, req.body.giver_username)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })

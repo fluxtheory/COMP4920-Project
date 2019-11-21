@@ -21,7 +21,8 @@ const checkKarmaStatus = function(user, giver_username) {
         giver_username,
       })
       .then(resp => {
-        resolve(resp.data.status);
+        console.log(resp);
+        resolve(resp.data.data);
       })
       .catch(err => {
         console.log(err);
@@ -40,6 +41,7 @@ function UserUpvoteButton(props) {
 
   React.useEffect(() => {
     const prom = checkKarmaStatus(username, session.user.id).then(resp => {
+      console.log(resp);
       setKarmaStatus(resp);
     });
   }, [username]);
@@ -55,7 +57,6 @@ function UserUpvoteButton(props) {
         setKarmaStatus(!karmaStatus);
       });
   };
-
   return (
     <div className={classes.UserUpvoteButtonContainer}>
       <Button
@@ -63,11 +64,14 @@ function UserUpvoteButton(props) {
           onVote();
         }}
         className={classes.UserUpvoteButton}
+        disabled={username === session.user.id}
       >
         {karmaStatus ? (
           <StarRoundedIcon color="secondary" />
         ) : (
-          <StarBorderRoundedIcon color="primary" />
+          <StarBorderRoundedIcon
+            color={username === session.user.id ? 'error' : 'primary'}
+          />
         )}
       </Button>
     </div>
