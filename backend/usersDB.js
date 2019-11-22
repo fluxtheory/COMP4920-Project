@@ -12,6 +12,26 @@ module.exports = {
       let email = (username.includes("@")) ? username : user.email;
       let password = user.password;
       let date_joined = new Date().toString();
+      let zid = user.zid;
+
+      if(zid){
+        let sql = `SELECT * FROM users where zid = ?`;
+        db.get(sql, zid, (err, row) => {
+          //if the zid has already been inserted due to a verification list...
+          if(!isEmpty(row)){
+            let query = `UPDATE users SET username = ? AND email = ? AND password = ? AND date_joined = ? WHERE zid = ?`
+            db.run(query, [username, email, password, date_joined], err => {
+              if(err) {
+                reject({code: 400, msg: err.message});
+              } else {  
+                (this.changes) 
+                ? resolve({code: 200, msg: "OK"}) 
+                : resolve({code: 503, msg: "Not available at this time"});
+              }
+            })
+          }
+        })
+      } 
       
       let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
       db.run(query, [username, password, email, null, 3, date_joined], function(err) {
@@ -23,6 +43,7 @@ module.exports = {
             : resolve({code: 503, msg: "Not available at this time"});
         }
       });
+      
     });
   },
 

@@ -7,7 +7,7 @@ let should = chai.should();
 
 
 chai.use(chaiHttp);
-/*
+
 describe('', () => {
     chai.request("http://localhost:3001")
         .post('/testacc/delete')
@@ -278,7 +278,7 @@ describe('/GET Course Retrieval Group', () => {
         });
     })
 });
-*/
+
 
 describe('/POST Delete User', () => {
     /*it("should delete user 'testacc'", (done) => {

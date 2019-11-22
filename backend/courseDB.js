@@ -65,7 +65,7 @@ module.exports = {
   },
 
   // possibly through a list, with zids most likely.
-  addUsersFromList: function (userArray, username){
+  addUsersFromList: function (course, userArray, username){
     return new Promise((resolve, reject) => {
       db.get(`SELECT rank FROM users where username = ?`, username, (err, row) => {
         if(row.rank != 1){
@@ -171,7 +171,7 @@ module.exports = {
 
       db.get(`SELECT rank from USERS WHERE username = ?`, user, (err, row) => {
         if(err || !row){
-          reject({code: 500, msg: err.message});
+          reject({code: (!row) ? 404 : 500, msg: err.message});
         }
 
         if(row.rank == 1){
@@ -231,5 +231,46 @@ module.exports = {
         }
       });
     });
+  },
+
+  addAnnouncement: function(course, user, content){
+    return new Promise((resolve, reject) => {
+      db.get(`SELECT rank FROM users WHERE username = ?`, user, (err, row) => {
+        if(err || !row){
+          reject({code: (!row) ? 404 : 500, msg: err.message});
+        }
+
+        if(row.rank == 1){    
+          let sql = `INSERT INTO courseAnnouncements ( courseInstance, announcement, userid, datetime) VALUES ((
+            SELECT id FROM courseInstance where code = ? AND term = (SELECT term from term WHERE active)
+          ),?,?,?)`;
+          db.run(sql, [course, content, user, new Date().toString()], function(err){
+            if(err){
+              reject({ code: 500, msg: err.message });
+            }
+            (this.lastID)
+            ? resolve({code: 200, msg: "OK"})
+            : resolve({code: 400, msg: "Please recheck input"});
+          })
+        } else {
+          reject({code: 403, msg: "Not authorized, rank too low"});
+        }
+      })
+    })
+  },
+
+  getAnnouncements: function(course){
+    return new Promise((resolve, reject) => {
+      let sql = `SELECT courseAnnouncements.* FROM courseAnnouncements 
+            LEFT JOIN courseInstance ON courseAnnouncements.courseInstance = courseInstance.id
+            WHERE code = ? AND term = (SELECT term FROM term WHERE active)`;
+      db.all(sql, course, (err, rows) => {
+        if(err){
+          reject({ code: 500, msg: err.message });
+        }
+        resolve({code: 200, data: rows});
+      
+      })
+    })
   }
 };
