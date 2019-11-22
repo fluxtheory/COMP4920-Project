@@ -5,8 +5,10 @@ import { makePath } from './Kudo';
 import TimeLine from 'react-gantt-timeline';
 import { Box, Typography } from '@material-ui/core';
 import { api, useCourse } from '../utils';
-// MRTODO: move to file
-export const CourseAdminPage = () => {
+import { useUsername } from './CreateGroup';
+import { Textfit } from 'react-textfit';
+
+const DeadlineManagement = () => {
   const currUser = useContext(CurrentUser);
   const course = useCourse();
   const [deadlineName, setDeadlineName] = React.useState('');
@@ -114,6 +116,105 @@ export const CourseAdminPage = () => {
         onChange={handleDeadlineNameChange}
       />
       <button onClick={handleDeadlineSubmit}>Commit Changes</button>
+    </div>
+  );
+};
+// How does courseannouncments get to know when the admin POSTs a post?
+// It can know from the backend
+// It must know from the anon management
+// What about for users then?
+// there's a an extra useeffect that will need be used there
+// Just make a hook if you need to
+
+const useAnnouncements = () => {
+  const [announcements, setAnnouncements] = useState([]);
+  const [shouldUpdate, setShouldUpdate] = useState({});
+  const course = useCourse();
+
+  useEffect(() => {
+    api
+      .get(`/${course}/announcements`)
+      .then(res => {
+        const fetchedAnnouncements = res.data.data;
+        const formattedAnnouncements = fetchedAnnouncements.map(a => {
+          return { announcement: a.announcement, timestamp: a.datetime };
+        });
+
+        setAnnouncements(formattedAnnouncements);
+      })
+      .catch(err => {
+        console.log('Error fetching course announcements');
+      });
+  }, [shouldUpdate]);
+
+  const triggerUpdate = () => setShouldUpdate({});
+
+  return { announcements, triggerUpdate };
+};
+const CourseAnnouncements = ({ announcements }) => {
+  announcements.sort((d1, d2) => {
+    if (d1 < d2) return -1;
+    return 1;
+  });
+
+  return (
+    <div style={{ width: '100%' }}>
+      {announcements.map((a, idx) => (
+        <Box key={idx}>
+          <Textfit mode="multi" max={100} min={32}>
+            <Box height="150px" width={'100%'}>
+              {a.announcement}
+            </Box>
+          </Textfit>
+        </Box>
+      ))}
+    </div>
+  );
+};
+
+const AnnouncementManagement = () => {
+  const course = useCourse();
+  const username = useUsername();
+  const { announcements, triggerUpdate } = useAnnouncements();
+  const [newAnnouncement, setNewAnnouncement] = useState('');
+
+  const handleEnter = event => {
+    if (event.key === 'Enter') {
+      api
+        .post(`/${course}/announcements`, {
+          content: newAnnouncement,
+          username: username,
+        })
+        .then(res => {
+          triggerUpdate();
+        })
+        .catch(err => {
+          console.log('Error posting course announcement');
+          console.log(err);
+        });
+      setNewAnnouncement('');
+    }
+  };
+  return (
+    <div>
+      <h1>Announcement Management</h1>
+      <input
+        value={newAnnouncement}
+        placeholder="Announcement Message"
+        onKeyPress={handleEnter}
+        onChange={event => setNewAnnouncement(event.target.value)}
+      />
+      <h2>Current announcements:</h2>
+      <CourseAnnouncements announcements={announcements} />
+    </div>
+  );
+};
+
+export const CourseAdminPage = () => {
+  return (
+    <div>
+      <DeadlineManagement />
+      <AnnouncementManagement />
     </div>
   );
 };
