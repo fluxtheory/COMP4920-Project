@@ -8,35 +8,37 @@ let should = chai.should();
 chai.use(chaiHttp);
 const server = "http://localhost:3001";
 
-/*
+
 describe('/POST feed', () => {
     
     it('should create a thread in the COMP4920 course feed', (done) => {
+        var root;
         chai.request(server)
         .post('/COMP4920/feed/post')
         .set('content-type', 'application/x-www-form-urlencoded')
-        .send({ parentId: null, username: 'fluxtheory', title: "Hello World", content: "Hello, I am the start of the thread"})
+        .send({ rootId: null, branchId: null, username: 'fluxtheory', title: "Hello World", content: "Hello, I am the start of the thread"})
         .end((err, res) => {
             res.should.have.status(200);
-            
+            root = res.body.postId;
+
             chai.request(server)
             .post('/COMP4920/feed/post')
             .set('content-type', 'application/x-www-form-urlencoded')
-            .send({ parentId: res.body.postId, username: 'zerohedge', content: "I am the first reply"})
+            .send({ rootId: root, branchId: res.body.postId, username: 'zerohedge', title: "Re:Hello World", content: "I am the first reply"})
             .end((err, res) => {
                 res.should.have.status(200);
                 
                 chai.request(server)
                 .post('/COMP4920/feed/post')
                 .set('content-type', 'application/x-www-form-urlencoded')
-                .send({ parentId: res.body.postId, username: 'fluxtheory', content: "I am the second reply"})
+                .send({ rootId: root, branchId: res.body.postId, username: 'fluxtheory', title: "Re:Re:Hello World", content: "I am the second reply"})
                 .end((err, res) => {
                     res.should.have.status(200);
                     
                     chai.request(server)
                     .post('/COMP4920/feed/post')
                     .set('content-type', 'application/x-www-form-urlencoded')
-                    .send({ parentId: res.body.postId, username: 'bbbbb', content: "I am the third reply"})
+                    .send({ rootId: root, branchId: res.body.postId, username: 'bbbbb', title: "Re:Re:Re:Hello World", content: "I am the third reply"})
                     .end((err, res) => {
                         res.should.have.status(200);
                         done();
@@ -46,7 +48,7 @@ describe('/POST feed', () => {
                 chai.request(server)
                 .post('/COMP4920/feed/post')
                 .set('content-type', 'application/x-www-form-urlencoded')
-                .send({ parentId: res.body.postId, username: 'dailystorm', content: "I am the first nested reply"})
+                .send({ rootId: root, branchId: res.body.postId, username: 'dailystorm', title: "Re:Hello World", content: "I am the first nested reply"})
                 .end((err, res) => {
                     res.should.have.status(200);
                     
@@ -103,6 +105,8 @@ describe('/POST upvote and sticky feed post', () => {
     it('should sticky a post. Trying to sticky the post again should de-sticky the post', (done) => {
         chai.request(server)
         .post('/COMP4920/feed/1/sticky')
+        .set('content-type', 'application/x-www-form-urlencoded')
+        .send({ username: 'fluxtheory'})
         .end((err, res) => {
             res.should.have.status(200);
 
@@ -114,6 +118,8 @@ describe('/POST upvote and sticky feed post', () => {
                 
                 chai.request(server)
                 .post('/COMP4920/feed/1/sticky')
+                .set('content-type', 'application/x-www-form-urlencoded')
+                .send({ username: 'fluxtheory'})    
                 .end((err, res) => {
                     res.should.have.status(200);
 
@@ -173,4 +179,3 @@ describe('/POST delete feed post', () => {
     });
 
 });
-*/

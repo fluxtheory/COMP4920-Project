@@ -22,7 +22,7 @@ module.exports = {
           }
 
           this.changes
-            ? resolve({ code: 200, msg: "OK" })
+            ? resolve({ code: 200, msg: "OK", postId: this.lastID })
             : resolve({
                 code: 400,
                 msg: "Cannot add post, please recheck fields"
@@ -201,8 +201,9 @@ module.exports = {
   },
 
   toggleStickyPost: function(postid, user) {
+    //console.log(user);
     return new Promise((resolve, reject) => {
-      db.get(`SELECT rank from USERS WHERE username = ?`, user, (err, row) => {
+      db.get(`SELECT rank FROM users WHERE username = ?`, user, (err, row) => {
         if (err) {
           reject({ code: 500, msg: err.message });
         }
@@ -210,7 +211,7 @@ module.exports = {
         if(!row){
           resolve({ code: 404, msg: "User not found" });
         }
-
+      
         if (row.rank == 1) {
           let sql = `UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`;
           db.run(sql, postid, function(err) {

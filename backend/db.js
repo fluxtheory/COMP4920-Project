@@ -131,7 +131,7 @@ db = new sqlite3.Database("test.db", err => {
     upvoterid TEXT REFERENCES users NOT NULL,
     upvoteeid TEXT REFERENCES users NOT NULL,
     unique(upvoterid, upvoteeid),
-    FOREIGN KEY (upvoterid) REFERENCES users(username) ON DELETE CASCADE
+    FOREIGN KEY (upvoterid) REFERENCES users(username) ON DELETE CASCADE,
     FOREIGN KEY (upvoteeid) REFERENCES users(username) ON DELETE CASCADE
   );
 

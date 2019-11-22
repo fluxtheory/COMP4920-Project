@@ -47,10 +47,9 @@ router.post("/register", (req, res) => {
           name: req.body.name
         })
         .then(() => {
-          console.log("Chatkit user created successfully");
-        })
-        .catch(err => {
-          console.error("Chatkit error on user creation", err);
+          console.log('Chatkit user created successfully');
+        }).catch((err) => {
+          //console.error('Chatkit error on user creation', err);
         });
       //hash password
       bcrypt.genSalt(10, (err, salt) => {
@@ -194,15 +193,12 @@ router.put("/:username/update", (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-  console.log(req.body);
-  user
-    .updateUser(req.params.username, req.body)
-    .then(reply => {
-      return res.status(reply.code).json(reply);
-    })
-    .catch(err => {
-      return res.status(err.code).json(err);
-    });
+  //console.log(req.body);
+  user.updateUser(req.params.username, req.body).then( reply => {
+    return res.status(reply.code).json(reply);
+  }).catch(err => {
+    return res.status(err.code).json(err);
+  });
 });
 
 // @route POST /:username/karma

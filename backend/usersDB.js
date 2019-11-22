@@ -31,26 +31,45 @@ module.exports = {
   // possibly through a list, with zids most likely.
   addUsers: function(userArray) {},
 
-  giveKarma: function(user, giver_user) {
+  toggleKarma: function(user, giver_user){
     return new Promise((resolve, reject) => {
-      db.run(
-        `UPDATE users SET karma = karma + 1 WHERE username = ?`,
-        user,
-        function(err) {
-          if (err) {
-            reject({ code: 500, msg: err.message });
-          } else {
+      db.get(`SELECT * FROM userUpvotedUsers WHERE upvoterid = ? AND upvoteeid = ?`, [giver_user, user], (err, row) => {
+        if(err){
+          console.log(err.message);
+          reject({ code: 500, msg: err.message });
+        }
+
+        if(isEmpty(row)){
+          db.run(`UPDATE users SET karma = karma + 1 WHERE username = ?`, user, function(err) {
+            if(err){
+              reject({code: 500, msg: err.message});
+            } else {
+              if(this.changes){
+                db.run(`INSERT INTO userUpvotedUsers (upvoterid, upvoteeid) VALUES (?, ?)`, [giver_user, user], err => {
+                  if(err){
+                    reject({code: 500, msg: "Something went wrong inserting into userUpvotedUsers!"})
+                  }
+                  resolve({code: 200, msg: "OK"})
+                })
+              } else {
+                resolve({code: 404, msg: "User not found"});
+              }
+            }
+          });
+        } else {
+          db.run(`UPDATE users SET karma = karma - 1 WHERE username = ?`, user, function(err){
+            if (err) {
+              console.log(err.message);
+              reject({ code: 500, msg: err.message });
+            }
             if (this.changes) {
               db.run(
-                `INSERT INTO userUpvotedUsers (upvoterid, upvoteeid) VALUES (?, ?)`,
+                `DELETE FROM userUpvotedUsers WHERE upvoterid = ? AND upvoteeid = ?`,
                 [giver_user, user],
-                err => {
+                function(err) {
                   if (err) {
-                    reject({
-                      code: 500,
-                      msg:
-                        "Something went wrong inserting into userUpvotedUsers!"
-                    });
+                    console.log(err.message);
+                    reject({ code: 500, msg: err.message });
                   }
                   resolve({ code: 200, msg: "OK" });
                 }
@@ -58,9 +77,9 @@ module.exports = {
             } else {
               resolve({ code: 404, msg: "User not found" });
             }
-          }
+          });
         }
-      );
+      });
     });
   },
 
@@ -139,20 +158,14 @@ module.exports = {
               reject({ code: 500, msg: err.message });
             }
             let sql = `UPDATE users SET password=?, email = ?, zid=? WHERE username=?`;
-
-            db.run(
-              sql,
-              [hash, updates.new_email, updates.username, updates.new_zid],
-              function(err) {
-                if (err) {
-                  reject({ code: 500, msg: err.message });
-                }
-                this.changes
-                  ? resolve({ code: 200, msg: "OK" })
-                  : resolve({ code: 404, msg: "User not found" });
-              }
-            );
-          });
+            
+            db.run(sql, [hash, updates.new_email, updates.new_zid, user], function(err){
+              if(err){
+                reject({code: 500, msg: err.message});
+              } 
+              (this.changes) ? resolve({code: 200, msg: "OK"}) : resolve({code: 404, msg: "User not found"});
+            });    
+          })
         });
       }
     });
