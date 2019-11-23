@@ -1,12 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
-import Paper from '@material-ui/core/Paper';
+import { Link, useRouteMatch } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@material-ui/core/';
 import { CourseList } from './CourseList';
 import { api } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
 import { Session } from '../../App';
+import { useUsername } from '../../pages/CreateGroup';
 
 const useStyles = makeStyles(theme => ({
   dashboardButton: {
@@ -40,12 +40,21 @@ const getEnrolledCourses = username =>
       });
   });
 
+export const LeftPaneButton = ({ children, activeRoute, ...props }) => {
+  const { params } = useRouteMatch('/kudo/:activeRoute');
+  const isActive = activeRoute === params.activeRoute;
+  return (
+    <Button color={isActive ? 'primary' : 'secondary'} {...props}>
+      {children}
+    </Button>
+  );
+};
+
 function CoursesPane() {
   const classes = useStyles();
   const [courseList, setCourseList] = React.useState([]);
   const [courseInFocus, setCourseInFocus] = React.useState('Dashboard');
-  const session = React.useContext(Session);
-  const username = session.user.id;
+  const username = useUsername();
 
   React.useEffect(() => {
     getEnrolledCourses(username).then(ret => {
@@ -88,16 +97,15 @@ function CoursesPane() {
           addCourse={addCourse}
         />
       </Box>
-      <Button
+      <LeftPaneButton
         className={classes.dashboardButton}
         variant="contained"
-        onClick={() => {}}
-        color={'Dashboard' === courseInFocus ? 'primary' : 'secondary'}
+        activeRoute="dashboard"
         component={Link}
         to={'/kudo/dashboard'}
       >
         Overview
-      </Button>
+      </LeftPaneButton>
     </Box>
   );
 }

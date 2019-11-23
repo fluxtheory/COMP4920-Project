@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { Button, Box } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { LeftPaneButton } from './CoursesPane';
 
 const useStyles = makeStyles(theme => ({
   courseListContainer: {
@@ -20,28 +21,23 @@ function CourseList(props) {
   const classes = useStyles();
 
   const enrolledCourses = props.courseList;
-  const courseInFocus = props.courseInFocus;
-  const setCourseInFocus = props.setCourseInFocus;
 
   return (
     <div className={classes.courseListContainer}>
       {enrolledCourses.map(item => {
         return (
-          <Button
+          <LeftPaneButton
             component={Link}
             to={`/kudo/${item.code}`}
             key={item.code}
             className={classes.courseButton}
             variant="contained"
-            onClick={() => {
-              setCourseInFocus(item.code);
-            }}
-            color={item.code === courseInFocus ? 'primary' : 'secondary'}
+            activeRoute={item.code}
           >
             <Box component={Typography} variant="button">
               {item.code}
             </Box>
-          </Button>
+          </LeftPaneButton>
         );
       })}
     </div>
