@@ -8,10 +8,13 @@ import { api } from '../../utils';
 import { Session } from '../../App';
 import { TextField, Button, Fab, Box } from '@material-ui/core/';
 import { MakeComment } from './MakeComment';
+import CommentIcon from '@material-ui/icons/Comment';
+import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
+import { User } from '../User';
 
 const useStyles = makeStyles(theme => ({
   post: {
-    margin: '0.7rem 0',
+    margin: '0.7rem 0 0 0',
     border: '3px solid red',
     maxheight: '100%',
     maxWidth: '100%',
@@ -24,7 +27,6 @@ const useStyles = makeStyles(theme => ({
     width: '70%',
     maxWidth: '70%',
     maxHeight: '20%',
-    float: 'left',
   },
   postTitleText: {
     wordBreak: 'break-all',
@@ -40,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   upvoteText: {},
   postContentSection: {
     width: '99%',
-    height: '50vh',
+    height: '50%',
     margin: '0.5rem',
     float: 'left',
     overflow: 'auto',
@@ -48,9 +50,9 @@ const useStyles = makeStyles(theme => ({
   postContent: {},
   postText: { wordBreak: 'break-all', margin: '2% 2% 2% 2%' },
   root: {
-    padding: theme.spacing(3, 2),
+    margin: '3%',
     height: '100%',
-    width: '100%',
+    width: '97%',
   },
 }));
 
@@ -73,7 +75,11 @@ function Comment(props) {
             variant="h5"
             component="h3"
           >
-            {thisPost ? thisPost.title : 'loading...'}
+            {thisPost
+              ? thisPost.postContent
+                  .split('\n')
+                  .map((item, i) => <p key={i}>{item}</p>)
+              : 'loading...'}
           </Typography>
         </Paper>
         <Paper className={classes.upvoteSection}>
@@ -92,25 +98,18 @@ function Comment(props) {
             {thisPost ? kudos : 'loading...'}
           </Typography>
         </Paper>
-        <Paper className={classes.postContentSection}>
-          <Typography className={classes.postText} variant="h5" component="h3">
-            {thisPost
-              ? thisPost.postContent
-                  .split('\n')
-                  .map((item, i) => <p key={i}>{item}</p>)
-              : 'loading...'}
-          </Typography>
-        </Paper>
-      </Paper>
-      <div className={classes.makeCommentBox}>
+        {thisPost ? <User username={thisPost.userId} /> : null}
         <Fab
           onClick={() => setMakingComment(!makingComment)}
+          style={({ float: 'left' }, { margin: '2%' })}
           // variant="contained"
           size="medium"
           color="secondary"
         >
-          {makingComment ? '-' : '+'}
+          {makingComment ? <CommentOutlinedIcon /> : <CommentIcon />}
         </Fab>
+      </Paper>
+      <div className={classes.makeCommentBox}>
         {thisPost && makingComment ? (
           <MakeComment
             depth={depth + 1}

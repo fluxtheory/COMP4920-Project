@@ -9,6 +9,7 @@ import { useRouteMatch, Link } from 'react-router-dom';
 import { Session } from '../../App';
 import Popup from 'reactjs-popup';
 import { UserInfoSheet } from '../UserInfoSheet';
+import { User } from '../User';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -86,24 +87,7 @@ function UserSearchForm(props) {
       </form>
       <div className={classes.userListContainer}>
         {userSearch.map(u => {
-          return (
-            <Popup
-              key={u.username}
-              trigger={
-                <Button classes={{ root: classes.userButton }} key={u.username}>
-                  <ChildCareIcon />
-                  <Box mx={1}>
-                    {u.username}{' '}
-                    {u.username === session.user.id ? ' (You)' : ''}
-                  </Box>
-                </Button>
-              }
-              position="bottom center"
-              closeOnDocumentClick
-            >
-              <UserInfoSheet key={u.username} user={u} />
-            </Popup>
-          );
+          return <User key={u.username} username={u.username} />;
         })}
       </div>
     </div>

@@ -9,6 +9,8 @@ import { Session } from '../../App';
 import { Comment } from './Comment';
 import { TextField, Button, Fab, Box } from '@material-ui/core/';
 import { MakeComment } from './MakeComment';
+import CommentIcon from '@material-ui/icons/Comment';
+import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 
 const useStyles = makeStyles(theme => ({
   post: {
@@ -37,11 +39,17 @@ const useStyles = makeStyles(theme => ({
     top: '2%',
     width: '20%',
   },
-  upvoteButton: {},
-  upvoteText: {},
+  upvoteButton: {
+    position: 'relative',
+    align: 'centre',
+  },
+  upvoteText: {
+    position: 'relative',
+    align: 'centre',
+  },
   postContentSection: {
     width: '99%',
-    height: '50vh',
+    height: '50%',
     margin: '0.5rem',
     float: 'left',
     overflow: 'auto',
@@ -52,47 +60,8 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3, 2),
     height: '100%',
     width: '100%',
-  },
-  /*PostContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  },
-  post: {
-    margin: '0.7rem 0',
-    border: '3px solid red',
-  },
-  postTitleSection: {
-    width: '70%',
-    height: '100%',
-    margin: '0.5rem',
-    float: 'left',
     overflow: 'auto',
   },
-  postContentSection: {
-    width: '99%',
-    height: '50vh',
-    margin: '0.5rem',
-    float: 'left',
-    overflow: 'auto',
-  },
-  upvoteSection: {
-    width: '20%',
-    height: '80%',
-    margin: '0.5rem',
-    float: 'right',
-  },
-  upvoteButton: {
-    margin: 'auto',
-    width: '50%',
-    padding: '10px',
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  makeCommentBox: {},
-  root: {
-    padding: theme.spacing(3, 2),
-  },*/
 }));
 
 const getPostAndChildren = function(postId) {
@@ -158,6 +127,15 @@ function PostExpanded() {
             {thisPost ? kudos : 'loading...'}
           </Typography>
         </Paper>
+        <Fab
+          onClick={() => setMakingComment(!makingComment)}
+          style={({ float: 'left' }, { margin: '2%' })}
+          // variant="contained"
+          size="medium"
+          color="secondary"
+        >
+          {makingComment ? <CommentOutlinedIcon /> : <CommentIcon />}
+        </Fab>
         <Paper className={classes.postContentSection}>
           <Typography className={classes.postText} variant="h5" component="h3">
             {thisPost
@@ -169,14 +147,6 @@ function PostExpanded() {
         </Paper>
       </Paper>
       <div className={classes.makeCommentBox}>
-        <Fab
-          onClick={() => setMakingComment(!makingComment)}
-          // variant="contained"
-          size="medium"
-          color="secondary"
-        >
-          {makingComment ? '-' : '+'}
-        </Fab>
         {thisPost && makingComment ? (
           <MakeComment rootId={thisPost.id} branchId={thisPost.id} />
         ) : null}

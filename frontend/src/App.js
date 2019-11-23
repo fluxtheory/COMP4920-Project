@@ -13,6 +13,7 @@ import { UITest } from './pages/UITest';
 import { Kudo } from './pages/Kudo';
 import { CoursesPane } from './components/course/CoursesPane';
 import { createMuiTheme } from '@material-ui/core';
+import grey from '@material-ui/core/colors/grey';
 
 const useStyles = makeStyles({});
 
@@ -31,11 +32,20 @@ const theme = createMuiTheme({
     borderRadius: 0,
   },
   palette: {
-    background: {
-      level1: '#fff',
-      level2: '#f5f5f5',
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#631976',
     },
   },
+  /*palette: {
+    type: 'dark',
+    background: {
+      //level1: '#fff',
+      //level2: '#f5f5f5',
+    },
+  },*/
 });
 function App() {
   const classes = useStyles();

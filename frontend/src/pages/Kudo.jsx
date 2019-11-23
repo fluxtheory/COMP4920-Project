@@ -38,12 +38,12 @@ export const useStyles = makeStyles(theme => ({
 
   leftPaneTitle: {
     gridArea: 'leftTitle',
+    background: theme.palette.secondary,
   },
   leftPane: {
     display: 'flex',
     flexDirection: 'column',
     gridArea: 'left',
-    background: 'blue',
   },
 
   rightPaneTitle: {
@@ -58,6 +58,9 @@ export const useStyles = makeStyles(theme => ({
   contentArea: {
     gridArea: 'middle',
     background: theme.palette.background.level1,
+  },
+  pane: {
+    background: theme.palette.secondary,
   },
 }));
 
@@ -156,7 +159,6 @@ const PlebbyChangingContent = () => {
   );
 };
 
-// TODO: we can potentially even get rid of the kudo prefix
 const makePath = path => {
   return `/kudo${path}`;
 };

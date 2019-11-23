@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
     margin: '0.5rem',
     float: 'left',
+    wordBreak: 'break-all',
   },
   upvoteSection: {
     width: '20%',
