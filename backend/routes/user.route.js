@@ -93,43 +93,65 @@ router.post(
       return res.status(400).json(errors);
     }
 
-    //check password
-    bcrypt.compare(req.body.password, reply.data.password).then(isMatch => {
-      if (isMatch) {
-        // JWT payload
-        const payload = {
-          email: reply.data.email,
-          username: reply.data.username,
-          isAdmin: (reply.data.rank === 1)
-        };
+    //check if account exists
+    user
+      .userExists(req.body.nameOrEmail)
+      .then(reply => {
+        if (reply.code == 404) {
+          //console.log(acc);
+          return res.status(404).json({ error: "Username not found." });
+        }
 
-        //sign token
-        jwt.sign(payload, keys.secret,{expiresIn: 31556926}, (err, token) => {
-            res.json({
-              success: true,
-              token,
-              username: reply.data.username,
-              isAdmin: payload.isAdmin
-            });
-          }
-        );
-        user.updateUser(reply.data.username, {last_login : new Date().toString()}).catch(err => {
-          console.log(err);
-        });
-      } else {
-        return res.status(403).json({ error: "Password incorrect." });
-      }
-    }).catch(err => {
-      if(err){
-        console.log(err);
-      }
-    });
-  }).catch(err => {
-    if (err) {
-      return res.status(err.code).json(err);
-    }
-  });
-});
+        //check password
+        bcrypt
+          .compare(req.body.password, reply.data.password)
+          .then(isMatch => {
+            if (isMatch) {
+              // JWT payload
+              const payload = {
+                email: reply.data.email,
+                username: reply.data.username,
+                isAdmin: reply.data.rank === 1
+              };
+
+              //sign token
+              jwt.sign(
+                payload,
+                keys.secret,
+                { expiresIn: 31556926 },
+                (err, token) => {
+                  res.json({
+                    success: true,
+                    token,
+                    username: reply.data.username,
+                    isAdmin: payload.isAdmin
+                  });
+                }
+              );
+              user
+                .updateUser(reply.data.username, {
+                  last_login: new Date().toString()
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            } else {
+              return res.status(403).json({ error: "Password incorrect." });
+            }
+          })
+          .catch(err => {
+            if (err) {
+              console.log(err);
+            }
+          });
+      })
+      .catch(err => {
+        if (err) {
+          return res.status(err.code).json(err);
+        }
+      });
+  }
+);
 
 // @route GET /logout
 // @desc Logs out of an existing session
@@ -336,7 +358,12 @@ router.post("/user/promote", (req, res) => {
 router.get("/verify-token", (req, res) => {
   try {
     const decoded = jwt.verify(req.headers.authorization, keys.secret);
-    return res.send({success: true, username: decoded.username, isAdmin: decoded.isAdmin, inFactHereIsEverything: decoded})
+    return res.send({
+      success: true,
+      username: decoded.username,
+      isAdmin: decoded.isAdmin,
+      inFactHereIsEverything: decoded
+    });
   } catch (err) {
     return res.status(401).send({ success: false, error: err });
   }

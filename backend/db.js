@@ -185,8 +185,6 @@ db = new sqlite3.Database("test.db", err => {
     DELETE FROM groupUsers WHERE groupid = old.id;
   END;`;
 
-  
-
   /*
   CREATE TABLE IF NOT EXISTS groupFormation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -197,7 +195,14 @@ db = new sqlite3.Database("test.db", err => {
   );
   */
 
-  let ranks = ["Course Moderator", "Course Helper", "Member"];
+  let ranks = [
+    "Course Moderator",
+    "Course Helper",
+    "Honoured",
+    "Respected",
+    "Helpful",
+    "Member"
+  ];
   let placeholders = ranks.map(ranks => "(?)").join(",");
   let insert_query =
     `INSERT OR IGNORE INTO userrank (name) VALUES ` + placeholders;

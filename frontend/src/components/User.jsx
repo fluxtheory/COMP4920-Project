@@ -5,8 +5,10 @@ import { api } from '../utils';
 import Popup from 'reactjs-popup';
 import { UserInfoSheet } from './UserInfoSheet';
 import { Session } from '../App';
-import standardRank from '../img/rank1.svg';
-import helperRank from '../img/rank2.svg';
+import ChildCareIcon from '@material-ui/icons/ChildCare';
+import helpfulRank from '../img/rank1.svg';
+import respectedRank from '../img/rank2.svg';
+import honouredRank from '../img/rank3.svg';
 import modRank from '../img/mod.svg';
 import adminRank from '../img/admin.svg';
 
@@ -41,9 +43,13 @@ function User(props) {
     getUserInfo(username).then(resp => {
       console.log(resp);
       setUser(resp);
-      if (resp.rank === 1) setBadge(adminRank);
-      else if (resp.rank === 2) setBadge(modRank);
-      else if (resp.rank === 3) setBadge(standardRank);
+      let rank = resp.rank;
+      if (rank == 1) setBadge(adminRank);
+      else if (rank == 2) setBadge(modRank);
+      else if (rank == 3) setBadge(honouredRank);
+      else if (rank == 4) setBadge(respectedRank);
+      else if (rank == 5) setBadge(helpfulRank);
+      else setBadge('');
     });
   }, []);
 
@@ -52,13 +58,16 @@ function User(props) {
       key={username}
       trigger={
         <Button classes={{ root: classes.userButton }} key={username}>
-          <img
-            style={{ float: 'left' }}
-            src={badge}
-            height="30em"
-            width="30em"
-            alt="loading..."
-          />
+          {badge === '' ? (
+            <ChildCareIcon />
+          ) : (
+            <img
+              style={{ float: 'left' }}
+              src={badge}
+              height="30em"
+              width="30em"
+            />
+          )}
           <Box mx={1}>
             {username} {username === session.user.id ? ' (You)' : ''}
           </Box>
