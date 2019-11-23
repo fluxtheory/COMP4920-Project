@@ -11,8 +11,7 @@ import { Fab, Button, Box } from '@material-ui/core';
 import { Session, NewGroupTrigger } from '../App';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { flexbox } from '@material-ui/system';
-import { api, useCourse } from '../utils';
-import { useUsername } from '../pages/CreateGroup';
+import { api, useCourse, useUsername } from '../utils';
 
 // MRTODO: this file needs to be better named
 // MRTODO: even it's own folder with each subpanel as a component
@@ -178,17 +177,6 @@ const GroupsSubpanel = () => {
   const username = useUsername();
 
   useEffect(() => {
-    // below gets groups from chatkit instead of backend
-    // console.log(session.user.rooms);
-    // const courseGroups = session.user.rooms
-    //   .map(room => room.id)
-    //   .filter(room => room.startsWith('__'))
-    //   .map(room => room.split('__group__')[1])
-    //   .map(room => room.split('|'))
-    //   .map(([_, a, b]) => {
-    // MRTODO: remove malformed group manes -> no ened to check for 'b'
-    //     if (a === params.course && b) return b;
-    //   });
     api
       .get(`/${params.course}/group`, { params: { user: username } })
       .then(res => {
@@ -198,7 +186,6 @@ const GroupsSubpanel = () => {
         console.log('GroupsSunpanel: error fetching groups', err.message);
       });
   }, [params.course, groupTrigger.subscription]);
-  // MRTODO: find a way to update group list on new group
 
   useEffect(() => {
     if (addRequest) setAddRequest(false);
@@ -213,7 +200,6 @@ const GroupsSubpanel = () => {
     return <Redirect to={`/kudo/${params.course}/group/create`} />;
   }
 
-  // MRTODO: clean
   return (
     <div className={classes.groupSubpanelContainer}>
       <div className={classes.groupListContainer}>
@@ -224,7 +210,6 @@ const GroupsSubpanel = () => {
       <Fab
         className={classes.addGroupButton}
         onClick={handleClick}
-        // variant="contained"
         size="small"
         color="secondary"
       >
@@ -237,13 +222,11 @@ const GroupsSubpanel = () => {
 const GroupListing = ({ group }) => {
   const classes = useStyles();
   const { params } = useRouteMatch('/kudo/:course');
-  const [settingsClicked, setSettingClicked] = useState(false);
 
   return (
     <div className={classes.groupListingContainer}>
       <Button
         component={Link}
-        // MRTODO:  redirect to chat
         to={`/kudo/${params.course}/group/${group}`}
         classes={{ root: classes.userButton }}
         key={group}
@@ -252,9 +235,7 @@ const GroupListing = ({ group }) => {
       </Button>
       <Button
         component={Link}
-        // MRTODO:  redirect to chat
         to={`/kudo/${params.course}/group/${group}/settings`}
-        // classes={{ root: classes.userButton }}
       >
         <SettingsIcon
           color="disabled"

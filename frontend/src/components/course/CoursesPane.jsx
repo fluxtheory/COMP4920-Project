@@ -3,10 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@material-ui/core/';
 import { CourseList } from './CourseList';
-import { api } from '../../utils';
+import { api, useUsername } from '../../utils';
 import { AddCourseForm } from './AddCourseForm';
 import { Session } from '../../App';
-import { useUsername } from '../../pages/CreateGroup';
 
 const useStyles = makeStyles(theme => ({
   dashboardButton: {

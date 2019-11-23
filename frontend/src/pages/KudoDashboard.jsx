@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@material-ui/core';
 import TimeLine from 'react-gantt-timeline';
-import { useUsername } from './CreateGroup';
-import { api } from '../utils';
+import { api, useUsername } from '../utils';
 import randomColor from 'randomcolor';
 import { CourseAnnouncements } from './CoursePage';
 

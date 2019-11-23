@@ -101,7 +101,6 @@ function AddCourseForm(props) {
   const [searchbarVisible, setSearchbarVisible] = React.useState(false);
   const [error, setError] = React.useState('');
 
-  // MRTODO: clean
   const handleChange = (event, value) => {
     if (!value) {
       props.addCourse(newCourse);
@@ -131,7 +130,6 @@ function AddCourseForm(props) {
         </Box>
       </Box>
     );
-    console.log('break here');
   };
 
   return (
@@ -156,13 +154,11 @@ function AddCourseForm(props) {
           )}
           classes={{ option: classes.searchOption }}
           value={newCourse}
-          debug //MRTODO
         />
       ) : null}
       <Fab
         className={classes.toggleButton}
         onClick={() => setSearchbarVisible(!searchbarVisible)}
-        // variant="contained"
         size="medium"
         color="secondary"
       >
