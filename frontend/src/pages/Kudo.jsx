@@ -18,6 +18,7 @@ import { MakePost } from '../components/feed/MakePost';
 import { PostExpanded } from '../components/feed/PostExpanded';
 import { CourseAdminPage } from './CourseAdminPage';
 import { KudoDashboard } from './KudoDashboard';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -114,46 +115,48 @@ const PlebbyChangingContent = () => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <div className={classes.contentArea}>
-        <Switch>
-          <Route path={makePath('/dashboard')}>
-            <KudoDashboard />
-          </Route>
-          <Route path={[makePath('/chat/:id'), makePath('/chat')]}>
-            <Chat />
-          </Route>
-          <Route exact path={makePath('/:course/dashboard')}>
-            <CoursePage />
-          </Route>
-          <Route exact path={makePath('/:course/admin')}>
-            <CourseAdminPage />
-          </Route>
-          <Route exact path={makePath('/:course/chat')}>
-            <PublicChat />
-          </Route>
-          <Route exact path={makePath('/:course/feed')}>
-            <CourseFeed />
-          </Route>
-          <Route exact path={makePath('/:course/feed/new')}>
-            <MakePost />
-          </Route>
-          <Route exact path={makePath('/:course/post/:postId')}>
-            <PostExpanded />
-          </Route>
-          <Route exact path={makePath('/:course/group/create')}>
-            <CreateGroup />
-          </Route>
-          <Route exact path={makePath('/:course/group/:group')}>
-            <GroupChat />
-          </Route>
-          <Route exact path={makePath('/:course/group/:group/settings')}>
-            <GroupSettings />
-          </Route>
-          <Route exact path={makePath('/:user/dm')}>
-            <PrivateChat />
-          </Route>
-        </Switch>
-      </div>
+      <Scrollbars>
+        <div className={classes.contentArea}>
+          <Switch>
+            <Route path={makePath('/dashboard')}>
+              <KudoDashboard />
+            </Route>
+            <Route path={[makePath('/chat/:id'), makePath('/chat')]}>
+              <Chat />
+            </Route>
+            <Route exact path={makePath('/:course/dashboard')}>
+              <CoursePage />
+            </Route>
+            <Route exact path={makePath('/:course/admin')}>
+              <CourseAdminPage />
+            </Route>
+            <Route exact path={makePath('/:course/chat')}>
+              <PublicChat />
+            </Route>
+            <Route exact path={makePath('/:course/feed')}>
+              <CourseFeed />
+            </Route>
+            <Route exact path={makePath('/:course/feed/new')}>
+              <MakePost />
+            </Route>
+            <Route exact path={makePath('/:course/post/:postId')}>
+              <PostExpanded />
+            </Route>
+            <Route exact path={makePath('/:course/group/create')}>
+              <CreateGroup />
+            </Route>
+            <Route exact path={makePath('/:course/group/:group')}>
+              <GroupChat />
+            </Route>
+            <Route exact path={makePath('/:course/group/:group/settings')}>
+              <GroupSettings />
+            </Route>
+            <Route exact path={makePath('/:user/dm')}>
+              <PrivateChat />
+            </Route>
+          </Switch>
+        </div>
+      </Scrollbars>
     </React.Fragment>
   );
 };
