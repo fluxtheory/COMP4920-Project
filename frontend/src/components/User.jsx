@@ -46,10 +46,12 @@ function User(props) {
       let rank = resp.rank;
       if (rank == 1) setBadge(adminRank);
       else if (rank == 2) setBadge(modRank);
-      else if (rank == 3) setBadge(honouredRank);
-      else if (rank == 4) setBadge(respectedRank);
-      else if (rank == 5) setBadge(helpfulRank);
-      else setBadge('');
+      else if (rank == 3) {
+        if (resp.karma >= 50) setBadge(honouredRank);
+        else if (resp.karma >= 25) setBadge(respectedRank);
+        else if (resp.karma >= 10) setBadge(helpfulRank);
+        else setBadge('');
+      } else setBadge('');
     });
   }, []);
 

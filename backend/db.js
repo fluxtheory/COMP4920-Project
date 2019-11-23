@@ -195,14 +195,7 @@ db = new sqlite3.Database("test.db", err => {
   );
   */
 
-  let ranks = [
-    "Course Moderator",
-    "Course Helper",
-    "Honoured",
-    "Respected",
-    "Helpful",
-    "Member"
-  ];
+  let ranks = ["Course Moderator", "Course Helper", "Member"];
   let placeholders = ranks.map(ranks => "(?)").join(",");
   let insert_query =
     `INSERT OR IGNORE INTO userrank (name) VALUES ` + placeholders;

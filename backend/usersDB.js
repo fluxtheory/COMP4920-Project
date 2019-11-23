@@ -32,7 +32,7 @@ module.exports = {
           }
         });
       }
-      let rank = user.admin ? 1 : 6; // 1 = moderator, 6 = member
+      let rank = user.admin ? 1 : 3; // 1 = moderator, 3 = member
 
       let query = `INSERT INTO users (username, password, email, zid, rank, date_joined) VALUES(?, ?, ?, ?, ?, ?)`;
       db.run(

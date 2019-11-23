@@ -70,6 +70,7 @@ router.post("/register", (req, res) => {
             })
             .catch(err => {
               if (err) {
+                console.log(err);
                 return res.status(500).json(err);
               }
             });
