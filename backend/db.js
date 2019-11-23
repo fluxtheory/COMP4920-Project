@@ -232,11 +232,11 @@ db = new sqlite3.Database("test.db", err => {
           courseInstanceEntry.run(entry.code, terms[2][0]);
           console.log("Success, course: ", entry.code);
         });
-      });*/
+      });
       db.run("commit");
       courseEntry.finalize();
       courseInstanceEntry.finalize();
-    });
+    });*/
   });
 });
 

@@ -8,16 +8,58 @@ import { api } from '../../utils';
 import { Session } from '../../App';
 import { Comment } from './Comment';
 import { TextField, Button, Fab, Box } from '@material-ui/core/';
+import { MakeComment } from './MakeComment';
 
 const useStyles = makeStyles(theme => ({
-  PostContainer: {
+  post: {
+    margin: '0.7rem 0',
+    border: '3px solid red',
+    maxheight: '100%',
+    maxWidth: '100%',
+    overflow: 'auto',
+  },
+  postTitleSection: {
+    position: 'relative',
+    top: '2%',
+    left: '2%',
+    width: '70%',
+    maxWidth: '70%',
+    maxHeight: '20%',
+    float: 'left',
+  },
+  postTitleText: {
+    wordBreak: 'break-all',
+  },
+  upvoteSection: {
+    position: 'relative',
+    float: 'right',
+    right: '5%',
+    top: '2%',
+    width: '20%',
+  },
+  upvoteButton: {},
+  upvoteText: {},
+  postContentSection: {
+    width: '99%',
+    height: '50vh',
+    margin: '0.5rem',
+    float: 'left',
+    overflow: 'auto',
+  },
+  postContent: {},
+  postText: { wordBreak: 'break-all', margin: '2% 2% 2% 2%' },
+  root: {
+    padding: theme.spacing(3, 2),
+    height: '100%',
+    width: '100%',
+  },
+  /*PostContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
   },
   post: {
     margin: '0.7rem 0',
-    backgroundColor: 'cream',
     border: '3px solid red',
   },
   postTitleSection: {
@@ -38,7 +80,7 @@ const useStyles = makeStyles(theme => ({
     width: '20%',
     height: '80%',
     margin: '0.5rem',
-    float: 'left',
+    float: 'right',
   },
   upvoteButton: {
     margin: 'auto',
@@ -47,14 +89,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
-  makeCommentBox: {
-    position: 'relative',
-    top: '10%',
-    left: '20%',
-  },
+  makeCommentBox: {},
   root: {
     padding: theme.spacing(3, 2),
-  },
+  },*/
 }));
 
 const getPostAndChildren = function(postId) {
@@ -88,33 +126,20 @@ function PostExpanded() {
       const post = resp.find(i => i.id.toString() === postId);
       setThisPost(post);
       setKudos(post.kudos);
-      //setComments(resp);
+      setComments(resp);
     });
   }, [postId]);
 
   return (
-    <div className={classes.PostContainer}>
+    <div className={classes.root}>
       <Paper className={classes.post}>
         <Paper className={classes.postTitleSection}>
           <Typography
-            className={classes.postTitleSection}
+            className={classes.postTitleText}
             variant="h5"
             component="h3"
           >
             {thisPost ? thisPost.title : 'loading...'}
-          </Typography>
-        </Paper>
-        <Paper className={classes.postTitleSection}>
-          <Typography
-            className={classes.postContentSection}
-            variant="h5"
-            component="h3"
-          >
-            {thisPost
-              ? thisPost.postContent
-                  .split('\n')
-                  .map((item, i) => <p key={i}>{item}</p>)
-              : 'loading...'}
           </Typography>
         </Paper>
         <Paper className={classes.upvoteSection}>
@@ -129,26 +154,47 @@ function PostExpanded() {
               <div></div>
             )}
           </div>
-          <Typography className={classes.upvoteButton} component="p">
+          <Typography className={classes.upvoteText} component="p">
             {thisPost ? kudos : 'loading...'}
           </Typography>
         </Paper>
-        <div className={classes.makeCommentBox}>
-          <Fab
-            onClick={() => setMakingComment(!makingComment)}
-            // variant="contained"
-            size="medium"
-            color="secondary"
-          >
-            {makingComment ? '-' : '+'}
-          </Fab>
-        </div>
+        <Paper className={classes.postContentSection}>
+          <Typography className={classes.postText} variant="h5" component="h3">
+            {thisPost
+              ? thisPost.postContent
+                  .split('\n')
+                  .map((item, i) => <p key={i}>{item}</p>)
+              : 'loading...'}
+          </Typography>
+        </Paper>
       </Paper>
+      <div className={classes.makeCommentBox}>
+        <Fab
+          onClick={() => setMakingComment(!makingComment)}
+          // variant="contained"
+          size="medium"
+          color="secondary"
+        >
+          {makingComment ? '-' : '+'}
+        </Fab>
+        {thisPost && makingComment ? (
+          <MakeComment rootId={thisPost.id} branchId={thisPost.id} />
+        ) : null}
+      </div>
       <div>
-        {/*posts.map(p => {
-          if (p.branchId == postId) {
-            return <Comment allPosts={posts} thisPost={p} key={p.id} />;
-          */}
+        {thisPost
+          ? comments.map(p => {
+              if (p.branchId == postId)
+                return (
+                  <Comment
+                    depth={0}
+                    allPosts={comments}
+                    thisPost={p}
+                    key={p.id}
+                  />
+                );
+            })
+          : null}
       </div>
     </div>
   );

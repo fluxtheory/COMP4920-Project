@@ -11,7 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const useStyles = makeStyles(theme => ({
-  MakePostContainer: {
+  MakeCommentContainer: {
     maxWidth: '1000px',
     margin: '0 auto',
   },
@@ -36,17 +36,18 @@ const getUserInfo = function(username) {
   });
 };
 
-function MakePost() {
+function MakeComment(props) {
   const classes = useStyles();
   const session = React.useContext(Session);
   const username = session.user.id;
   const course = useParams().course;
+  const rootId = props.rootId;
+  const branchId = props.branchId;
   const [postMade, setPostMade] = React.useState(false);
   const [rank, setRank] = React.useState(3);
   const [values, setValues] = React.useState({
     content: '',
     title: '',
-    sticky: false,
   });
 
   React.useEffect(() => {
@@ -61,21 +62,17 @@ function MakePost() {
     setValues({ ...values, [name]: event.target.value });
   };
 
-  const handleCheck = name => event => {
-    setValues({ ...values, [name]: event.target.checked });
-  };
-
   const handleSubmit = e => {
     e.preventDefault();
     console.log({ username, values });
     api
       .post('/' + course + '/feed/post', {
-        rootId: null,
-        branchId: null,
+        rootId,
+        branchId,
         username,
         content: values.content,
         title: values.title,
-        sticky: values.sticky ? 1 : 0,
+        sticky: 0,
       })
       .then(resp => {
         // job's done
@@ -84,27 +81,13 @@ function MakePost() {
   };
 
   if (postMade === true) {
-    return <Redirect to={'/kudo/' + course + '/feed'} />;
+    return <Redirect to={'/kudo/' + course + '/post/' + rootId} />;
   }
 
   return (
-    <div className={classes.MakePostContainer}>
+    <div className={classes.MakeCommentContainer}>
       <Paper className={classes.root}>
         <form onSubmit={e => handleSubmit(e)}>
-          <TextField
-            name="title"
-            label="Title"
-            className={classes.textField}
-            value={values.title}
-            onChange={handleChange('title')}
-            margin="normal"
-            style={{ width: '60%' }}
-            type="text"
-            placeholder={'Hello ' + course + '!'}
-            autoComplete="off"
-            variant="outlined"
-            required
-          />
           <TextField
             id="outlined-multiline-static"
             label="Content"
@@ -119,21 +102,8 @@ function MakePost() {
             margin="normal"
             variant="outlined"
           />
-          {rank < 3 ? (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.sticky}
-                  onChange={handleCheck('sticky')}
-                  value={values.sticky}
-                  color="primary"
-                />
-              }
-              label="Sticky this post?"
-            />
-          ) : null}
           <div align="right">
-            <Button type="submit">Post</Button>
+            <Button type="submit">Comment</Button>
           </div>
         </form>
       </Paper>
@@ -141,4 +111,4 @@ function MakePost() {
   );
 }
 
-export { MakePost };
+export { MakeComment };

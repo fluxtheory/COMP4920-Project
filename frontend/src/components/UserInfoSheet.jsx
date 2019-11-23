@@ -43,7 +43,11 @@ function UserInfoSheet(props) {
     const prom = getUserInfo(username).then(resp => {
       console.log(resp);
       setKudos(resp.karma);
-      setRank(resp.rank);
+      let r = '';
+      if (resp.rank === 1) r = 'Administrator';
+      else if (resp.rank === 2) r = 'Moderator';
+      else r = 'Student';
+      setRank(r);
     });
   }, [username]);
 

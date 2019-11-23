@@ -51,8 +51,11 @@ function PostList() {
       let normalPosts = [];
       console.log(resp);
       resp.forEach(post => {
-        if (post.sticky === 1) stickiedPosts.push(post);
-        else normalPosts.push(post);
+        if (!post.branchId) {
+          // undefined means it's a root post
+          if (post.sticky === 1) stickiedPosts.push(post);
+          else normalPosts.push(post);
+        }
       });
       console.log(stickiedPosts.concat(normalPosts));
       setPosts(stickiedPosts.concat(normalPosts));
