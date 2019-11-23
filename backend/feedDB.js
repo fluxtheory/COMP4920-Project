@@ -4,17 +4,17 @@ let db = getdb();
 
 module.exports = {
   // add/reply comment
-  addPost: function(user, course, content, rootId, branchId, title) {
+  addPost: function(user, course, content, rootId, branchId, title, sticky) {
     return new Promise((resolve, reject) => {
       let sql = `INSERT INTO forumPosts 
-      (courseInstanceId, rootId, branchId, userId, datetime, postContent, title) 
+      (courseInstanceId, rootId, branchId, userId, datetime, postContent, title, sticky) 
       VALUES ( (SELECT courseInstance.id FROM courseInstance 
                 WHERE term = (SELECT term from term where active) 
                 AND code = ?),
-      ?, ?, ?, ?, ?, ?)`;
+      ?, ?, ?, ?, ?, ?, ?)`;
       db.run(
         sql,
-        [course, rootId, branchId, user, new Date(), content, title],
+        [course, rootId, branchId, user, new Date(), content, title, sticky],
         function(err) {
           if (err) {
             console.log(err);
@@ -208,10 +208,10 @@ module.exports = {
           reject({ code: 500, msg: err.message });
         }
 
-        if(!row){
+        if (!row) {
           resolve({ code: 404, msg: "User not found" });
         }
-      
+
         if (row.rank == 1) {
           let sql = `UPDATE forumPosts SET sticky = NOT sticky WHERE id = ?`;
           db.run(sql, postid, function(err) {

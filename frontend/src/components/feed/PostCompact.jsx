@@ -47,7 +47,10 @@ function PostCompact(props) {
 
   return (
     <div className={classes.PostContainer}>
-      <Paper className={classes.post}>
+      <Paper
+        className={classes.post}
+        style={post.sticky === 1 ? { border: '3px solid green' } : {}}
+      >
         <Link to={'post/' + post.id}>
           <Paper className={classes.postSection}>
             <Typography

@@ -47,8 +47,15 @@ function PostList() {
 
   React.useEffect(() => {
     const prom = getPosts(course).then(resp => {
+      let stickiedPosts = [];
+      let normalPosts = [];
       console.log(resp);
-      setPosts(resp);
+      resp.forEach(post => {
+        if (post.sticky === 1) stickiedPosts.push(post);
+        else normalPosts.push(post);
+      });
+      console.log(stickiedPosts.concat(normalPosts));
+      setPosts(stickiedPosts.concat(normalPosts));
     });
   }, [course]);
 

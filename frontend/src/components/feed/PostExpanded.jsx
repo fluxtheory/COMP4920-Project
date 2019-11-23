@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { api } from '../../utils';
 import { Session } from '../../App';
 import { Comment } from './Comment';
+import { TextField, Button, Fab, Box } from '@material-ui/core/';
 
 const useStyles = makeStyles(theme => ({
   PostContainer: {
@@ -46,6 +47,11 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  makeCommentBox: {
+    position: 'relative',
+    top: '10%',
+    left: '20%',
+  },
   root: {
     padding: theme.spacing(3, 2),
   },
@@ -72,6 +78,7 @@ function PostExpanded() {
   const session = React.useContext(Session);
   const [comments, setComments] = React.useState([]);
   const [thisPost, setThisPost] = React.useState(null);
+  const [makingComment, setMakingComment] = React.useState(false);
   const [kudos, setKudos] = React.useState(0);
 
   React.useEffect(() => {
@@ -82,7 +89,6 @@ function PostExpanded() {
       setThisPost(post);
       setKudos(post.kudos);
       //setComments(resp);
-      console.log(thisPost);
     });
   }, [postId]);
 
@@ -127,10 +133,20 @@ function PostExpanded() {
             {thisPost ? kudos : 'loading...'}
           </Typography>
         </Paper>
+        <div className={classes.makeCommentBox}>
+          <Fab
+            onClick={() => setMakingComment(!makingComment)}
+            // variant="contained"
+            size="medium"
+            color="secondary"
+          >
+            {makingComment ? '-' : '+'}
+          </Fab>
+        </div>
       </Paper>
       <div>
         {/*posts.map(p => {
-          if (p.id !== postId) {
+          if (p.branchId == postId) {
             return <Comment allPosts={posts} thisPost={p} key={p.id} />;
           */}
       </div>

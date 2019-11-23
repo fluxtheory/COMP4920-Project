@@ -37,53 +37,40 @@ const getLastFiveChats = function(session) {
     try {
       let active = [];
       let inactive = [];
-      for (let i = 0; i < 5 && i < session.user.rooms.length; i++) {
+      for (let i = 0; i < session.user.rooms.length; i++) {
         let nextRoom = session.user.rooms[i];
-
         let id_split = nextRoom.id.split('_');
-        let roomType = 'none'
-        if (id_split[0] === 'DM') roomType = 'dm'
+        console.log(id_split);
+        let roomType = 'none';
+        if (id_split[0] === 'DM') roomType = 'dm';
         else if (nextRoom.id.includes('__group__')) roomType = 'group';
         else continue;
-        // should not execute past here if 'none'
+        // should not execute past here if not a group or direct room
 
-        // need to subscribe to see the users
-        session.user
-          .subscribeToRoomMultipart({
-            roomId: nextRoom.id,
-            hooks: {
-              onMessage: () => {},
-            },
-            messageLimit: 0, // Don't fetch, and notify about, old messages
-          })
-          .then(() => {
-            let ret = {name: '', type: roomType};
-            if (roomType === 'dm') {
-              let otherUser = '';
-              // you can DM yourself as a clipboard of sorts. We dont want that in active chats
-              if (nextRoom.users.length < 2) return;
-              if (nextRoom.users[0].id === session.user.id)
-                otherUser = nextRoom.users[1].id;
-              else otherUser = nextRoom.users[0].id;
-              ret['name'] = otherUser;
-              ret['rPath'] = '/kudo/' + otherUser + '/dm';
-          }
-            else if (roomType === 'group') {
-              const spl = nextRoom.id.split('|');
-              const course = spl[1];
-              ret['name'] = spl[2];
-              ret['rPath'] = '/kudo/' + course + '/group/' + ret['name'];
-            }
-            if (nextRoom.lastMessageAt) {
-              if (
-                Date.now() - Date.parse(nextRoom.lastMessageAt) <
-                7 * 24 * 60 * 60 * 1000
-              )
-                // one week's worth of milliseconds
-                active.push(ret);
-              else inactive.push(ret);
-            }
-          });
+        let ret = { name: '', type: roomType };
+        if (roomType === 'dm') {
+          let otherUser = id_split[2];
+          // you can DM yourself as a clipboard of sorts. We dont want that in active chats
+          if (id_split[1] === id_split[2]) return;
+          if (id_split[1] === session.user.id) otherUser = id_split[2];
+          else otherUser = id_split[1];
+          ret['name'] = otherUser;
+          ret['rPath'] = '/kudo/' + otherUser + '/dm';
+        } else if (roomType === 'group') {
+          const spl = nextRoom.id.split('|');
+          const course = spl[1];
+          ret['name'] = spl[2];
+          ret['rPath'] = '/kudo/' + course + '/group/' + ret['name'];
+        }
+        if (nextRoom.lastMessageAt) {
+          if (
+            Date.now() - Date.parse(nextRoom.lastMessageAt) <
+            7 * 24 * 60 * 60 * 1000
+          )
+            // one week's worth of milliseconds
+            active.push(ret);
+          else inactive.push(ret);
+        }
       }
       resolve({ active: active, inactive: inactive });
     } catch (err) {
@@ -141,12 +128,12 @@ function ActiveChats(props) {
           return (
             <Button
               classes={{ root: classes.userButton }}
-              key={u}
+              key={u['name']}
               component={Link}
-              to={'/kudo/' + u + '/dm'}
+              to={u['rPath']}
             >
               <ChatBubbleTwoToneIcon />
-              <Box mx={1}>{u}</Box>
+              <Box mx={1}>{u['name']}</Box>
             </Button>
           );
         })}

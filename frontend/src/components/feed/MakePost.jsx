@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom';
 import { api } from '../../utils';
 import { Session } from '../../App';
 import { Redirect } from 'react-router-dom';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const useStyles = makeStyles(theme => ({
   MakePostContainer: {
@@ -18,6 +20,22 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const getUserInfo = function(username) {
+  return new Promise((resolve, reject) => {
+    api
+      .post('/user', { usernames: [username] })
+      .then(resp => {
+        console.log(resp);
+        if (resp.statusText === 'OK') resolve(resp.data[0]);
+        else resolve({});
+      })
+      .catch(err => {
+        console.log(err);
+        reject([]);
+      });
+  });
+};
+
 function MakePost() {
   const classes = useStyles();
   const session = React.useContext(Session);
@@ -27,10 +45,15 @@ function MakePost() {
   const [values, setValues] = React.useState({
     content: '',
     title: '',
+    sticky: false,
   });
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handleCheck = name => event => {
+    setValues({ ...values, [name]: event.target.checked });
   };
 
   const handleSubmit = e => {
@@ -43,6 +66,7 @@ function MakePost() {
         username,
         content: values.content,
         title: values.title,
+        sticky: values.sticky ? 1 : 0,
       })
       .then(resp => {
         // job's done
@@ -85,6 +109,17 @@ function MakePost() {
             className={classes.textField}
             margin="normal"
             variant="outlined"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.sticky}
+                onChange={handleCheck('sticky')}
+                value={values.sticky}
+                color="primary"
+              />
+            }
+            label="Sticky this post?"
           />
           <div align="right">
             <Button type="submit">Post</Button>

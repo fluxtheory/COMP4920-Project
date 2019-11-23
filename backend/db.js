@@ -214,7 +214,7 @@ db = new sqlite3.Database("test.db", err => {
           }
         }
       );
-  
+
       const courseInstanceEntry = db.prepare(
         `INSERT OR IGNORE INTO courseInstance (code, term) VALUES (?, ?)`,
         err => {
@@ -228,8 +228,8 @@ db = new sqlite3.Database("test.db", err => {
           // BATCH INSERT THIS!
           courseEntry.run(entry.code, entry.name); // replace with a `foreach` around your data
           courseInstanceEntry.run(entry.code, terms[0][0]);
-        courseInstanceEntry.run(entry.code, terms[1][0]);
-        courseInstanceEntry.run(entry.code, terms[2][0]);
+          courseInstanceEntry.run(entry.code, terms[1][0]);
+          courseInstanceEntry.run(entry.code, terms[2][0]);
           console.log("Success, course: ", entry.code);
         });
       });*/

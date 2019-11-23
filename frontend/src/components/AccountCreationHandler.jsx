@@ -175,7 +175,6 @@ function AccountCreationHandler() {
               placeholder="z1234567"
               required
             />
-            <Typography variant="subtitle1">{passwordHelpString}</Typography>
           </div>
           <div className={classes.textFieldContainer}>
             <TextField
