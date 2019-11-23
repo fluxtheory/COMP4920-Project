@@ -71,6 +71,8 @@ const useStyles = makeStyles(theme => ({
   paneContainer: {
     display: 'flex',
     flexDirection: 'column',
+
+    width: '100%',
   },
 
   groupSubpanelContainer: {
