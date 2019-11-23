@@ -19,6 +19,7 @@ import { PostExpanded } from '../components/feed/PostExpanded';
 import { CourseAdminPage } from './CourseAdminPage';
 import { KudoDashboard } from './KudoDashboard';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { UserAccountBox } from './UserAccountBox';
 
 export const useStyles = makeStyles(theme => ({
   kudoApp: {
@@ -57,6 +58,7 @@ export const useStyles = makeStyles(theme => ({
   },
 
   contentArea: {
+    height: '100%',
     gridArea: 'middle',
     maxWidth: 'calc((8/11) * 100vw)',
     background: theme.palette.background.level1,
@@ -92,7 +94,8 @@ const SacredRightPane = () => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <PaneTitle title="PEERS" className={classes.rightPaneTitle} />
+      {/* <PaneTitle title="PEERS" className={classes.rightPaneTitle} /> */}
+      <UserAccountBox />
       <div className={classes.rightPane}>
         <ChatPane />
       </div>
@@ -115,50 +118,50 @@ const PlebbyChangingContent = () => {
   const classes = useStyles();
   return (
     <React.Fragment>
-      <Scrollbars>
-        <div className={classes.contentArea}>
-          <Switch>
-            <Route path={makePath('/dashboard')}>
+      <div className={classes.contentArea}>
+        <Switch>
+          <Route path={makePath('/dashboard')}>
+            <Scrollbars autoHide>
               <KudoDashboard />
-            </Route>
+            </Scrollbars>
+          </Route>
 
-            <Route exact path={makePath('/:course/dashboard')}>
-              <CoursePage />
-            </Route>
+          <Route exact path={makePath('/:course/dashboard')}>
+            <CoursePage />
+          </Route>
 
-            <Route exact path={makePath('/:course/admin')}>
-              <CourseAdminPage />
-            </Route>
+          <Route exact path={makePath('/:course/admin')}>
+            <CourseAdminPage />
+          </Route>
 
-            <Route exact path={makePath('/:course/chat')}>
-              <PublicChat />
-            </Route>
-            <Route exact path={makePath('/:course/chat/:user')}>
-              <PrivateChat />
-            </Route>
+          <Route exact path={makePath('/:course/chat')}>
+            <PublicChat />
+          </Route>
+          <Route exact path={makePath('/:course/chat/:user')}>
+            <PrivateChat />
+          </Route>
 
-            <Route exact path={makePath('/:course/feed')}>
-              <CourseFeed />
-            </Route>
-            <Route exact path={makePath('/:course/feed/new')}>
-              <MakePost />
-            </Route>
-            <Route exact path={makePath('/:course/post/:postId')}>
-              <PostExpanded />
-            </Route>
+          <Route exact path={makePath('/:course/feed')}>
+            <CourseFeed />
+          </Route>
+          <Route exact path={makePath('/:course/feed/new')}>
+            <MakePost />
+          </Route>
+          <Route exact path={makePath('/:course/post/:postId')}>
+            <PostExpanded />
+          </Route>
 
-            <Route exact path={makePath('/:course/group/create')}>
-              <CreateGroup />
-            </Route>
-            <Route exact path={makePath('/:course/group/:group')}>
-              <GroupChat />
-            </Route>
-            <Route exact path={makePath('/:course/group/:group/settings')}>
-              <GroupSettings />
-            </Route>
-          </Switch>
-        </div>
-      </Scrollbars>
+          <Route exact path={makePath('/:course/group/create')}>
+            <CreateGroup />
+          </Route>
+          <Route exact path={makePath('/:course/group/:group')}>
+            <GroupChat />
+          </Route>
+          <Route exact path={makePath('/:course/group/:group/settings')}>
+            <GroupSettings />
+          </Route>
+        </Switch>
+      </div>
     </React.Fragment>
   );
 };

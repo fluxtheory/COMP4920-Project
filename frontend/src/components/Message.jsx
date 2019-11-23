@@ -1,43 +1,104 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import { Typography, Box } from '@material-ui/core';
+import { Typography, Box, Divider } from '@material-ui/core';
 import { Session } from '../App';
+import ChildCareIcon from '@material-ui/icons/ChildCare';
+import { useUsername } from '../utils';
+import classNames from 'classnames';
 
 const useStyles = makeStyles(theme => ({
   messageContainer: {
-    maxWidth: '1000px',
-    margin: '0 auto',
+    display: 'flex',
+    alignItems: 'center',
+    margin: '20px 0',
   },
-  messageFromOther: {
+  messageHull: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  userBadge: {
+    fontSize: '3rem',
+    margin: '0 20px',
+  },
+
+  othersUsername: {
     right: '1%',
     color: 'blue',
   },
-  messageFromSelf: {
-    left: '1%',
-    color: 'green',
+  msgUsername: {
+    fontWeight: 'bold',
   },
   messageDefault: {},
   messageWithMention: {
-    color: 'red',
-    backgroundColor: '#FFFF00',
+    // color: 'red',
+    // backgroundColor: '#FFFF00',
+    border: props => (props.isUserMention ? '2px solid gold' : null),
+    borderRadius: props => (props.isUserMention ? '3px' : null),
+    background: props => (props.isUserMention ? '#ffd7002e' : null),
   },
   root: {
     padding: theme.spacing(3, 2),
-    background: 'silver',
+    background: theme.palette.background.level1,
   },
 }));
 
-function Message(props) {
+// #SUBMISSION: change to actual badges
+export const UserBadge = ({ className }) => {
+  const classes = useStyles();
+  return (
+    <ChildCareIcon
+      className={className || classes.userBadge}
+      fontSize="large"
+    />
+  );
+};
+
+const MessageHull = ({ message }) => {
   const classes = useStyles();
 
-  const username = props.msg.senderId;
-  const textContent = props.msg.parts[0].payload.content;
-  const session = React.useContext(Session);
+  const username = useUsername();
+  const msgUsername = message.senderId;
+  const ownUser = msgUsername === username;
+  const textContent = message.parts[0].payload.content;
+
+  const usernameStyles = {
+    color: ownUser ? '#880000' : '#585858',
+  };
 
   return (
-    <div className={classes.messageContainer}>
-      <Paper className={classes.root}>
+    <div className={classes.messageHull}>
+      {/* <Box color={!ownUser ? '#585858' : '#880000'}> */}
+      <Box {...usernameStyles}>
+        <Typography variant="subtitle1" className={classes.msgUsername}>
+          {msgUsername}
+        </Typography>
+      </Box>
+      <Typography>{textContent}</Typography>
+    </div>
+  );
+};
+
+function Message({ msg }) {
+  const username = useUsername();
+  const textContent = msg.parts[0].payload.content;
+  const isUserMention = textContent.includes(`@${username}`);
+  const classes = useStyles({ isUserMention });
+
+  const userMentionStyles = {
+    border: isUserMention ? '2px solid gold' : null,
+    borderRadius: isUserMention ? '3px' : null,
+    background: isUserMention ? '#ffd7002e' : null,
+  };
+
+  return (
+    <Box style={{ ...userMentionStyles }}>
+      {/* <Box className={classes.messageWithMention}> */}
+      <div className={classes.messageContainer}>
+        <UserBadge />
+        <MessageHull message={msg} />
+        {/* <Paper className={classes.root}>
         <div
           className={
             username === session.user.id
@@ -70,8 +131,10 @@ function Message(props) {
             {textContent}
           </Typography>
         </div>
-      </Paper>
-    </div>
+      </Paper> */}
+      </div>
+      <Divider />
+    </Box>
   );
 }
 

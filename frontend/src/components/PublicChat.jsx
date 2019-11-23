@@ -5,34 +5,39 @@ import { MessageInput } from './MessageInput';
 import { useParams } from 'react-router-dom';
 import { Session } from '../App';
 import loadingCircle from '../img/circle128x128.gif';
+import { Box } from '@material-ui/core';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const useStyles = makeStyles(theme => ({
-  messages: {
-    maxHeight: '55vh',
-    overflow: 'auto',
-  },
+  messages: {},
 }));
 
-const Messages = ({ messages }) =>
-  !messages.length ? (
-    <img
-      style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
-      src={loadingCircle}
-      alt="Loading Messages..."
-    />
-  ) : (
-    <ul>
+const Messages = ({ messages }) => {
+  if (!messages.length) {
+    return (
+      <img
+        style={{ position: 'absolute', left: '50%', right: '50%', top: '50%' }}
+        src={loadingCircle}
+        alt="Loading Messages..."
+      />
+    );
+  }
+  return (
+    <div>
       {messages.map(m => {
         return <Message key={m.id} msg={m} />;
       })}
-    </ul>
+    </div>
   );
+};
 
 function PublicChat() {
   const classes = useStyles();
   const session = React.useContext(Session);
   const [chatMessages, setChatMessages] = React.useState([]);
+  const [pendingMessage, setPendingMessage] = React.useState([]);
   const [incomingMessage, setIncomingMessage] = React.useState(null);
+  const ref = React.createRef();
 
   const roomId = useParams().course + '_public';
 
@@ -41,15 +46,27 @@ function PublicChat() {
     setChatMessages([...chatMessages, incomingMessage]);
   }, [incomingMessage]);
 
+  React.useEffect(() => {
+    ref.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  }, [chatMessages]);
+
   const handleOnMessage = message => {
     setIncomingMessage(message);
+    setPendingMessage([]);
+  };
+
+  const handleMessageSend = message => {
+    setPendingMessage([message]);
   };
 
   React.useEffect(() => {
     session.user
       .fetchMultipartMessages({ roomId })
       .then(messages => {
-        setChatMessages([...messages]);
+        setChatMessages([...messages, ...pendingMessage]);
         return session.user.subscribeToRoomMultipart({
           roomId: roomId,
           hooks: {
@@ -69,16 +86,14 @@ function PublicChat() {
       });
   }, [roomId]);
 
-  // fetch messages from all chat
-  // subscribe to all chat
-  // send message to all chat
   return (
-    <div>
-      <div className={classes.messages}>
+    <Box display="flex" flexDirection="column" height="100%">
+      <Scrollbars autoHide>
         <Messages messages={chatMessages} />
-      </div>
-      <MessageInput roomId={roomId} />
-    </div>
+        <Box ref={ref} height={0} width={0} />
+      </Scrollbars>
+      <MessageInput roomId={roomId} onMessageSend={handleMessageSend} />
+    </Box>
   );
 }
 

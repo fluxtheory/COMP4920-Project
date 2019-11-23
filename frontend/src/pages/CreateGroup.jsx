@@ -28,26 +28,6 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
 }));
-// two forms: 1. title submit. 2.each user submit
-
-// top level comp checks if title submitted, if when not
-// display title form with user form disabled/greyed out
-
-// User enters title -> Enter
-// Submits to backend
-// Backend creates chatkit group
-// On success response
-// Input becomes title
-// Second form become active
-// User searches for user in course -> Enter
-// Submits to backend
-// Backend adds that user to group
-
-// see what backend requires
-// Dummy title trypography
-// input wraps typography
-// wrap in form
-
 
 const TitleForm = ({
   onSuccess: handleSuccess,
@@ -81,12 +61,11 @@ const TitleForm = ({
       .finally(() => {
         setSubmitted(false);
       });
-    /*    
+      /*    
      handleSuccess();
     setSuccess(true);
     setSubmitted(false); 
-    */
-  }, [submitted]);
+    */}, [submitted]);
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -125,7 +104,6 @@ const CreateGroup = () => {
   );
 
   return <div className={classes.createGroupPageContainer}>{titleFlow}</div>;
-  // return <h1>{`I'm create group chat for course: ${params.course} `}</h1>;
 };
 
 export { CreateGroup };
