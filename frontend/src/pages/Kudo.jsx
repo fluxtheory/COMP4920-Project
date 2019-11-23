@@ -117,7 +117,6 @@ const PlebbyChangingContent = () => {
       <div className={classes.contentArea}>
         <Switch>
           <Route path={makePath('/dashboard')}>
-            {/* TODO: this is be be deprecated */}
             <KudoDashboard />
           </Route>
           <Route path={[makePath('/chat/:id'), makePath('/chat')]}>

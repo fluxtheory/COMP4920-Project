@@ -7,6 +7,7 @@ import { Box, Typography } from '@material-ui/core';
 import { api, useCourse } from '../utils';
 import { useUsername } from './CreateGroup';
 import { Textfit } from 'react-textfit';
+import { CourseAnnouncements } from './CoursePage';
 
 const DeadlineManagement = () => {
   const currUser = useContext(CurrentUser);
@@ -119,14 +120,9 @@ const DeadlineManagement = () => {
     </div>
   );
 };
-// How does courseannouncments get to know when the admin POSTs a post?
-// It can know from the backend
-// It must know from the anon management
-// What about for users then?
-// there's a an extra useeffect that will need be used there
-// Just make a hook if you need to
 
-const useAnnouncements = () => {
+// MRTODO: sep file
+export const useAnnouncements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [shouldUpdate, setShouldUpdate] = useState({});
   const course = useCourse();
@@ -150,26 +146,6 @@ const useAnnouncements = () => {
   const triggerUpdate = () => setShouldUpdate({});
 
   return { announcements, triggerUpdate };
-};
-const CourseAnnouncements = ({ announcements }) => {
-  announcements.sort((d1, d2) => {
-    if (d1 < d2) return -1;
-    return 1;
-  });
-
-  return (
-    <div style={{ width: '100%' }}>
-      {announcements.map((a, idx) => (
-        <Box key={idx}>
-          <Textfit mode="multi" max={100} min={32}>
-            <Box height="150px" width={'100%'}>
-              {a.announcement}
-            </Box>
-          </Textfit>
-        </Box>
-      ))}
-    </div>
-  );
 };
 
 const AnnouncementManagement = () => {
@@ -195,6 +171,7 @@ const AnnouncementManagement = () => {
       setNewAnnouncement('');
     }
   };
+
   return (
     <div>
       <h1>Announcement Management</h1>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import { TextField, Button, Box, Typography } from '@material-ui/core/';
 import { CourseList } from './CourseList';
@@ -92,6 +93,8 @@ function CoursesPane() {
         variant="contained"
         onClick={() => {}}
         color={'Dashboard' === courseInFocus ? 'primary' : 'secondary'}
+        component={Link}
+        to={'/kudo/dashboard'}
       >
         Overview
       </Button>
