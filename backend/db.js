@@ -153,10 +153,24 @@ db = new sqlite3.Database("test.db", err => {
     FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE
   );
   
-  CREATE TRIGGER IF NOT EXISTS update_group_member_count
+  CREATE TRIGGER IF NOT EXISTS increment_group_member_count
     AFTER INSERT ON groupUsers
     BEGIN
       UPDATE groups SET member_count = member_count + 1 WHERE id = new.groupid;
+    END;
+
+  CREATE TRIGGER IF NOT EXISTS decrement_group_member_count
+    AFTER DELETE ON groupUsers
+    BEGIN
+      UPDATE groups SET member_count = member_count - 1 WHERE id = old.groupid;
+    END;
+  
+  
+  CREATE TRIGGER IF NOT EXISTS remove_group_when_empty
+    AFTER UPDATE ON groups
+    WHEN (new.member_count = 0)
+    BEGIN
+      DELETE FROM groups WHERE id = new.id;
     END;
     
   CREATE TRIGGER IF NOT EXISTS give_user_karma_when_post_upvoted
@@ -170,6 +184,8 @@ db = new sqlite3.Database("test.db", err => {
   BEGIN
     DELETE FROM groupUsers WHERE groupid = old.id;
   END;`;
+
+  
 
   /*
   CREATE TABLE IF NOT EXISTS groupFormation (

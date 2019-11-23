@@ -279,6 +279,17 @@ describe('/GET Course Retrieval Group', () => {
     })
 });
 
+describe('/POST Give Karma', () => {
+    if("should give 'testacc' +1 karma from 'fluxtheory'", (done) => {
+        chai.request("http://localhost:3001")
+        .post()
+        .end((err, res) => {
+            
+        })
+
+    });
+})
+
 
 describe('/POST Delete User', () => {
     /*it("should delete user 'testacc'", (done) => {
