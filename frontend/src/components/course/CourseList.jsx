@@ -28,7 +28,7 @@ function CourseList(props) {
         return (
           <LeftPaneButton
             component={Link}
-            to={`/kudo/${item.code}`}
+            to={`/kudo/${item.code}/dashboard`}
             key={item.code}
             className={classes.courseButton}
             variant="contained"

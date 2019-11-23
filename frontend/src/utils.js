@@ -23,4 +23,14 @@ const useCourse = () => {
   return params.course;
 };
 
-export { api, useCourse };
+const useCurrentPage = () => {
+  // const { params } = useRouteMatch('/kudo/:course/:activePage');
+  const match = useRouteMatch('/kudo/:course/:activePage');
+  if (match) {
+    return match.params.activePage;
+  }
+
+  return null;
+};
+
+export { api, useCourse, useCurrentPage };

@@ -122,8 +122,7 @@ const PlebbyChangingContent = () => {
           <Route path={[makePath('/chat/:id'), makePath('/chat')]}>
             <Chat />
           </Route>
-          <Route exact path={makePath('/:course')}>
-            <h1>I'm the course dashboard</h1>
+          <Route exact path={makePath('/:course/dashboard')}>
             <CoursePage />
           </Route>
           <Route exact path={makePath('/:course/admin')}>

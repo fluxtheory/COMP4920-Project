@@ -11,7 +11,7 @@ import { Fab, Button, Box } from '@material-ui/core';
 import { Session, NewGroupTrigger } from '../App';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { flexbox } from '@material-ui/system';
-import { api } from '../utils';
+import { api, useCourse } from '../utils';
 import { useUsername } from '../pages/CreateGroup';
 
 // MRTODO: this file needs to be better named
@@ -99,9 +99,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function CustomizedExpansionPanels() {
+function ChatPane() {
   const [expanded, setExpanded] = React.useState('panel1');
   const classes = useStyles();
+  const activeCourse = useCourse();
+
   const handleChange = panel => (event, newExpanded) => {
     if (expanded === panel) return; // one panel is always open
     setExpanded(newExpanded ? panel : false);
@@ -114,6 +116,7 @@ function CustomizedExpansionPanels() {
         expanded={expanded === 'panel1'}
         onChange={handleChange('panel1')}
         classes={{ expanded: classes.expansionPanel }}
+        disabled={activeCourse === 'dashboard'}
       >
         <ExpansionPanelSummary
           aria-controls="panel1d-content"
@@ -130,6 +133,7 @@ function CustomizedExpansionPanels() {
         expanded={expanded === 'panel2'}
         onChange={handleChange('panel2')}
         classes={{ expanded: classes.expansionPanel }}
+        disabled={activeCourse === 'dashboard'}
       >
         <ExpansionPanelSummary
           aria-controls="panel2d-content"
@@ -146,6 +150,7 @@ function CustomizedExpansionPanels() {
         expanded={expanded === 'panel3'}
         onChange={handleChange('panel3')}
         classes={{ expanded: classes.expansionPanel }}
+        disabled={activeCourse === 'dashboard'}
       >
         <ExpansionPanelSummary
           aria-controls="panel3d-content"
@@ -258,4 +263,4 @@ const GroupListing = ({ group }) => {
   );
 };
 
-export { CustomizedExpansionPanels as ChatPane };
+export { ChatPane };

@@ -44,7 +44,7 @@ export const LeftPaneButton = ({ children, activeRoute, ...props }) => {
   const { params } = useRouteMatch('/kudo/:activeRoute');
   const isActive = activeRoute === params.activeRoute;
   return (
-    <Button color={isActive ? 'primary' : 'secondary'} {...props}>
+    <Button color={isActive ? 'secondary' : 'primary'} {...props}>
       {children}
     </Button>
   );
