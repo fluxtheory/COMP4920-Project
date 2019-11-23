@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { TextField, Button } from '@material-ui/core/';
-import { api } from '../../utils';
+import { api, useCourse } from '../../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
@@ -45,9 +45,8 @@ const getAllUsers = function(course) {
 function UserSearchForm(props) {
   const classes = useStyles();
 
-  const { params } = useRouteMatch('/kudo/:course');
   const session = React.useContext(Session);
-  const course = params.course;
+  const course = useCourse();
   const [users, setUsers] = React.useState([]);
   const [userSearch, setUserSearch] = React.useState([]);
 
@@ -97,7 +96,7 @@ function UserSearchForm(props) {
               classes={{ root: classes.userButton }}
               key={u.username}
               component={Link}
-              to={'/kudo/' + u.username + '/dm'}
+              to={`/kudo/${course}/chat/${u.username}`}
             >
               <ChildCareIcon />
               <Box mx={1}>

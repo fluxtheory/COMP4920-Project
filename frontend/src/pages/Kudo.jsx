@@ -121,18 +121,22 @@ const PlebbyChangingContent = () => {
             <Route path={makePath('/dashboard')}>
               <KudoDashboard />
             </Route>
-            <Route path={[makePath('/chat/:id'), makePath('/chat')]}>
-              <Chat />
-            </Route>
+
             <Route exact path={makePath('/:course/dashboard')}>
               <CoursePage />
             </Route>
+
             <Route exact path={makePath('/:course/admin')}>
               <CourseAdminPage />
             </Route>
+
             <Route exact path={makePath('/:course/chat')}>
               <PublicChat />
             </Route>
+            <Route exact path={makePath('/:course/chat/:user')}>
+              <PrivateChat />
+            </Route>
+
             <Route exact path={makePath('/:course/feed')}>
               <CourseFeed />
             </Route>
@@ -142,6 +146,7 @@ const PlebbyChangingContent = () => {
             <Route exact path={makePath('/:course/post/:postId')}>
               <PostExpanded />
             </Route>
+
             <Route exact path={makePath('/:course/group/create')}>
               <CreateGroup />
             </Route>
@@ -150,9 +155,6 @@ const PlebbyChangingContent = () => {
             </Route>
             <Route exact path={makePath('/:course/group/:group/settings')}>
               <GroupSettings />
-            </Route>
-            <Route exact path={makePath('/:user/dm')}>
-              <PrivateChat />
             </Route>
           </Switch>
         </div>
