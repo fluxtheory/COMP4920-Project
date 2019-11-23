@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
 import { Session, CurrentUser } from '../App';
 import { api } from '../utils';
+import loadingCircle from '../img/circle128x128.gif';
 
 const instanceLocator = 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77';
 const tokenProvider = new TokenProvider({
@@ -66,7 +67,18 @@ function AuthProtection({ children, ...rest }) {
     case 'initial':
       return (
         <div>
-          <h1>Checking if you're legit.</h1>
+          <img
+            style={{
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              top: '0',
+              bottom: '0',
+              margin: 'auto',
+            }}
+            src={loadingCircle}
+            alt="Loading Messages..."
+          />
         </div>
       );
     case 'not-legit':

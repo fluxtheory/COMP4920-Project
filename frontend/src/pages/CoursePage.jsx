@@ -10,6 +10,7 @@ import TimeLine from 'react-gantt-timeline';
 import Textfit from 'react-textfit/lib/Textfit';
 import { useUsername } from './CreateGroup';
 import { useAnnouncements } from './CourseAdminPage';
+import { theme } from '../App';
 
 const makePath = (path, course) => {
   return `/kudo/${course}${path}`;
@@ -21,9 +22,13 @@ const CoursePage = () => {
 
   return (
     <div>
-      <Typography variant="h2">Deadlines</Typography>
+      <Typography style={{ color: theme.palette.text.title }} variant="h2">
+        Deadlines
+      </Typography>
       <UserDeadlines />
-      <Typography variant="h2">Announcements</Typography>
+      <Typography style={{ color: theme.palette.text.title }} variant="h2">
+        Announcements
+      </Typography>
       <UserCourseAnnouncements />
       {/* MRTODO: remove */}
       {/* <Switch>
@@ -89,12 +94,21 @@ export const CourseAnnouncements = ({ announcements }) => {
       {announcements.map((a, idx) => (
         <Box key={idx}>
           <Textfit mode="multi" max={100} min={32}>
-            <Box height="100px" width={'100%'}>
+            <Box
+              style={{ color: theme.palette.text.subtitle }}
+              height="100px"
+              width={'100%'}
+            >
               {a.announcement}
             </Box>
           </Textfit>
           <Box>
-            <Typography variant="caption">{a.timestamp}</Typography>
+            <Typography
+              style={{ color: theme.palette.text.footer }}
+              variant="caption"
+            >
+              {a.timestamp}
+            </Typography>
           </Box>
         </Box>
       ))}

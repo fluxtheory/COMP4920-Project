@@ -20,7 +20,7 @@ import { ActiveChats } from './ActiveChats';
 
 const ExpansionPanel = withStyles({
   root: {
-    border: '1px solid rgba(0, 0, 0, .125)',
+    border: '1px solid primary',
     boxShadow: 'none',
     '&:not(:last-child)': {
       borderBottom: 0,

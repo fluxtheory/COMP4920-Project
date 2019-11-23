@@ -11,12 +11,7 @@ const useStyles = makeStyles(theme => ({
   PostListContainer: {
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'auto',
-  },
-  userListContainer: {
-    display: 'flex',
     maxHeight: '80vh',
-    flexDirection: 'column',
     overflow: 'auto',
   },
   root: {},
@@ -64,11 +59,13 @@ function PostList() {
 
   return (
     <div className={classes.PostListContainer}>
-      <div className={classes.userListContainer}>
-        {posts.map(p => {
+      {posts.length > 0 ? (
+        posts.map(p => {
           return <PostCompact post={p} key={p.id} />;
-        })}
-      </div>
+        })
+      ) : (
+        <Typography variant="h2">No Posts Yet!</Typography>
+      )}
     </div>
   );
 }

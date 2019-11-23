@@ -4,6 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { UpvoteButton } from './UpvoteButton';
 import { Link } from 'react-router-dom';
+import { theme } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   PostContainer: {
@@ -13,8 +14,7 @@ const useStyles = makeStyles(theme => ({
   },
   post: {
     margin: '0.7rem 0',
-    backgroundColor: 'cream',
-    border: '3px solid red',
+    border: '2px solid ' + theme.palette.secondary.main,
   },
   postSection: {
     width: '70%',
@@ -50,7 +50,11 @@ function PostCompact(props) {
     <div className={classes.PostContainer}>
       <Paper
         className={classes.post}
-        style={post.sticky === 1 ? { border: '3px solid green' } : {}}
+        style={
+          post.sticky === 1
+            ? { border: '2px solid ' + theme.palette.primary.main }
+            : {}
+        }
       >
         <Link to={'post/' + post.id}>
           <Paper className={classes.postSection}>

@@ -31,7 +31,79 @@ export const CurrentUser = React.createContext({
   updateCurrentUser: () => {},
 });
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
+  /*
+//THEME ONE - Green and gold
+  type: 'dark',
+  shape: {
+    borderRadius: 0,
+  },
+  palette: {
+    primary: {
+      main: '#4a9878',
+    },
+    secondary: {
+      main: '#9c7a22',
+    },
+    background: {
+      level1: '#1e3f4a',
+      level2: '#16333d',
+      level3: '#0a191e',
+    },
+  },
+  shadows: ['none'],
+  */
+  /*
+ // THEME TWO - Bubblegum
+  shape: {
+    borderRadius: 0,
+  },
+  palette: {
+    primary: {
+      main: '#0646cf',
+    },
+    secondary: {
+      main: '#ff00ae',
+    },
+    background: {
+      level1: '#ffffff',
+      level2: '#ffffff',
+      level3: '#ffffff',
+    },
+    text: {
+      title: '#000000',
+      subtitle: '#000000',
+      footer: '#000000',
+    },
+  },
+  shadows: ['none'],
+  */
+  /*
+ //THEME THREE - Walnut/Woodland
+  shape: {
+  borderRadius: 0,
+},
+palette: {
+  primary: {
+    main: '#402b1b',
+  },
+  secondary: {
+    main: '#9e4d10',
+  },
+  background: {
+    level1: '#f5ede9',
+    level2: '#e6d8cf',
+    level3: '#d1beb0',
+  },
+  text: {
+    title: '#000000',
+    subtitle: '#000000',
+    footer: '#000000',
+  },
+},
+shadows: ['none'],
+*/
+  // default
   shape: {
     borderRadius: 0,
   },
@@ -42,14 +114,20 @@ const theme = createMuiTheme({
     secondary: {
       main: '#631976',
     },
-  },
-  /*palette: {
-    type: 'dark',
     background: {
-      //level1: '#fff',
-      //level2: '#f5f5f5',
+      background: {
+        level1: '#fff',
+        level2: '#f5f5f5',
+        level3: '#f1f1f1',
+      },
+      text: {
+        title: '#000000',
+        subtitle: '#000000',
+        footer: '#000000',
+      },
     },
-  },*/
+  },
+  shadows: ['none'],
 });
 
 function App() {
@@ -80,6 +158,7 @@ function App() {
   const [sessionState, setSessionState] = React.useState(initSessionState); // chatkit user
   const [currUserState, setCurrUserState] = React.useState(initCurrUserState); // kudo user
 
+  document.body.style = 'background: ' + theme.palette.background.level3;
   return (
     <ThemeProvider theme={theme}>
       <Session.Provider value={sessionState}>
@@ -113,6 +192,7 @@ function App() {
               </Switch>
               <div>
                 <nav>
+                  {/*}
                   <ul>
                     <li>
                       <Link to="/">Home</Link>
@@ -126,7 +206,7 @@ function App() {
                     <li>
                       <Link to="/login">Login</Link>
                     </li>
-                    {/* TODO: Remove everything below here */}
+                    {/* TODO: Remove everything below here
                     <li>
                       <Link to="/kudo/comp">dummy course dash</Link>
                     </li>
@@ -148,6 +228,7 @@ function App() {
                       <Link to="/kudo/comp/dm">dummy course private chat</Link>
                     </li>
                   </ul>
+                    </Router>*/}
                   {sessionState.user ? (
                     <Link to="/login">
                       <button

@@ -1,70 +1,70 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Switch, Route } from "react-router-dom";
-import { Chat } from "./Chat";
-import { Dashboard } from "./Dashboard";
-import { CoursePage } from "./CoursePage";
-import { CoursesPane } from "../components/course/CoursesPane";
-import { TabBar } from "../components/TabBar";
-import { PublicChat } from "../components/PublicChat";
-import { Box } from "@material-ui/core";
-import { ChatPane } from "../components/ChatPane";
-import { CreateGroup } from "./CreateGroup";
-import { GroupSettings } from "./GroupSettings";
-import { GroupChat } from "./GroupChat";
-import { PrivateChat } from "../components/PrivateChat";
-import { CourseFeed } from "../components/feed/CourseFeed";
-import { MakePost } from "../components/feed/MakePost";
-import { PostExpanded } from "../components/feed/PostExpanded";
-import { CourseAdminPage } from "./CourseAdminPage";
-import { KudoDashboard } from "./KudoDashboard";
-import { Scrollbars } from "react-custom-scrollbars";
+import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Switch, Route } from 'react-router-dom';
+import { Chat } from './Chat';
+import { Dashboard } from './Dashboard';
+import { CoursePage } from './CoursePage';
+import { CoursesPane } from '../components/course/CoursesPane';
+import { TabBar } from '../components/TabBar';
+import { PublicChat } from '../components/PublicChat';
+import { Box } from '@material-ui/core';
+import { ChatPane } from '../components/ChatPane';
+import { CreateGroup } from './CreateGroup';
+import { GroupSettings } from './GroupSettings';
+import { GroupChat } from './GroupChat';
+import { PrivateChat } from '../components/PrivateChat';
+import { CourseFeed } from '../components/feed/CourseFeed';
+import { MakePost } from '../components/feed/MakePost';
+import { PostExpanded } from '../components/feed/PostExpanded';
+import { CourseAdminPage } from './CourseAdminPage';
+import { KudoDashboard } from './KudoDashboard';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export const useStyles = makeStyles(theme => ({
   kudoApp: {
-    display: "grid",
-    gridTemplateColumns: "1.5fr 8fr 1.5fr",
-    gridTemplateRows: "1fr 15fr",
+    display: 'grid',
+    gridTemplateColumns: '1.5fr 8fr 1.5fr',
+    gridTemplateRows: '1fr 15fr',
     gridTemplateAreas: `"leftTitle tabs rightTitle"
                         "left middle right"
                         "left middle right"`,
-    height: "100vh",
-    width: "100%",
-    fontSize: "2rem"
+    height: '100vh',
+    width: '100%',
+    fontSize: '2rem',
   },
 
   topTabBar: {
-    gridArea: "tabs",
-    background: "red"
+    gridArea: 'tabs',
+    background: 'red',
   },
 
   leftPaneTitle: {
-    gridArea: "leftTitle",
-    background: theme.palette.secondary
+    gridArea: 'leftTitle',
+    background: theme.palette.secondary,
   },
   leftPane: {
-    display: "flex",
-    flexDirection: "column",
-    gridArea: "left"
+    display: 'flex',
+    flexDirection: 'column',
+    gridArea: 'left',
   },
 
   rightPaneTitle: {
-    gridArea: "rightTitle"
+    gridArea: 'rightTitle',
   },
   rightPane: {
-    gridArea: "right",
+    gridArea: 'right',
     background: theme.palette.background.level2,
-    display: "flex"
+    display: 'flex',
   },
 
   contentArea: {
-    gridArea: "middle",
-    maxWidth: "calc((8/11) * 100vw)",
-    background: theme.palette.background.level1
+    gridArea: 'middle',
+    maxWidth: 'calc((8/11) * 100vw)',
+    background: theme.palette.background.level1,
   },
   pane: {
-    background: theme.palette.secondary
-  }
+    background: theme.palette.secondary,
+  },
 }));
 
 const Kudo = () => {
@@ -122,42 +122,42 @@ const PlebbyChangingContent = () => {
       <Scrollbars>
         <div className={classes.contentArea}>
           <Switch>
-            <Route path={makePath("/dashboard")}>
+            <Route path={makePath('/dashboard')}>
               <KudoDashboard />
             </Route>
 
-            <Route exact path={makePath("/:course/dashboard")}>
+            <Route exact path={makePath('/:course/dashboard')}>
               <CoursePage />
             </Route>
 
-            <Route exact path={makePath("/:course/admin")}>
+            <Route exact path={makePath('/:course/admin')}>
               <CourseAdminPage />
             </Route>
 
-            <Route exact path={makePath("/:course/chat")}>
+            <Route exact path={makePath('/:course/chat')}>
               <PublicChat />
             </Route>
-            <Route exact path={makePath("/:course/chat/:user")}>
+            <Route exact path={makePath('/:course/chat/:user')}>
               <PrivateChat />
             </Route>
 
-            <Route exact path={makePath("/:course/feed")}>
+            <Route exact path={makePath('/:course/feed')}>
               <CourseFeed />
             </Route>
-            <Route exact path={makePath("/:course/feed/new")}>
+            <Route exact path={makePath('/:course/feed/new')}>
               <MakePost />
             </Route>
-            <Route exact path={makePath("/:course/post/:postId")}>
+            <Route exact path={makePath('/:course/post/:postId')}>
               <PostExpanded />
             </Route>
 
-            <Route exact path={makePath("/:course/group/create")}>
+            <Route exact path={makePath('/:course/group/create')}>
               <CreateGroup />
             </Route>
-            <Route exact path={makePath("/:course/group/:group")}>
+            <Route exact path={makePath('/:course/group/:group')}>
               <GroupChat />
             </Route>
-            <Route exact path={makePath("/:course/group/:group/settings")}>
+            <Route exact path={makePath('/:course/group/:group/settings')}>
               <GroupSettings />
             </Route>
           </Switch>
@@ -179,7 +179,7 @@ const PaneTitle = ({ title, ...props }) => {
       justifyContent="center"
       alignItems="center"
       borderBottom="1px solid darkgrey"
-      bgcolor="hsla(231, 42%, 39%, 1)"
+      bgcolor="primary.main"
       color="#f5f5f5"
       fontSize="h6.fontSize"
       fontWeight="fontWeightMedium"

@@ -25,9 +25,11 @@ function CourseFeed(props) {
     <div className={classes.CourseFeedContainer}>
       <PostList />
       <Button
+        style={{ left: '60%' }}
         component={Link}
         to={`/kudo/${course}/feed/new`}
         variant="contained"
+        color="secondary"
       >
         Make a new Post
       </Button>
