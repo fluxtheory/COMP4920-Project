@@ -4,8 +4,7 @@ import { CurrentUser } from '../App';
 import { makePath } from './Kudo';
 import TimeLine from 'react-gantt-timeline';
 import { Box, Typography } from '@material-ui/core';
-import { api, useCourse } from '../utils';
-import { useUsername } from './CreateGroup';
+import { api, useCourse, useAnnouncements, useUsername } from '../utils';
 import { Textfit } from 'react-textfit';
 import { CourseAnnouncements } from './CoursePage';
 
@@ -119,33 +118,6 @@ const DeadlineManagement = () => {
       <button onClick={handleDeadlineSubmit}>Commit Changes</button>
     </div>
   );
-};
-
-// MRTODO: sep file
-export const useAnnouncements = () => {
-  const [announcements, setAnnouncements] = useState([]);
-  const [shouldUpdate, setShouldUpdate] = useState({});
-  const course = useCourse();
-
-  useEffect(() => {
-    api
-      .get(`/${course}/announcements`)
-      .then(res => {
-        const fetchedAnnouncements = res.data.data;
-        const formattedAnnouncements = fetchedAnnouncements.map(a => {
-          return { announcement: a.announcement, timestamp: a.datetime };
-        });
-
-        setAnnouncements(formattedAnnouncements);
-      })
-      .catch(err => {
-        console.log('Error fetching course announcements');
-      });
-  }, [shouldUpdate]);
-
-  const triggerUpdate = () => setShouldUpdate({});
-
-  return { announcements, triggerUpdate };
 };
 
 const AnnouncementManagement = () => {

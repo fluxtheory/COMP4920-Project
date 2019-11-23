@@ -5,11 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { TextField, Button } from '@material-ui/core/';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import { useCourse, api } from '../utils';
+import { useCourse, api, useAnnouncements } from '../utils';
 import TimeLine from 'react-gantt-timeline';
 import Textfit from 'react-textfit/lib/Textfit';
 import { useUsername } from './CreateGroup';
-import { useAnnouncements } from './CourseAdminPage';
 import { theme } from '../App';
 
 const makePath = (path, course) => {
@@ -17,9 +16,6 @@ const makePath = (path, course) => {
 };
 
 const CoursePage = () => {
-  const { params } = useRouteMatch('/kudo/:course');
-  const course = params.course;
-
   return (
     <div>
       <Typography style={{ color: theme.palette.text.title }} variant="h2">
@@ -30,18 +26,6 @@ const CoursePage = () => {
         Announcements
       </Typography>
       <UserCourseAnnouncements />
-      {/* MRTODO: remove */}
-      {/* <Switch>
-          <Route path={makePath('/group/create', course)}>
-            {() => (
-              <div>
-                <h1>{`Create group for ${course}`}</h1>
-              </div>
-            )}
-          </Route>
-          <Route path={makePath('/group/:group', course)}></Route>
-          <Route path={makePath('/group/:group/settings', course)}></Route>
-        </Switch> */}
     </div>
   );
 };
@@ -82,7 +66,6 @@ const UserDeadlines = () => {
   );
 };
 
-// MRTODO: seperate file
 export const CourseAnnouncements = ({ announcements }) => {
   announcements.sort((d1, d2) => {
     if (d1 < d2) return -1;
@@ -117,8 +100,6 @@ export const CourseAnnouncements = ({ announcements }) => {
 };
 
 const UserCourseAnnouncements = () => {
-  const course = useCourse();
-  const username = useUsername();
   const { announcements } = useAnnouncements();
 
   return (

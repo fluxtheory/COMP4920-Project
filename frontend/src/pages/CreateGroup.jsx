@@ -8,7 +8,7 @@ import {
   Box,
 } from '@material-ui/core';
 import { useRouteMatch, Redirect } from 'react-router-dom';
-import { api } from '../utils';
+import { api, useUsername } from '../utils';
 import { Session, NewGroupTrigger } from '../App';
 import { Autocomplete } from '@material-ui/lab';
 
@@ -28,32 +28,6 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
 }));
-// two forms: 1. title submit. 2.each user submit
-
-// top level comp checks if title submitted, if when not
-// display title form with user form disabled/greyed out
-
-// User enters title -> Enter
-// Submits to backend
-// Backend creates chatkit group
-// On success response
-// Input becomes title
-// Second form become active
-// User searches for user in course -> Enter
-// Submits to backend
-// Backend adds that user to group
-
-// see what backend requires
-// Dummy title trypography
-// input wraps typography
-// wrap in form
-
-// MRTODO: move to utils
-export const useUsername = () => {
-  const session = useContext(Session);
-  const username = session.user.id;
-  return username;
-};
 
 const TitleForm = ({
   onSuccess: handleSuccess,
@@ -65,7 +39,6 @@ const TitleForm = ({
   const [submitted, setSubmitted] = useState(false);
   const [success, setSuccess] = useState(false);
   const groupTrigger = useContext(NewGroupTrigger);
-  // const [titleInput, setTitleInput] = useState('');
   const username = useUsername();
 
   useEffect(() => {
@@ -88,12 +61,11 @@ const TitleForm = ({
       .finally(() => {
         setSubmitted(false);
       });
-    /*    
+      /*    
      handleSuccess();
     setSuccess(true);
     setSubmitted(false); 
-    */
-  }, [submitted]);
+    */}, [submitted]);
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -117,13 +89,11 @@ const TitleForm = ({
 
 const CreateGroup = () => {
   const classes = useStyles();
-  // MRTODO: make current course in context? or `useCourse` hook, replace all usages of it
   const { params } = useRouteMatch('/kudo/:course');
   const [groupCreated, setGroupCreated] = useState(false);
   const [titleInput, setTitleInput] = useState('');
 
   const titleFlow = groupCreated ? (
-    // <GroupTitle text={titleInput} />
     <Redirect to={`/kudo/${params.course}/group/${titleInput}/settings`} />
   ) : (
     <TitleForm
@@ -134,7 +104,6 @@ const CreateGroup = () => {
   );
 
   return <div className={classes.createGroupPageContainer}>{titleFlow}</div>;
-  // return <h1>{`I'm create group chat for course: ${params.course} `}</h1>;
 };
 
 export { CreateGroup };

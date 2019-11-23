@@ -69,8 +69,6 @@ export const GroupSettings = () => {
 
 const GroupMember = props => {
   const classes = useStyles();
-  const { params } = useRouteMatch('/kudo/:course/group/:group');
-  const username = useUsername();
 
   // const handleRemove = () => {
   //   api
@@ -97,7 +95,6 @@ const GroupMember = props => {
   );
 };
 
-// MRTODO: very mrtodo
 const UserSearchForm = ({ onUserAdd }) => {
   const classes = useStyles();
   const { params } = useRouteMatch('/kudo/:course/group/:group/settings');
@@ -129,6 +126,7 @@ const UserSearchForm = ({ onUserAdd }) => {
     }
     setCurrSelected(value.username);
   };
+
   React.useEffect(() => {
     const prom = getAllUsers(course).then(resp => {
       setUsers(resp);
@@ -137,21 +135,17 @@ const UserSearchForm = ({ onUserAdd }) => {
   const handleSubmit = e => {
     e.preventDefault();
   };
-  // const handleChange = (event, value) => {
-  //   if (!value) return setUserInput('');
-  //   setUserInput(value);
-  // };
+
   const groupMembersElements = groupMembers.map(u => {
     return <GroupMember key={u} user={u} />;
   });
+
   return (
     <div className={classes.addUserContainer}>
       <div className={classes.userListContainer}>{groupMembersElements}</div>
       <form onSubmit={handleSubmit}>
         <Autocomplete
           options={users}
-          // getOptionLabel={option => option.username}
-          // MRTODO: figure out why option is null on submit
           getOptionLabel={option =>
             (option && option.username) || `Weird option value: ${option}`
           }
@@ -170,11 +164,6 @@ const UserSearchForm = ({ onUserAdd }) => {
     </div>
   );
 };
-
-// Looks like
-// username to left
-// 'x' to the right
-//
 
 const getAllUsers = function(course) {
   return new Promise((resolve, reject) => {
