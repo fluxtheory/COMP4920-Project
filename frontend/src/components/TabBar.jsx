@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useRouteMatch, useParams, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { CurrentUser } from '../App';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,6 +27,7 @@ function TabBar() {
   const location = useLocation();
   const { params } = useRouteMatch('/kudo/:course');
   const [value, setValue] = React.useState(0);
+  const currUser = useContext(CurrentUser);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -59,6 +60,13 @@ function TabBar() {
             label={tabLabel('Course Chat')}
             to={`/kudo/${params.course}/chat`}
           />
+          {currUser.admin ? (
+            <LinkTab
+              className={classes.tab}
+              label={tabLabel('Manage Course')}
+              to={`/kudo/${params.course}/admin`}
+            />
+          ) : null}
         </Tabs>
       </AppBar>
     </div>

@@ -209,4 +209,15 @@ router.get("/:course/announcements", (req, res) => {
     return res.status(err.code).json(err);
   })
 })
+router.post("/:course/assignment/delete", (req, res) => {
+  coursedb
+    .deleteCourseDeadlines(req.params.course, req.body)
+    .then(reply => {
+      return res.status(reply.code).json(reply);
+    })
+    .catch(err => {
+      return res.status(err.code).json(err);
+    });
+});
+
 module.exports = router;

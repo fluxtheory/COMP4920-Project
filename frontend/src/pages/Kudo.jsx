@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { Chat } from './Chat';
 import { Dashboard } from './Dashboard';
 import { CoursePage } from './CoursePage';
@@ -16,11 +16,12 @@ import { PrivateChat } from '../components/PrivateChat';
 import { CourseFeed } from '../components/feed/CourseFeed';
 import { MakePost } from '../components/feed/MakePost';
 import { PostExpanded } from '../components/feed/PostExpanded';
+import { CourseAdminPage } from './CourseAdminPage';
+import { KudoDashboard } from './KudoDashboard';
 
 export const useStyles = makeStyles(theme => ({
   kudoApp: {
     display: 'grid',
-    // gridGap: '1rem',
     gridTemplateColumns: '1.5fr 8fr 1.5fr',
     gridTemplateRows: '1fr 15fr',
     gridTemplateAreas: `"leftTitle tabs rightTitle"
@@ -43,7 +44,6 @@ export const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gridArea: 'left',
-    background: 'blue',
   },
 
   rightPaneTitle: {
@@ -57,6 +57,7 @@ export const useStyles = makeStyles(theme => ({
 
   contentArea: {
     gridArea: 'middle',
+    maxWidth: 'calc((8/11) * 100vw)',
     background: theme.palette.background.level1,
   },
 }));
@@ -116,8 +117,7 @@ const PlebbyChangingContent = () => {
       <div className={classes.contentArea}>
         <Switch>
           <Route path={makePath('/dashboard')}>
-            {/* TODO: this is be be deprecated */}
-            <Dashboard />
+            <KudoDashboard />
           </Route>
           <Route path={[makePath('/chat/:id'), makePath('/chat')]}>
             <Chat />
@@ -125,6 +125,9 @@ const PlebbyChangingContent = () => {
           <Route exact path={makePath('/:course')}>
             <h1>I'm the course dashboard</h1>
             <CoursePage />
+          </Route>
+          <Route exact path={makePath('/:course/admin')}>
+            <CourseAdminPage />
           </Route>
           <Route exact path={makePath('/:course/chat')}>
             <PublicChat />
@@ -157,7 +160,7 @@ const PlebbyChangingContent = () => {
 };
 
 // TODO: we can potentially even get rid of the kudo prefix
-const makePath = path => {
+export const makePath = path => {
   return `/kudo${path}`;
 };
 const PaneTitle = ({ title, ...props }) => {

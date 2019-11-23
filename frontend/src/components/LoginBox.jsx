@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { TextField, Button } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
+import { CurrentUser } from '../App';
 
 const useStyles = makeStyles(theme => ({
   creationContainer: {
@@ -29,6 +30,7 @@ function LoginBox() {
     nameOrEmail: '',
     password: '',
   });
+  const currUser = useContext(CurrentUser);
 
   const [loginHelpString, setLoginHelpString] = React.useState('');
   const [loginSuccess, setLoginSuccess] = React.useState(false);
@@ -52,6 +54,10 @@ function LoginBox() {
         var json = JSON.parse(xhr.responseText);
         console.log(json);
         if (json.success === true) {
+          currUser.updateCurrentUser({
+            username: json.username,
+            admin: json.isAdmin,
+          });
           localStorage.setItem('userToken', json.token);
           setLoginSuccess(true);
         } else {

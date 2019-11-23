@@ -196,7 +196,20 @@ module.exports = {
           reject({code: 403, msg: "Not authorized, rank too low"});
         }
       })
-      
+    });
+  },
+
+  deleteCourseDeadlines: function(code) {
+    return new Promise((resolve, reject) => {
+      let sql = `delete from courseInstanceDeadlines as c where c.cInstanceid in (select id from courseInstance as c2 where c2.code = ?)` 
+      db.run(sql, code, (err) => { 
+        if (err) {
+
+          reject({ code: 500, msg: err.message });
+        } else {
+          resolve({code: 200, msg: 'Huzzah!'})
+        }
+      });
     });
   },
 
@@ -221,10 +234,10 @@ module.exports = {
         if (err) {
           reject({ code: 500, msg: err.message });
         } else {
-          let empty = !isEmpty(row);
+          let empty = !!rows.length
           resolve({
-            success: succ,
-            code: empty ? 200 : 404,
+            success: true,
+            code: 200,
             data: rows,
             msg: empty ? "OK" : "Cannot find any deadlines"
           });

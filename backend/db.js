@@ -234,7 +234,6 @@ db = new sqlite3.Database("test.db", err => {
         }
       );
     });
-    /*
     db.serialize(() => {
       db.run("begin transaction");
       const courseEntry = db.prepare(
@@ -258,16 +257,16 @@ db = new sqlite3.Database("test.db", err => {
         db.serialize(() => {
           // BATCH INSERT THIS!
           courseEntry.run(entry.code, entry.name); // replace with a `foreach` around your data
-          courseInstanceEntry.run(terms[0][0]);
-          courseInstanceEntry.run(terms[1][0]);
-          courseInstanceEntry.run(terms[2][0]);
+          courseInstanceEntry.run(entry.code, terms[0][0]);
+          courseInstanceEntry.run(entry.code, terms[1][0]);
+          courseInstanceEntry.run(entry.code, terms[2][0]);
           console.log("Success, course: ", entry.code);
         });
       });
       db.run("commit");
       courseEntry.finalize();
       courseInstanceEntry.finalize();
-    });*/
+    });
   });
 });
 

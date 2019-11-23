@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { ChatManager, TokenProvider } from '@pusher/chatkit-client';
-import { Session } from '../App';
+import { Session, CurrentUser } from '../App';
 import { api } from '../utils';
 
 const instanceLocator = 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77';
@@ -13,6 +13,7 @@ const tokenProvider = new TokenProvider({
 
 function AuthProtection({ children, ...rest }) {
   const session = React.useContext(Session);
+  const currUser = React.useContext(CurrentUser);
   const [currState, setCurrState] = React.useState('initial');
 
   useEffect(() => {
@@ -30,7 +31,8 @@ function AuthProtection({ children, ...rest }) {
       .then(res => {
         const data = res.data;
 
-        const { success, username } = data;
+        const { success, username, isAdmin } = data;
+        currUser.updateCurrentUser({ username, admin: isAdmin });
 
         const chatManager = new ChatManager({
           instanceLocator: instanceLocator,
