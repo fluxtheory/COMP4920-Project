@@ -138,6 +138,7 @@ module.exports = {
         })
     },
 
+    // remove user from group WITH CHECKS
     leaveGroup: function(user, group_name, course){
 
         // check if user is owner
@@ -163,7 +164,7 @@ module.exports = {
         });
     },
 
-
+    //remove user from group, NO CHECKS
     removeUserfromGroup : function(user, group_name, course){
         return new Promise((resolve, reject) => {
             let sql = `DELETE FROM groupUsers WHERE id IN (
