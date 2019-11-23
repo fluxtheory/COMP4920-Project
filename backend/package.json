@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Xavier Yan",
   "license": "ISC",
+  "private": true,
   "dependencies": {
     "@pusher/chatkit-server": "^2.1.1",
     "bcryptjs": "^2.4.3",

@@ -87,6 +87,7 @@ function UserSearchForm(props) {
           variant="outlined"
           placeholder="Search for user..."
           autoComplete="off"
+          fullWidth
         />
       </form>
       <div className={classes.userListContainer}>

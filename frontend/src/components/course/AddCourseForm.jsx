@@ -141,13 +141,8 @@ function AddCourseForm(props) {
           className={classes.courseForm}
           filterOptions={filterOptions}
           options={allCourses}
-          // autoHightlight
-          // autoSelect
           onChange={handleChange}
           ListboxComponent={ListboxComponent}
-          // getOptionLabel={option =>
-          //   option.code || `Weird option value: ${option}`
-          // }
           renderOption={renderCourseOption}
           renderInput={params => (
             <TextField
@@ -160,7 +155,8 @@ function AddCourseForm(props) {
             />
           )}
           classes={{ option: classes.searchOption }}
-          debug
+          value={newCourse}
+          debug //MRTODO
         />
       ) : null}
       <Fab

@@ -4,8 +4,6 @@ import { Home } from './pages/Home';
 import { Chat } from './pages/Chat';
 import { Login } from './pages/Login';
 import { CreateAccount } from './pages/CreateAccount';
-import { Dashboard } from './pages/Dashboard';
-import { CoursePage } from './pages/CoursePage';
 import { makeStyles, ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { AuthProtection } from './components/AuthProtection';
