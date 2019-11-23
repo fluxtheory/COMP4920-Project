@@ -143,18 +143,49 @@ db = new sqlite3.Database("test.db", err => {
     FOREIGN KEY (userid) REFERENCES users(username) ON DELETE CASCADE,
     FOREIGN KEY (friendid) REFERENCES users(username) ON DELETE CASCADE
   );
+
+  CREATE TABLE IF NOT EXISTS courseAnnouncements (
+    id INTEGER PRIMARY KEY,
+    courseInstance INTEGER NOT NULL REFERENCES courseInstance,
+    announcement TEXT NOT NULL UNIQUE,
+    userid TEXT REFERENCES users,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (courseInstance) REFERENCES courseInstance(id) ON DELETE CASCADE
+  );
   
-  CREATE TRIGGER IF NOT EXISTS update_group_member_count
+  CREATE TRIGGER IF NOT EXISTS increment_group_member_count
     AFTER INSERT ON groupUsers
     BEGIN
       UPDATE groups SET member_count = member_count + 1 WHERE id = new.groupid;
     END;
-    
-    CREATE TRIGGER IF NOT EXISTS give_user_karma_when_post_upvoted
-    AFTER INSERT ON userUpvotedPosts
+
+  CREATE TRIGGER IF NOT EXISTS decrement_group_member_count
+    AFTER DELETE ON groupUsers
     BEGIN
-      UPDATE users SET karma = karma + 1 WHERE username = (SELECT userId FROM forumposts WHERE id = new.postid);
-    END;`;
+      UPDATE groups SET member_count = member_count - 1 WHERE id = old.groupid;
+    END;
+  
+  
+  CREATE TRIGGER IF NOT EXISTS remove_group_when_empty
+    AFTER UPDATE ON groups
+    WHEN (new.member_count = 0)
+    BEGIN
+      DELETE FROM groups WHERE id = new.id;
+    END;
+    
+  CREATE TRIGGER IF NOT EXISTS give_user_karma_when_post_upvoted
+  AFTER INSERT ON userUpvotedPosts
+  BEGIN
+    UPDATE users SET karma = karma + 1 WHERE username = (SELECT userId FROM forumposts WHERE id = new.postid);
+  END;
+  
+  CREATE TRIGGER IF NOT EXISTS remove_groupUsers_from_deleted_groups
+  AFTER DELETE ON groups
+  BEGIN
+    DELETE FROM groupUsers WHERE groupid = old.id;
+  END;`;
+
+  
 
   /*
   CREATE TABLE IF NOT EXISTS groupFormation (
@@ -203,7 +234,6 @@ db = new sqlite3.Database("test.db", err => {
         }
       );
     });
-    /*
     db.serialize(() => {
       db.run("begin transaction");
       const courseEntry = db.prepare(
@@ -236,7 +266,7 @@ db = new sqlite3.Database("test.db", err => {
       db.run("commit");
       courseEntry.finalize();
       courseInstanceEntry.finalize();
-    });*/
+    });
   });
 });
 

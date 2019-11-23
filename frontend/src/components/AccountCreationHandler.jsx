@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, Checkbox, Box } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
@@ -31,6 +31,7 @@ function AccountCreationHandler() {
     zid: '',
     password: '',
     password2: '',
+    admin: false,
   });
 
   const [nameHelpString, setNameHelpString] = React.useState('');
@@ -40,6 +41,10 @@ function AccountCreationHandler() {
 
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
+  };
+
+  const handleAdminCheck = event => {
+    setValues({ ...values, admin: event.target.checked });
   };
 
   const handleSubmit = e => {
@@ -115,6 +120,7 @@ function AccountCreationHandler() {
       zid: values.zid,
       password: values.password,
       password2: values.password2,
+      admin: values.admin,
     });
     xhr.send(data);
   };
@@ -205,9 +211,22 @@ function AccountCreationHandler() {
               required
             />
           </div>
-          <div align="right">
-            <Button type="submit">Submit</Button>
-          </div>
+          <Box display="flex" justifyContent="space-between">
+            <Box>
+              <Checkbox
+                checked={values['admin']}
+                onChange={handleAdminCheck}
+                color="primary"
+                inputProps={{
+                  'aria-label': 'secondary checkbox',
+                }}
+              />
+              <Typography variant="button">Course Moderator?</Typography>
+            </Box>
+            <div align="right">
+              <Button type="submit">Submit</Button>
+            </div>
+          </Box>
         </form>
         <Typography>
           Already have an account? <a href="/login">Sign In</a>.

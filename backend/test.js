@@ -5,6 +5,9 @@ const course = require("./courseDB");
 const group = require("./groupDB");
 const getdb = require("./db").getDb;
 
+const DHT = require('bittorrent-dht');
+const magnet = require('magnet-uri');
+
 let db = getdb();
 /*
 let db = new sqlite3.Database("test.db", err => {
@@ -225,13 +228,34 @@ test().then( (a,b,c) => {
 }).catch((err, a, b) => {
     console.log(err,a,b);
 })*/
+/*
 const crypto = require('crypto');
 var id = crypto.randomBytes(6).toString('hex');
 
 //let y = [];
 //console.log(isEmpty(test));
 console.log(id);
+*/
+
+var uri = 'magnet:?xt=urn:btih:e3811b9539cacff680e418124272177c47477157'
+var parsed = magnet(uri)
+ 
+console.log(parsed.infoHash) // 'e3811b9539cacff680e418124272177c47477157'
+ 
+var dht = new DHT()
+ 
+dht.listen(20000, function () {
+  console.log('now listening')
+})
+ 
+dht.on('peer', function (peer, infoHash, from) {
+  console.log('found potential peer ' + peer.host + ':' + peer.port + ' through ' + from.address + ':' + from.port)
+})
+ 
+// find peers for the given torrent info hash
+dht.lookup(parsed.infoHash)
 
 
-
-
+// ok, now given an IP address, how do I use it to replicate my database master-master?
+// active? or automatic.
+// play around with rqlite to start off with.

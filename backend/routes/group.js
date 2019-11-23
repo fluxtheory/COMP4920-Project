@@ -151,16 +151,17 @@ router.post("/:course/group/remove", (req, res) => {
       if (success) {
         return chatkit.removeUsersFromRoom({
           roomId: makeGroupId(req.body.group_name, req.params.course),
-          userIds: req.body.username,
+          userIds: [ req.body.username ],
         });
       } else {
         return res.status(404).json({ success: success });
       }
     })
-    .then(MRTODO => {
-      return res.status(200).json({ success: success });
-    })
+    //.then(MRTODO => {
+    //  return res.status(200).json({ success: success });
+    //})
     .catch(err => {
+      console.log(err.message);
       return res.status(500).json(err);
     });
 });

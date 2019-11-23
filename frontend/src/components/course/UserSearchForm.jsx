@@ -1,31 +1,31 @@
-import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button } from '@material-ui/core/';
-import { api } from '../../utils';
-import { Autocomplete } from '@material-ui/lab/';
-import { Typography, Box } from '@material-ui/core';
-import ChildCareIcon from '@material-ui/icons/ChildCare';
-import { useRouteMatch, Link } from 'react-router-dom';
-import { Session } from '../../App';
-import Popup from 'reactjs-popup';
-import { UserInfoSheet } from '../UserInfoSheet';
-import { User } from '../User';
+import React, { useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { TextField, Button } from "@material-ui/core/";
+import { api, useCourse } from "../../utils";
+import { Autocomplete } from "@material-ui/lab/";
+import { Typography, Box } from "@material-ui/core";
+import ChildCareIcon from "@material-ui/icons/ChildCare";
+import { useRouteMatch, Link } from "react-router-dom";
+import { Session } from "../../App";
+import Popup from "reactjs-popup";
+import { UserInfoSheet } from "../UserInfoSheet";
+import { User } from "../User";
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch"
   },
   userButton: {
-    justifyContent: 'start',
-  },
+    justifyContent: "start"
+  }
 }));
 
 const getAllUsers = function(course) {
   return new Promise((resolve, reject) => {
     api
-      .get('/' + course + '/users')
+      .get("/" + course + "/users")
       .then(resp => {
         resolve(resp.data);
       })
@@ -39,9 +39,8 @@ const getAllUsers = function(course) {
 function UserSearchForm(props) {
   const classes = useStyles();
 
-  const { params } = useRouteMatch('/kudo/:course');
   const session = React.useContext(Session);
-  const course = params.course;
+  const course = useCourse();
   const [users, setUsers] = React.useState([]);
   const [userSearch, setUserSearch] = React.useState([]);
 
@@ -52,7 +51,7 @@ function UserSearchForm(props) {
     });
   }, [course]);
 
-  const [userInput, setUserInput] = React.useState('');
+  const [userInput, setUserInput] = React.useState("");
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -60,7 +59,7 @@ function UserSearchForm(props) {
 
   const handleChange = event => {
     if (!event.target.value) {
-      setUserInput('');
+      setUserInput("");
       setUserSearch(users);
     }
     let searchFilter = [];
@@ -87,7 +86,7 @@ function UserSearchForm(props) {
       </form>
       <div className={classes.userListContainer}>
         {userSearch.map(u => {
-          return <User key={u.username} username={u.username} />;
+          return <User key={u.username} user={u} />;
         })}
       </div>
     </div>

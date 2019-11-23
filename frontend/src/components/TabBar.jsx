@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useRouteMatch, useParams, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { CurrentUser } from '../App';
+import { useCourse, useCurrentPage } from '../utils';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,19 +28,40 @@ function TabBar() {
   const location = useLocation();
   const { params } = useRouteMatch('/kudo/:course');
   const [value, setValue] = React.useState(0);
+  const currUser = useContext(CurrentUser);
+  const currPage = useCurrentPage();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  // we want tabs be to highlight based on route
+  // how is it highlighted?
+  // it's highlighted based on index set in 'value
+  // instead for each Tab we specify a custom 'value' in jsx
+  // and set the value in Tabs to currently active route
+  //
   const tabLabel = label => <Typography variant="h6">{label}</Typography>;
+
+  const getActiveTabIndex = () => {
+    switch (currPage) {
+      case 'dashboard':
+        return 0;
+      case 'feed':
+        return 1;
+      case 'chat':
+        return 2;
+      default:
+        return false;
+    }
+  };
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" classes={{ root: classes.tabs }}>
+      <AppBar disabled position="static" classes={{ root: classes.tabs }}>
         <Tabs
           variant="fullWidth"
-          value={value}
+          value={getActiveTabIndex()}
           onChange={handleChange}
           classes={{ root: classes.tabs, flexContainer: classes.tabs }}
           //   aria-label="nav tabs example"
@@ -47,18 +69,26 @@ function TabBar() {
           <LinkTab
             classes={{ root: classes.tab, wrapper: classes.tab }}
             label={tabLabel('Dashboard')}
-            to={`/kudo/${params.course}`}
+            pagePath="dashboard"
           />
           <LinkTab
             className={classes.tab}
             label={tabLabel('Feed')}
             to={`/kudo/${params.course}/feed`}
+            pagePath="feed"
           />
           <LinkTab
             className={classes.tab}
             label={tabLabel('Course Chat')}
-            to={`/kudo/${params.course}/chat`}
+            pagePath="chat"
           />
+          {currUser.admin ? (
+            <LinkTab
+              className={classes.tab}
+              label={tabLabel('Manage Course')}
+              pagePath="admin"
+            />
+          ) : null}
         </Tabs>
       </AppBar>
     </div>
@@ -72,13 +102,14 @@ function a11yProps(index) {
   };
 }
 
-function LinkTab(props) {
+function LinkTab({ pagePath, ...props }) {
+  const course = useCourse();
   return (
     <Tab
       component={Link}
-      //   onClick={event => {
-      //     event.preventDefault();
-      //   }}
+      disabled={course === 'dashboard'}
+      to={`/kudo/${course}/${pagePath}`}
+      value={pagePath}
       {...props}
     />
   );

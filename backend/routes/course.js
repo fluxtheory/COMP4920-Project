@@ -16,7 +16,7 @@ const chatkit = new Chatkit.default({
 // @body { username, data : [<zid1>, <zid2>, ... ] } - for verification purposes only
 router.post("/:course/student-list", (req, res) => {
   console.log(req.body);
-  coursedb.addUsersFromList(req.body.data, req.body.username)
+  coursedb.addUsersFromList(req.param.course, req.body.data, req.body.username)
   .then(reply => {
     return res.status(reply.code).json(reply);
   })
@@ -170,6 +170,49 @@ router.get("/:course/assignment", (req, res) => {
 router.post("/:course/assignment", (req, res) => {
   coursedb
     .addCourseDeadline(req.params.course, req.body)
+    .then(reply => {
+      return res.status(reply.code).json(reply);
+    })
+    .catch(err => {
+      return res.status(err.code).json(err);
+    });
+});
+
+
+// @route POST /:course/announcements
+// @desc Posts a course Announcement
+// @body {
+//  content, username
+//}
+// @access Private
+router.post("/:course/announcements", (req, res) => {
+  const { username, content } = req.body;
+  
+  coursedb.addAnnouncement(req.params.course, username, content)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  })
+})
+
+// @route POST /:course/announcements
+// @desc Retrieves all the announcements for that particular course
+// @body 
+// @access Private
+router.get("/:course/announcements", (req, res) => {
+  coursedb.getAnnouncements(req.params.course)
+  .then(reply => {
+    return res.status(reply.code).json(reply);
+  })
+  .catch(err => {
+    return res.status(err.code).json(err);
+  })
+})
+router.post("/:course/assignment/delete", (req, res) => {
+  coursedb
+    .deleteCourseDeadlines(req.params.course, req.body)
     .then(reply => {
       return res.status(reply.code).json(reply);
     })
