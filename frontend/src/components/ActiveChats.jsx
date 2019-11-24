@@ -4,7 +4,6 @@ import { TextField, Button } from '@material-ui/core/';
 import { api } from '../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
-import ChildCareIcon from '@material-ui/icons/ChildCare';
 import { useRouteMatch, Link } from 'react-router-dom';
 import { Session } from '../App';
 import ChatBubbleTwoToneIcon from '@material-ui/icons/ChatBubbleTwoTone';

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Divider } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import TimeLine from 'react-gantt-timeline';
 import { api, useUsername } from '../utils';
 import randomColor from 'randomcolor';
-import { CourseAnnouncements } from './CoursePage';
+import { AnnouncementsDisplay } from './AnnouncementsDisplay';
 
 let idCounter = 0;
 
@@ -109,20 +109,5 @@ export const KudoDashboard = () => {
         announcements={unswAnnouncements()}
       />
     </div>
-  );
-};
-
-// MRTODO: move to a seperate file
-export const AnnouncementsDisplay = ({ title, announcements }) => {
-  return (
-    <Box width="65%" height="100px">
-      <Box marginBottom="20px">
-        <Typography gutterBottom variant="h3">
-          {title}
-        </Typography>
-        <Divider />
-      </Box>
-      <CourseAnnouncements announcements={announcements} />
-    </Box>
   );
 };
