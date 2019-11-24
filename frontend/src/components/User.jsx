@@ -32,6 +32,10 @@ const getUserInfo = function(username) {
   });
 };
 
+const UserBadge = () => {
+  
+}
+
 function User(props) {
   const classes = useStyles();
   const [user, setUser] = React.useState([]);
