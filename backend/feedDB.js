@@ -64,15 +64,62 @@ module.exports = {
   // upboat
   upvotePost: function(postid, user) {
     return new Promise((resolve, reject) => {
-      db.run(
-        `INSERT OR IGNORE INTO userUpvotedPosts (userid, postid) VALUES (?, ?)`,
-        [user, postid],
-        function(err) {
+      db.get(
+        `SELECT * FROM userUpvotedPosts WHERE postid = ? and userid = ?`,
+        [postid, user],
+        (err, row) => {
           if (err) {
             console.log(err.message);
             reject({ code: 500, msg: err.message });
           }
-          resolve({ code: 200, msg: "OK" });
+
+          if (isEmpty(row)) {
+            let sql = `UPDATE forumPosts SET kudos = kudos + 1 WHERE id = ?`;
+            db.run(sql, postid, function(err) {
+              if (err) {
+                console.log(err.message);
+                reject({ code: 500, msg: err.message });
+              }
+              if (this.changes) {
+                db.run(
+                  `INSERT INTO userUpvotedPosts (userid, postid) VALUES (?, ?)`,
+                  [user, postid],
+                  function(err) {
+                    if (err) {
+                      console.log(err.message);
+                      reject({ code: 500, msg: err.message });
+                    }
+                    resolve({ code: 200, msg: "OK" });
+                  }
+                );
+              } else {
+                resolve({ code: 404, msg: "Post not found" });
+              }
+            });
+          } else {
+            let sql = `UPDATE forumPosts SET kudos = kudos - 1 WHERE id = ?`;
+            db.run(sql, postid, function(err) {
+              if (err) {
+                console.log(err.message);
+                reject({ code: 500, msg: err.message });
+              }
+              if (this.changes) {
+                db.run(
+                  `DELETE FROM userUpvotedPosts WHERE userid = ? AND postid = ?`,
+                  [user, postid],
+                  function(err) {
+                    if (err) {
+                      console.log(err.message);
+                      reject({ code: 500, msg: err.message });
+                    }
+                    resolve({ code: 200, msg: "OK" });
+                  }
+                );
+              } else {
+                resolve({ code: 404, msg: "Post not found" });
+              }
+            });
+          }
         }
       );
     });
