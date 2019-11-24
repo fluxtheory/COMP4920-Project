@@ -5,6 +5,7 @@ import { Typography, Box, Divider } from '@material-ui/core';
 import { Session } from '../App';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
 import { useUsername } from '../utils';
+import { UserNewBadge } from './User';
 
 const useStyles = makeStyles(theme => ({
   messageContainer: {
@@ -82,6 +83,7 @@ const MessageHull = ({ message }) => {
 function Message({ msg }) {
   const username = useUsername();
   const textContent = msg.parts[0].payload.content;
+  const msgUsername = msg.senderId;
   const isUserMention = textContent.includes(`@${username}`);
   const classes = useStyles({ isUserMention });
 
@@ -95,7 +97,9 @@ function Message({ msg }) {
     <Box style={{ ...userMentionStyles }}>
       {/* <Box className={classes.messageWithMention}> */}
       <div className={classes.messageContainer}>
-        <UserBadge />
+        <Box mr={3}>
+          <UserNewBadge username={msgUsername} />
+        </Box>
         <MessageHull message={msg} />
         {/* <Paper className={classes.root}>
         <div

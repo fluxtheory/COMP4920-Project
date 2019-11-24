@@ -32,6 +32,32 @@ const getUserInfo = function(username) {
   });
 };
 
+export const UserNewBadge = ({ username }) => {
+  const [badge, setBadge] = React.useState('');
+  React.useEffect(() => {
+    getUserInfo(username).then(resp => {
+      let rank = resp.rank;
+      if (rank == 1) setBadge(adminRank);
+      else if (rank == 2) setBadge(modRank);
+      else if (rank == 3) {
+        if (resp.karma >= 50) setBadge(honouredRank);
+        else if (resp.karma >= 25) setBadge(respectedRank);
+        else if (resp.karma >= 10) setBadge(helpfulRank);
+        else setBadge('');
+      } else setBadge('');
+    });
+  }, [username]);
+  return (
+    <div>
+      {badge === '' ? (
+        <ChildCareIcon fontSize="large" />
+      ) : (
+        <img src={badge} height="30em" width="30em" />
+      )}
+    </div>
+  );
+};
+
 function User(props) {
   const classes = useStyles();
   const [user, setUser] = React.useState([]);
