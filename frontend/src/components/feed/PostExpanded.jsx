@@ -12,6 +12,7 @@ import { MakeComment } from './MakeComment';
 import CommentIcon from '@material-ui/icons/Comment';
 import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import { theme } from '../../App';
+import { User } from '../User';
 
 const useStyles = makeStyles(theme => ({
   post: {
@@ -146,6 +147,7 @@ function PostExpanded() {
         >
           {makingComment ? <CommentOutlinedIcon /> : <CommentIcon />}
         </Fab>
+        {thisPost ? <User username={thisPost.userId} /> : 'loading...'}
       </Paper>
       <div className={classes.makeCommentBox}>
         {thisPost && makingComment ? (
