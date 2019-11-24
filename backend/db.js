@@ -179,6 +179,12 @@ db = new sqlite3.Database("test.db", err => {
     UPDATE users SET karma = karma + 1 WHERE username = (SELECT userId FROM forumposts WHERE id = new.postid);
   END;
   
+  CREATE TRIGGER IF NOT EXISTS remove_user_karma_when_post_downvoted
+  AFTER DELETE ON userUpvotedPosts
+  BEGIN
+    UPDATE users SET karma = karma - 1 WHERE username = (SELECT userId FROM forumposts WHERE id = old.postid);
+  END;
+
   CREATE TRIGGER IF NOT EXISTS remove_groupUsers_from_deleted_groups
   AFTER DELETE ON groups
   BEGIN
