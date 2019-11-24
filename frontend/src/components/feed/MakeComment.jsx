@@ -9,11 +9,13 @@ import { Session } from '../../App';
 import { Redirect } from 'react-router-dom';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { theme } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   MakeCommentContainer: {
     maxWidth: '1000px',
     margin: '0 auto',
+    border: '3px solid ' + theme.palette.secondary.main,
   },
   root: {
     padding: theme.spacing(3, 2),
@@ -90,10 +92,10 @@ function MakeComment(props) {
         <form onSubmit={e => handleSubmit(e)}>
           <TextField
             id="outlined-multiline-static"
-            label="Content"
+            label="Your Comment"
             style={{ width: '100%' }}
             multiline
-            placeholder="I was just wondering about..."
+            placeholder="Adding on to that..."
             rows="4"
             rowsMax="18"
             value={values.content}
@@ -103,7 +105,9 @@ function MakeComment(props) {
             variant="outlined"
           />
           <div align="right">
-            <Button type="submit">Comment</Button>
+            <Button variant="contained" color="secondary" type="submit">
+              Comment
+            </Button>
           </div>
         </form>
       </Paper>

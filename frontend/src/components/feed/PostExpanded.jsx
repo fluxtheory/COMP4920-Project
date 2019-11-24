@@ -11,11 +11,12 @@ import { TextField, Button, Fab, Box } from '@material-ui/core/';
 import { MakeComment } from './MakeComment';
 import CommentIcon from '@material-ui/icons/Comment';
 import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
+import { theme } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   post: {
-    margin: '0.7rem 0',
-    border: '3px solid red',
+    margin: '0.7rem 0 0 0',
+    border: '3px solid ' + theme.palette.primary.main,
     maxheight: '100%',
     maxWidth: '100%',
     overflow: 'auto',
@@ -127,15 +128,6 @@ function PostExpanded() {
             {thisPost ? kudos : 'loading...'}
           </Typography>
         </Paper>
-        <Fab
-          onClick={() => setMakingComment(!makingComment)}
-          style={({ float: 'left' }, { margin: '2%' })}
-          // variant="contained"
-          size="medium"
-          color="secondary"
-        >
-          {makingComment ? <CommentOutlinedIcon /> : <CommentIcon />}
-        </Fab>
         <Paper className={classes.postContentSection}>
           <Typography className={classes.postText} variant="h5" component="h3">
             {thisPost
@@ -145,6 +137,15 @@ function PostExpanded() {
               : 'loading...'}
           </Typography>
         </Paper>
+        <Fab
+          onClick={() => setMakingComment(!makingComment)}
+          style={({ float: 'left' }, { margin: '2%' })}
+          // variant="contained"
+          size="medium"
+          color="secondary"
+        >
+          {makingComment ? <CommentOutlinedIcon /> : <CommentIcon />}
+        </Fab>
       </Paper>
       <div className={classes.makeCommentBox}>
         {thisPost && makingComment ? (

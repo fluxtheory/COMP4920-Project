@@ -11,11 +11,12 @@ import { MakeComment } from './MakeComment';
 import CommentIcon from '@material-ui/icons/Comment';
 import CommentOutlinedIcon from '@material-ui/icons/CommentOutlined';
 import { User } from '../User';
+import { theme } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   post: {
     margin: '0.7rem 0 0 0',
-    border: '3px solid red',
+    border: '3px solid ' + theme.palette.secondary.main,
     maxheight: '100%',
     maxWidth: '100%',
     overflow: 'auto',
@@ -50,7 +51,6 @@ const useStyles = makeStyles(theme => ({
   postContent: {},
   postText: { wordBreak: 'break-all', margin: '2% 2% 2% 2%' },
   root: {
-    margin: '3%',
     height: '100%',
     width: '97%',
   },
@@ -67,7 +67,7 @@ function Comment(props) {
   const [kudos, setKudos] = React.useState(thisPost.kudos);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={depth <= 3 ? { margin: '3%' } : {}}>
       <Paper className={classes.post}>
         <Paper className={classes.postTitleSection}>
           <Typography
