@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { UpvoteButton } from './UpvoteButton';
 import { Link } from 'react-router-dom';
 import { theme } from '../../App';
+import { User } from '../User';
 
 const useStyles = makeStyles(theme => ({
   PostContainer: {
@@ -79,6 +80,7 @@ function PostCompact(props) {
             {kudos}
           </Typography>
         </Paper>
+        {post ? <User username={post.userId} /> : <div></div>}
       </Paper>
     </div>
   );

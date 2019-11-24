@@ -133,7 +133,9 @@ function MakePost() {
             />
           ) : null}
           <div align="right">
-            <Button type="submit">Post</Button>
+            <Button variant="contained" color="secondary" type="submit">
+              Post
+            </Button>
           </div>
         </form>
       </Paper>

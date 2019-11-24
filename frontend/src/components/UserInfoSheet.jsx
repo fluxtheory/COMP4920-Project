@@ -32,7 +32,6 @@ const getUserInfo = function(username) {
     api
       .post('/user', { usernames: [username] })
       .then(resp => {
-        console.log(resp);
         if (resp.statusText === 'OK') resolve(resp.data[0]);
         else resolve({});
       })
@@ -51,7 +50,6 @@ function UserInfoSheet(props) {
 
   React.useEffect(() => {
     const prom = getUserInfo(username).then(resp => {
-      console.log(resp);
       setKudos(resp.karma);
       let r = '';
       if (resp.rank === 1) r = 'Moderator';

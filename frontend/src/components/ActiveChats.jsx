@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button } from '@material-ui/core/';
+import { TextField, Button, Divider } from '@material-ui/core/';
 import { api } from '../utils';
 import { Autocomplete } from '@material-ui/lab/';
 import { Typography, Box } from '@material-ui/core';
 import { useRouteMatch, Link } from 'react-router-dom';
 import { Session } from '../App';
 import ChatBubbleTwoToneIcon from '@material-ui/icons/ChatBubbleTwoTone';
+import QuestionAnswerTwoToneIcon from '@material-ui/icons/QuestionAnswerTwoTone';
 
 const useStyles = makeStyles(theme => ({
   courseUsersChatContainer: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getLastFiveChats = function(session) {
+const getAllChats = function(session) {
   return new Promise((resolve, reject) => {
     // note: rooms are provided in descending order of the last message sent
     // get room
@@ -39,9 +40,8 @@ const getLastFiveChats = function(session) {
       for (let i = 0; i < session.user.rooms.length; i++) {
         let nextRoom = session.user.rooms[i];
         let id_split = nextRoom.id.split('_');
-        console.log(id_split);
         let roomType = 'none';
-        if (id_split[0] === 'DM') roomType = 'dm';
+        if (id_split[0] == 'DM') roomType = 'dm';
         else if (nextRoom.id.includes('__group__')) roomType = 'group';
         else continue;
         // should not execute past here if not a group or direct room
@@ -50,11 +50,11 @@ const getLastFiveChats = function(session) {
         if (roomType === 'dm') {
           let otherUser = id_split[2];
           // you can DM yourself as a clipboard of sorts. We dont want that in active chats
-          if (id_split[1] === id_split[2]) return;
+          if (id_split[1] === id_split[2]) continue;
           if (id_split[1] === session.user.id) otherUser = id_split[2];
           else otherUser = id_split[1];
           ret['name'] = otherUser;
-          ret['rPath'] = '/kudo/' + otherUser + '/dm';
+          ret['rPath'] = '/kudo/' + 'none' + '/chat/' + otherUser;
         } else if (roomType === 'group') {
           const spl = nextRoom.id.split('|');
           const course = spl[1];
@@ -89,7 +89,7 @@ function ActiveChats(props) {
   const [inactiveChats, setInactiveChats] = React.useState([]);
 
   React.useEffect(() => {
-    const prom = getLastFiveChats(session).then(resp => {
+    const prom = getAllChats(session).then(resp => {
       setActiveChats(resp['active']);
       setInactiveChats(resp['inactive']);
     });
@@ -108,7 +108,8 @@ function ActiveChats(props) {
   return (
     <div className={classes.courseUsersChatContainer}>
       <div className={classes.userListContainer}>
-        <p> Past week:</p>
+        <Typography> Past week:</Typography>
+        <Divider />
         {activeChats.map(u => {
           return (
             <Button
@@ -117,12 +118,17 @@ function ActiveChats(props) {
               component={Link}
               to={u['rPath']}
             >
-              <ChatBubbleTwoToneIcon />
+              {u['type'] === 'dm' ? (
+                <ChatBubbleTwoToneIcon />
+              ) : (
+                <QuestionAnswerTwoToneIcon />
+              )}
               <Box mx={1}>{u['name']}</Box>
             </Button>
           );
         })}
-        <p>Later than a week:</p>
+        <Typography>Later than a week:</Typography>
+        <Divider />
         {inactiveChats.map(u => {
           return (
             <Button
@@ -131,7 +137,11 @@ function ActiveChats(props) {
               component={Link}
               to={u['rPath']}
             >
-              <ChatBubbleTwoToneIcon />
+              {u['type'] === 'dm' ? (
+                <ChatBubbleTwoToneIcon />
+              ) : (
+                <QuestionAnswerTwoToneIcon />
+              )}
               <Box mx={1}>{u['name']}</Box>
             </Button>
           );

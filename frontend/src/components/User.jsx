@@ -41,7 +41,6 @@ function User(props) {
 
   React.useEffect(() => {
     getUserInfo(username).then(resp => {
-      console.log(resp);
       setUser(resp);
       let rank = resp.rank;
       if (rank == 1) setBadge(adminRank);
