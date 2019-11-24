@@ -3,10 +3,14 @@ import { Redirect } from 'react-router-dom';
 import { CurrentUser } from '../App';
 import { makePath } from './Kudo';
 import TimeLine from 'react-gantt-timeline';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, TextField, Button } from '@material-ui/core';
 import { api, useCourse, useAnnouncements, useUsername } from '../utils';
-import { CourseAnnouncements } from "../components/CourseAnnouncements";
+import { CourseAnnouncements } from '../components/CourseAnnouncements';
+import { DeadlinesDisplay } from '../components/DeadlinesDisplay';
+import { AnnouncementsDisplay } from './AnnouncementsDisplay';
+import { Scrollbars } from 'react-custom-scrollbars';
 
+// What do we need to do use deadlines display
 const DeadlineManagement = () => {
   const currUser = useContext(CurrentUser);
   const course = useCourse();
@@ -100,21 +104,43 @@ const DeadlineManagement = () => {
 
   return (
     <div>
-      <Box m={2}>
-        <TimeLine
+      {/* <TimeLine
           data={chartData}
           mode="year"
           onUpdateTask={handleDeadlineChange}
+        /> */}
+      <Box padding={3}>
+        <DeadlinesDisplay
+          title="Add deadlines"
+          deadlines={chartData}
+          onUpdateDeadline={handleDeadlineChange}
         />
+        <Box
+          width="60%"
+          // padding={3}
+          display="flex"
+          flexDirection="column"
+          fontSize={30}
+          marginY={3}
+        >
+          <Box
+            component={TextField}
+            fontSize={20}
+            value={deadlineName}
+            placeholder="Deadline Name"
+            onKeyPress={handleEnter}
+            onChange={handleDeadlineNameChange}
+          />
+        </Box>
+        <Box
+          size="large"
+          // marginX={2}
+          component={Button}
+          onClick={handleDeadlineSubmit}
+        >
+          Commit All Deadlines
+        </Box>
       </Box>
-      <Typography>Add Assignment</Typography>
-      <input
-        value={deadlineName}
-        placeholder="Assignment Name"
-        onKeyPress={handleEnter}
-        onChange={handleDeadlineNameChange}
-      />
-      <button onClick={handleDeadlineSubmit}>Commit Changes</button>
     </div>
   );
 };
@@ -145,24 +171,63 @@ const AnnouncementManagement = () => {
 
   return (
     <div>
-      <h1>Announcement Management</h1>
+      <Box
+        width="60%"
+        padding={3}
+        display="flex"
+        flexDirection="column"
+        fontSize={30}
+      >
+        {/* <Scrollbars autoHide width="100%" height="100%"> */}
+        <AnnouncementsDisplay
+          title="Current Announcements"
+          announcements={announcements}
+        />
+        {/* </Scrollbars> */}
+        <Box width="100%" marginY={3}>
+          <Box
+            component={TextField}
+            fontSize={20}
+            value={newAnnouncement}
+            placeholder="Enter new announcement"
+            onKeyPress={handleEnter}
+            onChange={event => setNewAnnouncement(event.target.value)}
+            fullWidth
+          />
+        </Box>
+      </Box>
+      {/* <h1>Announcement Management</h1>
       <input
         value={newAnnouncement}
         placeholder="Announcement Message"
         onKeyPress={handleEnter}
         onChange={event => setNewAnnouncement(event.target.value)}
-      />
-      <h2>Current announcements:</h2>
-      <CourseAnnouncements announcements={announcements} />
+      /> */}
     </div>
   );
 };
 
 export const CourseAdminPage = () => {
   return (
-    <div>
-      <DeadlineManagement />
-      <AnnouncementManagement />
-    </div>
+    <Box
+      padding={3}
+      display="flex"
+      justifyContent="center"
+      flexDirection="column"
+      height="100%"
+    >
+      <Box display="flex" flexDirection="column" flexGrow="1" flexBasis="0">
+        {/* <UserDeadlines /> */}
+        <DeadlineManagement />
+      </Box>
+      <Box display="flex" flexDirection="column" flexGrow="1" flexBasis="0">
+        {/* <UserCourseAnnouncements /> */}
+        <AnnouncementManagement />
+      </Box>
+    </Box>
+    // <div>
+    //   <DeadlineManagement />
+    //   <AnnouncementManagement />
+    // </div>
   );
 };

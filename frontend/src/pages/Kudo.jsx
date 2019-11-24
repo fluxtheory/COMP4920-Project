@@ -132,11 +132,15 @@ const PlebbyChangingContent = () => {
           </Route>
 
           <Route exact path={makePath('/:course/dashboard')}>
-            <CoursePage />
+            <Scrollbars autoHide>
+              <CoursePage />
+            </Scrollbars>
           </Route>
 
           <Route exact path={makePath('/:course/admin')}>
-            <CourseAdminPage />
+            <Scrollbars autoHide>
+              <CourseAdminPage />
+            </Scrollbars>
           </Route>
 
           <Route exact path={makePath('/:course/chat')}>

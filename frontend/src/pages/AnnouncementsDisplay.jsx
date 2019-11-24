@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Divider } from '@material-ui/core';
 import { CourseAnnouncements } from '../components/CourseAnnouncements';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export const AnnouncementsDisplay = ({ title, announcements }) => {
   const haveAnnouncements = !!announcements.length;

@@ -93,21 +93,23 @@ export const KudoDashboard = () => {
   }, []);
 
   return (
-    <div>
-      <Box m={2}>
+    <Box display="flex" flexDirection="column" height="100%">
+      <Box m={2} flex={1}>
         {Object.entries(deadlines).map(([course, courseDeadlines]) => {
           return (
-            <Box key={course}>
+            <Box key={course} marginY={3}>
               <Typography variant="h3">{course}</Typography>
               <TimeLine data={courseDeadlines} mode="month" rowHeight="70" />
             </Box>
           );
         })}
       </Box>
-      <AnnouncementsDisplay
-        title="UNSW Announcements"
-        announcements={unswAnnouncements()}
-      />
-    </div>
+      <Box m={2} marginY={4} flex={1}>
+        <AnnouncementsDisplay
+          title="UNSW Announcements"
+          announcements={unswAnnouncements()}
+        />
+      </Box>
+    </Box>
   );
 };

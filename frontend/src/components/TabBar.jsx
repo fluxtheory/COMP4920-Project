@@ -12,7 +12,6 @@ import { useCourse, useCurrentPage } from '../utils';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
     height: '100%',
   },
   tabs: {
@@ -51,6 +50,8 @@ function TabBar() {
         return 1;
       case 'chat':
         return 2;
+      case 'admin':
+        return 3;
       default:
         return false;
     }

@@ -1,68 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Divider } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import TimeLine from 'react-gantt-timeline';
-
-const config = {
-  header: {
-    top: {
-      style: {
-        fontSize: 18,
-        height: 70,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
-    },
-    middle: {
-      style: {
-        fontSize: 9,
-        height: 70,
-      },
-    },
-    bottom: {
-      style: {
-        fontSize: 9,
-        height: 70,
-      },
-      selectedStyle: {
-        background: 'linear-gradient( #d011dd ,#d011dd)',
-        fontWeight: 'bold',
-        color: 'white',
-      },
-    },
-  },
-  taskList: {
-    title: {
-      label: 'Event',
-      style: {
-        fontSize: '20px',
-      },
-    },
-    task: {
-      style: {
-        fontSize: '25px',
-        padding: '15px',
-      },
-    },
-    verticalSeparator: {
-      style: {},
-      grip: {
-        style: {},
-      },
-    },
-  },
-  dataViewPort: {
-    rows: {
-      style: {},
-    },
-    task: {
-      showLabel: true,
-      style: {},
-    },
-  },
-};
+import { CurrentUser } from '../App';
 
 export const DeadlinesDisplay = ({
   title,
@@ -89,17 +29,68 @@ const DeadlineContent = ({
   deadlines: chartData,
   onUpdateDeadline: handleDeadlineChange,
 }) => {
-  if (!chartData || !chartData.length) {
-    return <Typography variant="h5">No deadlines! Hoorah!</Typography>;
+  const user = useContext(CurrentUser);
+  if (!user.admin && (!chartData || !chartData.length)) {
+    return (
+      <Box component={Typography} variant="h5">
+        No deadlines! Hoorah!
+      </Box>
+    );
   }
+
+  const config = {
+    header: {
+      top: {
+        style: {
+          fontSize: 18,
+          height: 70,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+      },
+      middle: {
+        style: {
+          fontSize: 9,
+          height: 70,
+        },
+      },
+      bottom: {
+        style: {
+          fontSize: 9,
+          height: 70,
+        },
+        selectedStyle: {
+          fontWeight: 'bold',
+          color: 'white',
+        },
+      },
+    },
+    taskList: {
+      title: {
+        label: 'Event',
+        style: {
+          fontSize: '20px',
+        },
+      },
+      task: {
+        style: {
+          fontSize: '25px',
+          padding: '15px',
+        },
+        showLabel: true,
+      },
+    },
+  };
   return (
-    <Box m={2}>
+    <Box>
       <TimeLine
         mode="year"
         data={chartData}
         config={config}
         itemheight={45}
-        onUpdateDeadline={handleDeadlineChange}
+        onUpdateTask={handleDeadlineChange}
       />
     </Box>
   );

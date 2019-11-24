@@ -6,7 +6,7 @@ import { TextField, Button } from '@material-ui/core/';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { useCourse, api, useAnnouncements } from '../utils';
 import { useUsername } from './CreateGroup';
-import { AnnouncementsDisplay } from "./AnnouncementsDisplay";
+import { AnnouncementsDisplay } from './AnnouncementsDisplay';
 import { DeadlinesDisplay } from '../components/DeadlinesDisplay';
 
 const makePath = (path, course) => {
