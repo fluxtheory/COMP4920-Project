@@ -190,59 +190,6 @@ function App() {
                   <CoursesPane />
                 </Route>
               </Switch>
-              <div>
-                <nav>
-                  {/*}
-                  <ul>
-                    <li>
-                      <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/dashboard">Dashboard</Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/chat">Chat</Link>
-                    </li>
-                    <li>
-                      <Link to="/login">Login</Link>
-                    </li>
-                    {/* TODO: Remove everything below here
-                    <li>
-                      <Link to="/kudo/comp">dummy course dash</Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/comp/chat">dummy course chat</Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/comp/feed">dummy course feed</Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/comp/group">dummy course group chat</Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/comp/group/settings">
-                        dummy course group chat settings
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/kudo/comp/dm">dummy course private chat</Link>
-                    </li>
-                  </ul>
-                    </Router>*/}
-                  {sessionState.user ? (
-                    <Link to="/login">
-                      <button
-                        onClick={e => {
-                          localStorage.removeItem('userToken');
-                          updateUser(null);
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </Link>
-                  ) : null}
-                </nav>
-              </div>
             </Router>
           </NewGroupTrigger.Provider>
         </CurrentUser.Provider>
