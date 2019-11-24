@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Amazing } from '../components/Amazing';
+import { Redirect } from 'react-router-dom';
 import { makeStyles, Box, Typography } from '@material-ui/core';
 
 const FullWindowSlide = ({ children, color }) => {
@@ -11,15 +12,43 @@ const FullWindowSlide = ({ children, color }) => {
 };
 
 const useStyles = makeStyles({
-  imageContainer: {
-    background: 'rgb(88,181,184)',
-    background:
-      'linear-gradient(90deg, rgba(88,181,184,1) 0%, rgba(222,222,222,1) 50%, rgba(88,181,184,1) 100%)',
-  },
+  imageContainer: props =>
+    props.hover
+      ? {
+          background:
+            'linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)',
+        }
+      : {
+          background: 'rgb(88,181,184)',
+          background:
+            'linear-gradient(90deg, rgba(88,181,184,1) 0%, rgba(222,222,222,1) 50%, rgba(88,181,184,1) 100%)',
+        },
+  // {
+  //   background: 'rgb(88,181,184)',
+  //   background:
+  //     'linear-gradient(90deg, rgba(88,181,184,1) 0%, rgba(222,222,222,1) 50%, rgba(88,181,184,1) 100%)',
+  //   zIndex: '1' /* matters! */,
+  //   '&::before': {
+  //     content: '',
+  //     background:
+  //       'linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%)',
+  //     opacity: '0',
+  //     transition: 'opacity 0.4s',
+  //     zIndex: '-1',
+  //   },
+  //   '&:hover::before': {
+  //     opacity: '1',
+  //   },
+  // },
 });
 
 const Home = () => {
-  const classes = useStyles();
+  const [loginRedirect, setLoginRedirect] = useState(false);
+  const [hover, setHover] = useState(false);
+  const classes = useStyles({ hover });
+  if (loginRedirect) {
+    return <Redirect to="/login" />;
+  }
   return (
     // <Box height="100%">
     //   <div>
@@ -93,16 +122,27 @@ const Home = () => {
     //     </FullWindowSlide>
     //   </div>
     // </Box>
-    <Box
-      className={classes.imageContainer}
-      display="flex"
-      justifyContent="center"
-    >
+    <Box>
       <Box
-        component="img"
-        src="https://i.imgur.com/DTrpESn.png"
-        width="1000px"
-      />
+        className={classes.imageContainer}
+        display="flex"
+        justifyContent="center"
+      >
+        <Box
+          component="img"
+          src="https://i.imgur.com/DTrpESn.png"
+          width="1000px"
+        />
+        <Box
+          position="absolute"
+          height="200px"
+          width="100%"
+          top="2300px"
+          onClick={() => setLoginRedirect(true)}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        />
+      </Box>
     </Box>
   );
 };
