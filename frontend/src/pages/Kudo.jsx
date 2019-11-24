@@ -63,6 +63,7 @@ export const useStyles = makeStyles(theme => ({
     gridArea: 'middle',
     maxWidth: 'calc((8/11) * 100vw)',
     background: theme.palette.background.level1,
+    height: '100%',
   },
   pane: {
     background: theme.palette.secondary,

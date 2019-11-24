@@ -53,7 +53,7 @@ const useAnnouncements = () => {
       .catch(err => {
         console.log('Error fetching course announcements');
       });
-  }, [shouldUpdate]);
+  }, [shouldUpdate, course]);
 
   const triggerUpdate = () => setShouldUpdate({});
 

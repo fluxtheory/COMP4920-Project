@@ -5,7 +5,6 @@ import { makePath } from './Kudo';
 import TimeLine from 'react-gantt-timeline';
 import { Box, Typography } from '@material-ui/core';
 import { api, useCourse, useAnnouncements, useUsername } from '../utils';
-import { Textfit } from 'react-textfit';
 import { CourseAnnouncements } from './CoursePage';
 
 const DeadlineManagement = () => {

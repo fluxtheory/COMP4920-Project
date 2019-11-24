@@ -229,18 +229,6 @@ function App() {
                     </li>
                   </ul>
                     </Router>*/}
-                  {sessionState.user ? (
-                    <Link to="/login">
-                      <button
-                        onClick={e => {
-                          localStorage.removeItem('userToken');
-                          updateUser(null);
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </Link>
-                  ) : null}
                 </nav>
               </div>
             </Router>

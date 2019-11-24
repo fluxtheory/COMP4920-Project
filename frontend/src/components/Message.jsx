@@ -5,7 +5,6 @@ import { Typography, Box, Divider } from '@material-ui/core';
 import { Session } from '../App';
 import ChildCareIcon from '@material-ui/icons/ChildCare';
 import { useUsername } from '../utils';
-import classNames from 'classnames';
 
 const useStyles = makeStyles(theme => ({
   messageContainer: {

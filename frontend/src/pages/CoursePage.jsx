@@ -10,6 +10,7 @@ import TimeLine from 'react-gantt-timeline';
 import Textfit from 'react-textfit/lib/Textfit';
 import { useUsername } from './CreateGroup';
 import { theme } from '../App';
+import { AnnouncementsDisplay } from './KudoDashboard';
 
 const makePath = (path, course) => {
   return `/kudo/${course}${path}`;
@@ -17,16 +18,13 @@ const makePath = (path, course) => {
 
 const CoursePage = () => {
   return (
-    <div>
+    <Box padding={3}>
       <Typography style={{ color: theme.palette.text.title }} variant="h2">
         Deadlines
       </Typography>
       <UserDeadlines />
-      <Typography style={{ color: theme.palette.text.title }} variant="h2">
-        Announcements
-      </Typography>
       <UserCourseAnnouncements />
-    </div>
+    </Box>
   );
 };
 
@@ -66,7 +64,10 @@ const UserDeadlines = () => {
   );
 };
 
+// Border around announcments
+// MRTODO: seperate file
 export const CourseAnnouncements = ({ announcements }) => {
+  // MRTODO: use the timstamps here.
   announcements.sort((d1, d2) => {
     if (d1 < d2) return -1;
     return 1;
@@ -75,24 +76,23 @@ export const CourseAnnouncements = ({ announcements }) => {
   return (
     <div style={{ width: '100%' }}>
       {announcements.map((a, idx) => (
-        <Box key={idx}>
-          <Textfit mode="multi" max={100} min={32}>
-            <Box
-              style={{ color: theme.palette.text.subtitle }}
-              height="100px"
-              width={'100%'}
-            >
+        <Box
+          key={idx}
+          display="flex"
+          flexDirection="column"
+          marginBottom="20px"
+        >
+          <Textfit mode="multi" max={30} min={15}>
+            <Box style={{ color: theme.palette.text.subtitle }} width={'100%'}>
               {a.announcement}
             </Box>
           </Textfit>
-          <Box>
-            <Typography
-              style={{ color: theme.palette.text.footer }}
-              variant="caption"
-            >
-              {a.timestamp}
-            </Typography>
-          </Box>
+          <Typography
+            style={{ color: theme.palette.text.footer }}
+            variant="caption"
+          >
+            {a.timestamp}
+          </Typography>
         </Box>
       ))}
     </div>
@@ -104,7 +104,10 @@ const UserCourseAnnouncements = () => {
 
   return (
     <div>
-      <CourseAnnouncements announcements={announcements} />
+      <AnnouncementsDisplay
+        title="Course Announcements"
+        announcements={announcements}
+      />
     </div>
   );
 };

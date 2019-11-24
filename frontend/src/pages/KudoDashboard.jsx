@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography, Divider } from '@material-ui/core';
 import TimeLine from 'react-gantt-timeline';
 import { api, useUsername } from '../utils';
 import randomColor from 'randomcolor';
@@ -41,21 +41,22 @@ const getUNSWEvents = () => {
   return unswEvents;
 };
 
+const unswAnnouncements = () => [
+  {
+    announcement:
+      'Enjoy your summer break everyone! See you back in 5 days :) !',
+    timestamp: new Date().toDateString(),
+  },
+  {
+    announcement:
+      'As of next year, UNSW is adopting quadmesters with no change in workload',
+    timestamp: new Date('11 Nov 2019').toDateString(),
+  },
+];
+
 export const KudoDashboard = () => {
   const username = useUsername();
   const [deadlines, setDeadlines] = useState({ UNSW: getUNSWEvents() });
-  const unswAnnouncements = [
-    {
-      announcement:
-        'Enjoy your summer break everyone! See you back in 5 days :) !',
-      timestamp: new Date().toDateString(),
-    },
-    {
-      announcement:
-        'As of next year, UNSW is adopting quadmesters with no change in workload',
-      timestamp: new Date('11 Nov 2019').toDateString(),
-    },
-  ];
 
   useEffect(() => {
     api
@@ -103,10 +104,25 @@ export const KudoDashboard = () => {
           );
         })}
       </Box>
-      <Box>
-        <Typography variant="h3">UNSW Announcements</Typography>
-        <CourseAnnouncements announcements={unswAnnouncements} />
-      </Box>
+      <AnnouncementsDisplay
+        title="UNSW Announcements"
+        announcements={unswAnnouncements()}
+      />
     </div>
+  );
+};
+
+// MRTODO: move to a seperate file
+export const AnnouncementsDisplay = ({ title, announcements }) => {
+  return (
+    <Box width="65%" height="100px">
+      <Box marginBottom="20px">
+        <Typography gutterBottom variant="h3">
+          {title}
+        </Typography>
+        <Divider />
+      </Box>
+      <CourseAnnouncements announcements={announcements} />
+    </Box>
   );
 };
