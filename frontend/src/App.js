@@ -12,6 +12,7 @@ import { Kudo } from './pages/Kudo';
 import { CoursesPane } from './components/course/CoursesPane';
 import { createMuiTheme } from '@material-ui/core';
 import grey from '@material-ui/core/colors/grey';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const useStyles = makeStyles({});
 
@@ -168,7 +169,10 @@ function App() {
               <CssBaseline />
               <Switch>
                 <Route exact path="/">
-                  <Home />
+                  <Scrollbars autoHeight autoHeightMin="100vh">
+                    {/* <Scrollbars style={{ height: '2000px', display: 'flex' }}> */}
+                    <Home />
+                  </Scrollbars>
                 </Route>
                 <Route exact path="/login">
                   <Login />
