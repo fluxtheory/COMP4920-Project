@@ -67,9 +67,9 @@ function UpvoteButton(props) {
         className={classes.upvoteButton}
       >
         {upvoted ? (
-          <StarRoundedIcon color="secondary" />
+          <StarRoundedIcon fontSize="large" color="secondary" />
         ) : (
-          <StarBorderRoundedIcon color="primary" />
+          <StarBorderRoundedIcon fontSize="large" color="primary" />
         )}
       </Button>
     </div>

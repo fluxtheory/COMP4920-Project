@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom';
 const useStyles = makeStyles(theme => ({
   creationContainer: {
     maxWidth: '1000px',
+    minWidth: '500px',
     margin: '200px',
   },
   textFieldContainer: {
@@ -20,6 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     padding: theme.spacing(3, 2),
+    opacity: '0.85',
   },
 }));
 
@@ -110,7 +112,12 @@ function AccountCreationHandler() {
         if (json.success === true) {
           setRegistrationSuccess(true);
         } else {
+          console.log(json);
           setNameHelpString(json.error);
+          if (json.msg.includes('email'))
+            setEmailHelpString('Email is already in use.');
+          if (json.msg.includes('username'))
+            setNameHelpString('Username is already in use.');
         }
       }
     };

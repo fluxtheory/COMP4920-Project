@@ -64,7 +64,9 @@ function PostList() {
           return <PostCompact post={p} key={p.id} />;
         })
       ) : (
-        <Typography variant="h2">No Posts Yet!</Typography>
+        <Typography left="50%" variant="h2">
+          No Posts Yet!
+        </Typography>
       )}
     </div>
   );
