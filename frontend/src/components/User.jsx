@@ -21,7 +21,6 @@ const getUserInfo = function(username) {
     api
       .post('/user', { usernames: [username] })
       .then(resp => {
-        console.log(resp);
         if (resp.statusText === 'OK') resolve(resp.data[0]);
         else resolve({});
       })
@@ -78,7 +77,7 @@ function User(props) {
       position="bottom center"
       closeOnDocumentClick
     >
-      <UserInfoSheet key={username} user={user} />
+      <UserInfoSheet key={username} username={username} />
     </Popup>
     /*
     <div className={classes.container}>

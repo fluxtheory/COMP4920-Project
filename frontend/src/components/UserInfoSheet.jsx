@@ -35,7 +35,7 @@ const getUserInfo = function(username) {
 
 function UserInfoSheet(props) {
   const classes = useStyles();
-  const username = props.user.username;
+  const username = props.username;
   const [kudos, setKudos] = React.useState(0);
   const [rank, setRank] = React.useState('pleb');
 

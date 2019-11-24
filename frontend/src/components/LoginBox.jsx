@@ -9,6 +9,7 @@ import { CurrentUser } from '../App';
 const useStyles = makeStyles(theme => ({
   creationContainer: {
     maxWidth: '1000px',
+    minWidth: '500px',
     margin: '200px',
   },
   textFieldContainer: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     padding: theme.spacing(3, 2),
+    opacity: '0.85',
   },
 }));
 
