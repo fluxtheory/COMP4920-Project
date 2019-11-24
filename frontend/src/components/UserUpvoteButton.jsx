@@ -66,6 +66,8 @@ function UserUpvoteButton(props) {
         className={classes.UserUpvoteButton}
         disabled={username === session.user.id}
       >
+        {' '}
+        {karmaStatus ? 'Kudos Given' : 'Give Kudos'}
         {karmaStatus ? (
           <StarRoundedIcon color="secondary" />
         ) : (

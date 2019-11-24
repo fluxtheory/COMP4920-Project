@@ -11,6 +11,7 @@ import respectedRank from '../img/rank2.svg';
 import honouredRank from '../img/rank3.svg';
 import modRank from '../img/mod.svg';
 import adminRank from '../img/admin.svg';
+import { useRouteMatch, Link, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   container: { height: '10%', width: '200px' },
@@ -21,7 +22,6 @@ const getUserInfo = function(username) {
     api
       .post('/user', { usernames: [username] })
       .then(resp => {
-        console.log(resp);
         if (resp.statusText === 'OK') resolve(resp.data[0]);
         else resolve({});
       })
@@ -41,7 +41,6 @@ function User(props) {
 
   React.useEffect(() => {
     getUserInfo(username).then(resp => {
-      console.log(resp);
       setUser(resp);
       let rank = resp.rank;
       if (rank == 1) setBadge(adminRank);
@@ -59,7 +58,12 @@ function User(props) {
     <Popup
       key={username}
       trigger={
-        <Button classes={{ root: classes.userButton }} key={username}>
+        <Button
+          classes={{ root: classes.userButton }}
+          component={Link}
+          to={'/kudo/' + useParams().course + '/chat/' + username}
+          key={username}
+        >
           {badge === '' ? (
             <ChildCareIcon />
           ) : (
@@ -75,10 +79,11 @@ function User(props) {
           </Box>
         </Button>
       }
-      position="bottom center"
+      position="left centre"
+      on="hover"
       closeOnDocumentClick
     >
-      <UserInfoSheet key={username} user={user} />
+      <UserInfoSheet key={username} username={username} />
     </Popup>
     /*
     <div className={classes.container}>
