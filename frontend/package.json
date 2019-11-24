@@ -19,13 +19,14 @@
     "react-dom": "^16.10.2",
     "react-gantt-timeline": "^0.4.0",
     "react-router-dom": "^5.1.2",
-    "reactjs-popup": "^1.5.0",
     "react-scale-text": "^1.2.2",
     "react-scripts": "3.2.0",
     "react-scrollbar": "^0.5.6",
     "react-sizeme": "^2.6.10",
     "react-textfit": "^1.1.0",
-    "react-window": "^1.8.5"
+    "react-window": "^1.8.5",
+    "reactjs-popup": "^1.5.0",
+    "semantic-ui-react": "^0.88.1"
   },
   "scripts": {
     "start": "react-scripts start",

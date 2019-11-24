@@ -12,6 +12,7 @@ import { UserInfoSheet } from '../UserInfoSheet';
 import { User } from '../User';
 
 const useStyles = makeStyles(theme => ({
+  userListContainer: {},
   courseUsersChatContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -46,6 +47,10 @@ function UserSearchForm(props) {
 
   React.useEffect(() => {
     const prom = getAllUsers(course).then(resp => {
+      resp.sort((a, b) => {
+        let x = a.username < b.username ? -1 : 1;
+        return x;
+      });
       setUsers(resp);
       setUserSearch(resp);
     });
