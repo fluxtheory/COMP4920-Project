@@ -6,7 +6,7 @@ import { Session, CurrentUser } from '../App';
 import { api } from '../utils';
 import loadingCircle from '../img/circle128x128.gif';
 
-const instanceLocator = 'v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77';
+const instanceLocator = 'v1:us1:8d540c79-80d9-4850-a367-72bce6dc16c5';
 const tokenProvider = new TokenProvider({
   url:
     'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/4c1776d3-a51e-497e-8f3e-0a9f08eabf77/token',

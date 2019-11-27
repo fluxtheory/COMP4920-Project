@@ -13,7 +13,7 @@ const validateUpdateInput = require("../validators/update");
 const Chatkit = require("@pusher/chatkit-server");
 
 const chatkit = new Chatkit.default({
-  instanceLocator: "v1:us1:4c1776d3-a51e-497e-8f3e-0a9f08eabf77",
+  instanceLocator: "v1:us1:8d540c79-80d9-4850-a367-72bce6dc16c5",
   key:
     "9cc4a113-e6f1-4109-92f9-799391e959c5:NBzZCZrvWUf1bdIblQR56oGOiELvMsfJq2nyFvR6Jg0=" // This is bad, use .env vars
 });
